@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing"
 import { UserCreateEntity } from "src/entities/users/_repo/_entities/users.create.entity";
 import { UsersRepoCreateUserCommand, UsersRepoCreateUserUseCase } from "src/entities/users/_repo/_application/use-cases/users.repo.create.usecase";
-import { UsersRepoReadUserByPropertyValueCommand, UsersRepoReadUserByPropertyValueUseCase } from "../_application/use-cases/users.repo.read.byProperty.usecase";
+import { UsersRepoReadUserByPropertyValueCommand, UsersRepoReadUserByPropertyValueUseCase } from "../_application/use-cases/users.repo.readByProperty.usecase";
 import { TestUsersRepoTestingModule } from "./settings/users.repo.testingModule";
 import { UserRepoEntity } from "../_entities/users.repo.entity";
 
@@ -27,18 +27,6 @@ describe("UsersRepo UseCase: Create", () => {
     it('Create user -> dto: UserRepoEntity', async () => {
         let command: UsersRepoCreateUserCommand = new UsersRepoCreateUserCommand(new UserCreateEntity("TestName", "testemail@mail.com", "123123"));
         let createdUser: UserRepoEntity = await createUseCase.execute(command) as UserRepoEntity;
-
-        // expect(createdUser).toEqual(expect.objectContaining({
-        //     id: expect.any(Number),
-        //     login: expect.any(String),
-        //     email: expect.any(String),
-        //     salt: expect.any(String),
-        //     hash: expect.any(String),
-        //     emailConfirmed: expect(false),
-        //     refreshPasswordTime: expect(null),
-        //     createdAt: expect.any(Date),
-        //     updatedAt: expect.any(Date)
-        // }))
 
         expect(createdUser).toMatchObject({
             id: expect.any(Number),

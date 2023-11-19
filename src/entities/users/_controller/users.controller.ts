@@ -3,7 +3,7 @@ import { UserCreateEntity } from '../_repo/_entities/users.create.entity';
 import { CommandBus } from '@nestjs/cqrs';
 import { UsersRepoCreateUserCommand } from '../_repo/_application/use-cases/users.repo.create.usecase';
 import { UserRepoEntity } from '../_repo/_entities/users.repo.entity';
-import { UsersRepoReadUserByPropertyValueCommand } from '../_repo/_application/use-cases/users.repo.read.byProperty.usecase';
+import { UsersRepoReadUserByPropertyValueCommand } from '../_repo/_application/use-cases/users.repo.readByProperty.usecase';
 
 @Controller('users')
 export class UsersController {
