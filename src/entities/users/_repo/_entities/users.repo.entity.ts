@@ -21,7 +21,7 @@ export class UserRepoEntity {
     @Column()
     emailConfirmed: boolean;
 
-    @Column()
+    @Column({nullable: true})
     refreshPasswordTime: Date | null;
 
     @CreateDateColumn({type: 'timestamptz'})
