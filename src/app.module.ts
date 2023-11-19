@@ -3,7 +3,7 @@ import { UsersModule } from './entities/users/users.module';
 import { POSTGRES_DATABASE, POSTGRES_PASSWORD, POSTGRES_PORT, POSTGRES_URL, POSTGRES_USERNAME } from './settings';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-const typeormConfiguration = TypeOrmModule.forRoot({
+export const typeormConfiguration = TypeOrmModule.forRoot({
   type: 'postgres',
   host: POSTGRES_URL,
   port: POSTGRES_PORT,

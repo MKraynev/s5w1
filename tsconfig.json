@@ -17,6 +17,14 @@
     "esModuleInterop": true,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "src/*": [
+        "src/*"
+      ],
+      "tests/*": [
+        "__tests__/*"
+      ]
+    }
   }
 }

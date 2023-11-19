@@ -1,15 +1,18 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserRepoEntity } from "./_entities/users.repo.entity";
-import { UsersRepoSaveUserUseCase } from "./_application/use-cases/users.repo.save.use-case";
+import { UsersRepoCreateUserUseCase } from "./_application/use-cases/users.repo.create.usecase";
 import { UsersRepoService } from "./_application/users.repo.service";
+import { UsersRepoReadUserByPropertyValueUseCase } from "./_application/use-cases/users.repo.read.byProperty.usecase";
 
-const useCases = [
-    UsersRepoSaveUserUseCase
+export const UsersRepoUseCases = [
+    UsersRepoCreateUserUseCase,
+    UsersRepoReadUserByPropertyValueUseCase
 ]
 
 @Module({
     imports:[TypeOrmModule.forFeature([UserRepoEntity])],
-    providers:[UsersRepoService, ...useCases]
+    providers:[UsersRepoService, ...UsersRepoUseCases],
+    exports:[UsersRepoService, ...UsersRepoUseCases]
 })
 export class UsersRepoModule{}

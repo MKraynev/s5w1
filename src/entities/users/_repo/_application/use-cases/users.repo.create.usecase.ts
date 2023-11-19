@@ -12,10 +12,7 @@ export class UsersRepoCreateUserCommand {
 
 @Injectable()
 @CommandHandler(UsersRepoCreateUserCommand)
-export class UsersRepoSaveUserUseCase implements ICommandHandler<UsersRepoCreateUserCommand, UserRepoEntity>{
-    /**
-     *
-     */
+export class UsersRepoCreateUserUseCase implements ICommandHandler<UsersRepoCreateUserCommand, UserRepoEntity>{
     constructor(
         @InjectRepository(UserRepoEntity)
         private userRepo: Repository<UserRepoEntity>,
@@ -31,5 +28,4 @@ export class UsersRepoSaveUserUseCase implements ICommandHandler<UsersRepoCreate
 
         return savedUser
     }
-
 }
