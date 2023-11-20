@@ -1,6 +1,6 @@
 import { TestingModule } from "@nestjs/testing";
 import { UsersRepoCreateUserCommand, UsersRepoCreateUserUseCase } from "../_application/use-cases/users.repo.create.usecase";
-import { UsersRepoReadUserByPropertyValueCommand, UsersRepoReadUserByPropertyValueUseCase } from "../_application/use-cases/users.repo.readByProperty.usecase";
+import { UsersRepoReadOneByPropertyValueCommand, UsersRepoReadOneByPropertyValueUseCase } from "../_application/use-cases/users.repo.readOneByProperty.usecase";
 import { TestUsersRepoTestingModule } from "./settings/users.repo.testingModule";
 import { UsersRepoClearCommand, UsersRepoClearUseCase } from "../_application/use-cases/users.repo.clear.usecase";
 import { UserCreateEntity } from "../_entities/users.create.entity";
@@ -10,14 +10,14 @@ describe("UsersRepo UseCase: Clear", () => {
     let module: TestingModule;
 
     let createUseCase: UsersRepoCreateUserUseCase;
-    let readByPropertyUseCase: UsersRepoReadUserByPropertyValueUseCase;
+    let readByPropertyUseCase: UsersRepoReadOneByPropertyValueUseCase;
     let clearUseCase: UsersRepoClearUseCase;
 
     beforeAll(async () => {
         module = await TestUsersRepoTestingModule.compile();
 
         createUseCase = module.get<UsersRepoCreateUserUseCase>(UsersRepoCreateUserUseCase);
-        readByPropertyUseCase = module.get<UsersRepoReadUserByPropertyValueUseCase>(UsersRepoReadUserByPropertyValueUseCase);
+        readByPropertyUseCase = module.get<UsersRepoReadOneByPropertyValueUseCase>(UsersRepoReadOneByPropertyValueUseCase);
         clearUseCase = module.get<UsersRepoClearUseCase>(UsersRepoClearUseCase)
     })
 
@@ -46,7 +46,7 @@ describe("UsersRepo UseCase: Clear", () => {
 
         expect(clearDb).toEqual(true);
 
-        let readCommand: UsersRepoReadUserByPropertyValueCommand = new UsersRepoReadUserByPropertyValueCommand({ propertyName: "login", propertyValue: createCommand.message.login })
+        let readCommand: UsersRepoReadOneByPropertyValueCommand = new UsersRepoReadOneByPropertyValueCommand({ propertyName: "login", propertyValue: createCommand.message.login })
         let foundUser = await readByPropertyUseCase.execute(readCommand);
 
         expect(foundUser).toEqual(null);

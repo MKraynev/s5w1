@@ -3,7 +3,7 @@ import { UserCreateEntity } from '../_repo/_entities/users.create.entity';
 import { CommandBus } from '@nestjs/cqrs';
 import { UsersRepoCreateUserCommand } from '../_repo/_application/use-cases/users.repo.create.usecase';
 import { UserRepoEntity } from '../_repo/_entities/users.repo.entity';
-import { UsersRepoReadUserByPropertyValueCommand } from '../_repo/_application/use-cases/users.repo.readByProperty.usecase';
+import { UsersRepoReadOneByPropertyValueCommand } from '../_repo/_application/use-cases/users.repo.readOneByProperty.usecase';
 
 @Controller('users')
 export class UsersController {
@@ -18,7 +18,7 @@ export class UsersController {
 
     @Get(':id')
     async GetUserById(@Param('id') id: string){
-        return this.commandBus.execute<UsersRepoReadUserByPropertyValueCommand, UserRepoEntity>(new UsersRepoReadUserByPropertyValueCommand({propertyName: "id", propertyValue: id}))
+        return this.commandBus.execute<UsersRepoReadOneByPropertyValueCommand, UserRepoEntity>(new UsersRepoReadOneByPropertyValueCommand({propertyName: "id", propertyValue: id}))
     }
 
 }
