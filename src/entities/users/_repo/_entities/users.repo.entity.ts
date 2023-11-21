@@ -1,8 +1,9 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { UserCreateEntity } from "./users.create.entity";
+import bcrypt from "bcrypt"
 
 @Entity("Users")
-export class UserRepoEntity {
+export class Users {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -21,12 +22,23 @@ export class UserRepoEntity {
     @Column()
     emailConfirmed: boolean;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     refreshPasswordTime: Date | null;
 
-    @CreateDateColumn({type: 'timestamptz'})
+    @CreateDateColumn({ type: 'timestamptz' })
     createdAt: Date;
 
-    @UpdateDateColumn({type: 'timestamptz'})
+    @UpdateDateColumn({ type: 'timestamptz' })
     updatedAt: Date;
+
+    public static async InitEntity(inputUser: UserCreateEntity, confirmEmail: boolean = false): Promise<Users> {
+        let user: Users = new Users();
+        user.login = inputUser.login;
+        user.email = inputUser.email;
+        user.salt = (await bcrypt.genSalt()).toString();
+        user.hash = await bcrypt.hash(inputUser.password, user.salt);
+        user.emailConfirmed = confirmEmail;
+
+        return user;
+    }
 }
