@@ -17,6 +17,8 @@ describe("UsersRepo UseCase: Clear", () => {
     beforeAll(async () => {
         module = await TestUsersRepoTestingModule.compile();
 
+        await module.init();
+        
         createUseCase = module.get<UsersRepoCreateUserUseCase>(UsersRepoCreateUserUseCase);
         readByPropertyUseCase = module.get<UsersRepoReadOneByPropertyValueUseCase>(UsersRepoReadOneByPropertyValueUseCase);
         clearUseCase = module.get<UsersRepoClearUseCase>(UsersRepoClearUseCase)

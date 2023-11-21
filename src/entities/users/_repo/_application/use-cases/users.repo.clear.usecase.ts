@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Users } from "../../_entities/users.repo.entity";
+import { UserRepoEntity } from "../../_entities/users.repo.entity";
 import { Repository } from "typeorm";
 
 export class UsersRepoClearCommand {
@@ -13,8 +13,8 @@ export class UsersRepoClearCommand {
 export class UsersRepoClearUseCase implements ICommandHandler<UsersRepoClearCommand, number>{
 
     constructor(
-        @InjectRepository(Users)
-        private userRepo: Repository<Users>
+        @InjectRepository(UserRepoEntity)
+        private userRepo: Repository<UserRepoEntity>
     ) { }
 
     async execute(command: UsersRepoClearCommand): Promise<number> {

@@ -1,32 +1,28 @@
 import { Injectable } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { Users } from "../../_entities/users.repo.entity";
+import { UserRepoEntity } from "../../_entities/users.repo.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
 export class UsersRepoReadOneByLoginOrEmailCommand {
-    constructor(public message: {
-        firstProperty: keyof Users,
-        secondProperty: keyof Users,
-        propertyValue: any
-    }) { }
+    constructor(public message: string) { }
 }
 
 @Injectable()
 @CommandHandler(UsersRepoReadOneByLoginOrEmailCommand)
-export class UsersRepoReadOneByLoginOrEmailUseCase implements ICommandHandler<UsersRepoReadOneByLoginOrEmailCommand, Users>{
+export class UsersRepoReadOneByLoginOrEmailUseCase implements ICommandHandler<UsersRepoReadOneByLoginOrEmailCommand, UserRepoEntity>{
 
     constructor(
-        @InjectRepository(Users)
-        private userRepo: Repository<Users>
+        @InjectRepository(UserRepoEntity)
+        private userRepo: Repository<UserRepoEntity>
     ) { }
 
-    async execute(command: UsersRepoReadOneByLoginOrEmailCommand): Promise<Users> {
+    async execute(command: UsersRepoReadOneByLoginOrEmailCommand): Promise<UserRepoEntity> {
 
         let founduser = await this.userRepo.findOne({
             where: [
-                { login: command.message.propertyValue },
-                { email: command.message.propertyValue }
+                { login: command.message },
+                { email: command.message }
             ]
         }
         )

@@ -3,7 +3,7 @@ import { UserCreateEntity } from "src/entities/users/_repo/_entities/users.creat
 import { UsersRepoCreateUserCommand, UsersRepoCreateUserUseCase } from "src/entities/users/_repo/_application/use-cases/users.repo.create.usecase";
 import { UsersRepoReadOneByPropertyValueCommand, UsersRepoReadOneByPropertyValueUseCase } from "../_application/use-cases/users.repo.readOneByProperty.usecase";
 import { TestUsersRepoTestingModule } from "./settings/users.repo.testingModule";
-import { Users } from "../_entities/users.repo.entity";
+import { UserRepoEntity } from "../_entities/users.repo.entity";
 
 
 
@@ -16,6 +16,8 @@ describe("UsersRepo UseCase: Create", () => {
     beforeAll(async () => {
         module = await TestUsersRepoTestingModule.compile();
 
+        await module.init();
+        
         createUseCase = module.get<UsersRepoCreateUserUseCase>(UsersRepoCreateUserUseCase);
         readByPropertyUseCase = module.get<UsersRepoReadOneByPropertyValueUseCase>(UsersRepoReadOneByPropertyValueUseCase);
     })
@@ -26,7 +28,7 @@ describe("UsersRepo UseCase: Create", () => {
 
     it('Create user -> dto: UserRepoEntity', async () => {
         let command: UsersRepoCreateUserCommand = new UsersRepoCreateUserCommand(new UserCreateEntity("TestName", "testemail@mail.com", "123123"));
-        let createdUser: Users = await createUseCase.execute(command) as Users;
+        let createdUser: UserRepoEntity = await createUseCase.execute(command) as UserRepoEntity;
 
         expect(createdUser).toMatchObject({
             id: expect.any(Number),

@@ -3,7 +3,7 @@ import { UserCreateEntity } from "./users.create.entity";
 import bcrypt from "bcrypt"
 
 @Entity("Users")
-export class Users {
+export class UserRepoEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -31,8 +31,8 @@ export class Users {
     @UpdateDateColumn({ type: 'timestamptz' })
     updatedAt: Date;
 
-    public static async InitEntity(inputUser: UserCreateEntity, confirmEmail: boolean = false): Promise<Users> {
-        let user: Users = new Users();
+    public static async Init(inputUser: UserCreateEntity, confirmEmail: boolean = false): Promise<UserRepoEntity> {
+        let user: UserRepoEntity = new UserRepoEntity();
         user.login = inputUser.login;
         user.email = inputUser.email;
         user.salt = (await bcrypt.genSalt()).toString();

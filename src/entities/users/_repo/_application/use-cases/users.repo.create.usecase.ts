@@ -1,29 +1,28 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { UserCreateEntity } from "../../_entities/users.create.entity";
-import { Users } from "../../_entities/users.repo.entity";
+import { UserRepoEntity } from "../../_entities/users.repo.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UsersRepoService } from "../users.repo.service";
 import { Injectable } from "@nestjs/common";
 
 export class UsersRepoCreateUserCommand {
-    constructor(public message: UserCreateEntity) {}
+    constructor(public message: UserCreateEntity) { }
 }
 
 @Injectable()
 @CommandHandler(UsersRepoCreateUserCommand)
-export class UsersRepoCreateUserUseCase implements ICommandHandler<UsersRepoCreateUserCommand, Users>{
+export class UsersRepoCreateUserUseCase implements ICommandHandler<UsersRepoCreateUserCommand, UserRepoEntity>{
     constructor(
-        @InjectRepository(Users)
-        private userRepo: Repository<Users>,
-        private usersRepoService: UsersRepoService
+        @InjectRepository(UserRepoEntity)
+        private userRepo: Repository<UserRepoEntity>
     ) { }
 
 
-    async execute(command: UsersRepoCreateUserCommand): Promise<Users> {
+    async execute(command: UsersRepoCreateUserCommand): Promise<UserRepoEntity> {
         let createUserDto = command.message;
-        // let userDto = await this.usersRepoService.InitEntity(createUserDto);
-        let userDto = await Users.InitEntity(createUserDto);
+
+        let userDto = await UserRepoEntity.Init(createUserDto);
         let savedUser = await this.userRepo.save(userDto);
 
         return savedUser
