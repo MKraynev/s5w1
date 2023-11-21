@@ -10,18 +10,16 @@ export class UsersRepoClearCommand {
 
 @Injectable()
 @CommandHandler(UsersRepoClearCommand)
-export class UsersRepoClearUseCase implements ICommandHandler<UsersRepoClearCommand, boolean>{
+export class UsersRepoClearUseCase implements ICommandHandler<UsersRepoClearCommand, number>{
 
     constructor(
         @InjectRepository(UserRepoEntity)
         private userRepo: Repository<UserRepoEntity>
     ) { }
 
-    async execute(command: UsersRepoClearCommand): Promise<boolean> {
+    async execute(command: UsersRepoClearCommand): Promise<number> {
         let deleteAll = await this.userRepo.delete({});
-        
-        console.log(deleteAll);
 
-        return true;
+        return deleteAll.affected;
     }
 }

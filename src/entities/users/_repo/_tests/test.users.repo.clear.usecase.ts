@@ -4,6 +4,7 @@ import { UsersRepoReadOneByPropertyValueCommand, UsersRepoReadOneByPropertyValue
 import { TestUsersRepoTestingModule } from "./settings/users.repo.testingModule";
 import { UsersRepoClearCommand, UsersRepoClearUseCase } from "../_application/use-cases/users.repo.clear.usecase";
 import { UserCreateEntity } from "../_entities/users.create.entity";
+import exp from "constants";
 
 describe("UsersRepo UseCase: Clear", () => {
 
@@ -28,6 +29,7 @@ describe("UsersRepo UseCase: Clear", () => {
     it('Clear after CreateUser -> User doesn`t exist(use ReadUserById)', async () => {
         let createCommand: UsersRepoCreateUserCommand = new UsersRepoCreateUserCommand(new UserCreateEntity("Max123", "max123@mail.com", "123123"));
         let createdUser = await createUseCase.execute(createCommand);
+        let readUser = await readByPropertyUseCase.execute(new UsersRepoReadOneByPropertyValueCommand({ propertyName: "login", propertyValue: createCommand.message.login }))
 
         expect(createdUser).toMatchObject({
             id: expect.any(Number),
@@ -41,10 +43,12 @@ describe("UsersRepo UseCase: Clear", () => {
             updatedAt: expect.any(Date)
         })
 
+        expect(createdUser).toEqual(readUser);
+
         let clearCommand = new UsersRepoClearCommand();
         let clearDb = await clearUseCase.execute(clearCommand);
 
-        expect(clearDb).toEqual(true);
+        expect(clearDb).toEqual(expect.any(Number));
 
         let readCommand: UsersRepoReadOneByPropertyValueCommand = new UsersRepoReadOneByPropertyValueCommand({ propertyName: "login", propertyValue: createCommand.message.login })
         let foundUser = await readByPropertyUseCase.execute(readCommand);

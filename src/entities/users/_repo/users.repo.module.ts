@@ -5,7 +5,7 @@ import { UsersRepoCreateUserUseCase } from "./_application/use-cases/users.repo.
 import { UsersRepoService } from "./_application/users.repo.service";
 import { UsersRepoReadOneByPropertyValueUseCase } from "./_application/use-cases/users.repo.readOneByProperty.usecase";
 import { UsersRepoClearUseCase } from "./_application/use-cases/users.repo.clear.usecase";
-import { UsersRepoReadOneByFirstOrSecondPropertyUseCase } from "./_application/use-cases/users.repo.readOneByLoginOrEmail.usecase";
+import { UsersRepoReadOneByFirstOrSecondPropertyUseCase } from "./_application/use-cases/users.repo.readOneByFirstOrSecondProperty.usecase";
 
 export const UsersRepoUseCases = [
     UsersRepoCreateUserUseCase,
@@ -15,8 +15,8 @@ export const UsersRepoUseCases = [
 ]
 
 @Module({
-    imports:[TypeOrmModule.forFeature([UserRepoEntity])],
-    providers:[UsersRepoService, ...UsersRepoUseCases],
-    exports:[UsersRepoService, ...UsersRepoUseCases]
+    imports: [TypeOrmModule.forFeature([UserRepoEntity])],
+    providers: [UsersRepoService, ...UsersRepoUseCases],
+    exports: [UsersRepoService, ...UsersRepoUseCases]
 })
-export class UsersRepoModule{}
+export class UsersRepoModule { }

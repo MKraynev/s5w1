@@ -21,20 +21,22 @@ export class UsersRepoReadOneByFirstOrSecondPropertyUseCase implements ICommandH
         private userRepo: Repository<UserRepoEntity>
     ) { }
 
-    execute(command: UsersRepoReadOneByFirstOrSecondPropertyCommand): Promise<UserRepoEntity> {
+    async execute(command: UsersRepoReadOneByFirstOrSecondPropertyCommand): Promise<UserRepoEntity> {
         let firstFindPattern: any = {}
         firstFindPattern[command.message.firstProperty] = command.message.propertyValue;
 
         let secondFindPattern: any = {}
         secondFindPattern[command.message.secondProperty] = command.message.propertyValue;
-
-        let foundUser = this.userRepo.find(
+        console.log(firstFindPattern, secondFindPattern);
+        let foundUser = await this.userRepo.find(
             {
                 where: [
                     firstFindPattern,
                     secondFindPattern
                 ]
             })
+
+        console.log("found users->", foundUser);
 
         return foundUser[0];
     }
