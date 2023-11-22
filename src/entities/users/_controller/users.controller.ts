@@ -14,7 +14,7 @@ export class UsersController {
     @HttpCode(HttpStatus.CREATED)
     async SaveUser(@Body(new ValidationPipe()) user: UserCreateEntity) {
         // return this.commandBus.execute<UsersRepoCreateUserCommand, UserRepoEntity>(new UsersRepoCreateUserCommand(user))
-        return this.commandBus.execute<UsersServiceRegistrationCommand, RegistrationUserStatus>(new UsersServiceRegistrationCommand(user))
+        return await this.commandBus.execute<UsersServiceRegistrationCommand, RegistrationUserStatus>(new UsersServiceRegistrationCommand(user))
     }
 
 

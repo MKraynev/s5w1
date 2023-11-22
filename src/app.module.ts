@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { UsersModule } from './entities/users/users.module';
 import { POSTGRES_DATABASE, POSTGRES_PASSWORD, POSTGRES_PORT, POSTGRES_URL, POSTGRES_USERNAME } from './settings';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { EmailModule } from './email/email.module';
+import { JwtModule } from '@nestjs/jwt';
 
 export const typeormConfiguration = TypeOrmModule.forRoot({
   type: 'postgres',
@@ -17,6 +19,8 @@ export const typeormConfiguration = TypeOrmModule.forRoot({
 @Module({
   imports: [
     UsersModule,
+    EmailModule,
+    JwtModule,
     typeormConfiguration
   ],
   controllers: [],
