@@ -8,8 +8,8 @@ import { RegistrationUserStatus, UsersServiceRegistrationCommand } from '../_app
 
 @Controller('users')
 export class UsersController {
-    constructor(private commandBus: CommandBus) {}
-    
+    constructor(private commandBus: CommandBus) { }
+
     @Post()
     @HttpCode(HttpStatus.CREATED)
     async SaveUser(@Body(new ValidationPipe()) user: UserCreateEntity) {
@@ -19,8 +19,7 @@ export class UsersController {
 
 
     @Get(':id')
-    async GetUserById(@Param('id') id: string){
-        return this.commandBus.execute<UsersRepoReadOneByPropertyValueCommand, UserRepoEntity>(new UsersRepoReadOneByPropertyValueCommand({propertyName: "id", propertyValue: id}))
+    async GetUserById(@Param('id') id: string) {
+        return this.commandBus.execute<UsersRepoReadOneByPropertyValueCommand, UserRepoEntity>(new UsersRepoReadOneByPropertyValueCommand({ propertyName: "id", propertyValue: id }))
     }
-
 }

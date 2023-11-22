@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { UsersService } from './_application/users.service';
-import { UsersController } from './_controller/users.controller';
+import { UsersController } from './_controllers/users.controller';
 import { UsersRepoModule } from './_repo/users.repo.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { UsersServiceRegistrationUseCase } from './_application/use-cases/users.service.registration.usecase';

@@ -4,6 +4,8 @@ import { POSTGRES_DATABASE, POSTGRES_PASSWORD, POSTGRES_PORT, POSTGRES_URL, POST
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EmailModule } from './email/email.module';
 import { JwtModule } from '@nestjs/jwt';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 export const typeormConfiguration = TypeOrmModule.forRoot({
   type: 'postgres',
@@ -21,9 +23,10 @@ export const typeormConfiguration = TypeOrmModule.forRoot({
     UsersModule,
     EmailModule,
     JwtModule,
-    typeormConfiguration
+    typeormConfiguration,
+    ThrottlerModule.forRoot([{ ttl: 10000, limit: 200, }])
   ],
   controllers: [],
-  providers: [],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule { }
