@@ -1,10 +1,10 @@
 import { MailerModule } from "@nestjs-modules/mailer";
 import { Module } from "@nestjs/common";
 import { MAIL_LOGIN, MAIL_PASSWORD } from "src/settings";
-import { EmailServiceSendRegistrationMailUseCase } from "./email.service.sendRegistrationMail.usecase";
+import { EmailService } from "./email.service";
 
 export const EmailServiceUseCases = [
-    EmailServiceSendRegistrationMailUseCase
+    EmailService
 ]
 
 
@@ -19,7 +19,7 @@ export const EmailServiceUseCases = [
             }
         }
     })],
-    providers: [...EmailServiceUseCases],
-    exports: [...EmailServiceUseCases]
+    providers: [EmailService, ...EmailServiceUseCases],
+    exports: [EmailService, ...EmailServiceUseCases]
 })
 export class EmailModule { }

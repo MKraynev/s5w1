@@ -1,11 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { UserControllerRegistrationEntity } from "../controllers/entities/users.controller.registration.entity";
 import { CommandBus, CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { JwtServiceReadRegistrationCodeCommand } from "src/jwt/_application/use-cases/jwt.service.read.registrationCode.usecase";
 import { UserRegistrationLoad } from "src/jwt/_application/use-cases/jwt.service.generate.registrationCode.usecase";
-import { UsersRepoReadOneByPropertyValueCommand } from "../../repo/_application/use-cases/users.repo.readOneByProperty.usecase";
-import { UserRepoEntity } from "../../repo/_entities/users.repo.entity";
-import { UsersRepoUpdateOneCommand } from "../../repo/_application/use-cases/users.repo.update.usecase";
 import { UsersRepoService } from "src/features/repo/users.repo.service";
 
 export enum ConfirmRegistrationUserStatus {

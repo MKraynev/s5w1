@@ -1,30 +1,18 @@
-import { MailerService, ISendMailOptions } from "@nestjs-modules/mailer";
+import { MailerService } from "@nestjs-modules/mailer";
 import { Injectable } from "@nestjs/common";
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { EmailSendStatus, EmailServiceExecutionStatus, MailServiceEntity } from "src/adapters/email/entities/email.service.entity";
+import { EmailSendStatus, EmailServiceExecutionStatus, MailServiceEntity } from "./entities/email.service.entity";
 import { MAIL_LOGIN } from "src/settings";
 
-export class EmailServiceSendRegistrationMailCommand {
-
-    constructor(
-        public sendTo: string,
-        public confirmCode: string,
-        public confirmRegistrationUrl: string) { }
-}
-
-
-
 @Injectable()
-@CommandHandler(EmailServiceSendRegistrationMailCommand)
-export class EmailService implements ICommandHandler<EmailServiceSendRegistrationMailCommand, EmailServiceExecutionStatus>{
+export class EmailService {
 
     constructor(private mailerService: MailerService) { }
 
-    async execute(command: EmailServiceSendRegistrationMailCommand): Promise<EmailServiceExecutionStatus> {
+    public async SendRegistrationMail(sendTo: string, confirmCode: string, confirmRegistrationUrl: string) {
         let result: EmailServiceExecutionStatus = { status: EmailSendStatus.Sent, error: undefined };
 
         let sendMail = await this.mailerService
-            .sendMail(this._CONFIRM_EMAIL_FORM(command.sendTo, command.confirmCode, command.confirmRegistrationUrl))
+            .sendMail(this._CONFIRM_EMAIL_FORM(sendTo, confirmCode, confirmRegistrationUrl))
             .catch(err => {
                 result.status = EmailSendStatus.NotDelivered,
                     result.error = err;
@@ -47,5 +35,4 @@ export class EmailService implements ICommandHandler<EmailServiceSendRegistratio
 
         return result;
     }
-
 }

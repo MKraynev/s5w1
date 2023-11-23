@@ -6,7 +6,7 @@ import { UsersServiceUseCases } from "../../users.module";
 import { JwtModule } from "@nestjs/jwt";
 import { JwtGeneratorModule } from "src/jwt/jwt.module";
 import { EmailModule, EmailServiceUseCases } from "src/adapters/email/email.module";
-import { EmailServiceSendRegistrationMailCommand, EmailServiceSendRegistrationMailUseCase } from "src/adapters/email/email.service.sendRegistrationMail.usecase";
+import { EmailServiceSendRegistrationMailCommand, EmailService } from "src/adapters/email/email.service.sendRegistrationMail.usecase";
 import { EmailSendStatus, EmailServiceExecutionStatus } from "src/adapters/email/entities/email.service.entity";
 import { MailerModule } from "@nestjs-modules/mailer";
 
