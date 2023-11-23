@@ -3,20 +3,24 @@ import { AppModule } from './app.module';
 import { PORT } from './settings';
 import ngrok from "ngrok"
 import cookieParser from 'cookie-parser';
+export class Main {
+  public ADDRES: string;
 
-const ngrokConnect = async () => {
-  let url = await ngrok.connect()
-  console.log(url);
-  return url;
+  public async Init() {
+    const app = await NestFactory.create(AppModule);
+
+    app.enableCors();
+    app.use(cookieParser())
+
+    await app.listen(PORT);
+
+    let url = await ngrok.connect();
+    this.ADDRES = url;
+    console.log(url);
+  }
 }
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+// export const CONFIRM_REGISTRATION_URL = await bootstrap() + "/auth/registration-confirmation";
 
-  app.enableCors();
-  app.use(cookieParser())
-
-  await app.listen(PORT);
-  await ngrokConnect();
-}
-bootstrap();
+export const _MAIN_ = new Main();
+_MAIN_.Init();

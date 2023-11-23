@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { UsersService } from './_application/users.service';
 import { UsersController } from './controllers/users.controller';
 import { UsersRepoModule } from '../repo/users.repo.module';
 import { CqrsModule } from '@nestjs/cqrs';
@@ -17,7 +16,7 @@ export const UsersServiceUseCases = [
 @Module({
   imports: [CqrsModule, UsersRepoModule, JwtGeneratorModule, EmailModule],
   controllers: [UsersController, UsersAuthController],
-  providers: [UsersService, ...UsersServiceUseCases],
+  providers: [...UsersServiceUseCases],
   exports: [...UsersServiceUseCases]
 })
 export class UsersModule { }

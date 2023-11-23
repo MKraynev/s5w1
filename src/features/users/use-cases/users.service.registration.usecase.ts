@@ -4,7 +4,8 @@ import { Injectable } from "@nestjs/common";
 import { JwtServiceGenerateRegistrationCodeCommand } from "src/jwt/_application/use-cases/jwt.service.generate.registrationCode.usecase";
 import { UsersRepoService } from "src/features/repo/users.repo.service";
 import { EmailService } from "src/adapters/email/email.service";
-import { CONFIRM_REGISTRATION_URL } from "src/settings";
+import { _MAIN_ } from "src/main";
+
 
 export class UsersServiceRegistrationCommand {
     constructor(public command: UserControllerRegistrationEntity) { }
@@ -47,7 +48,7 @@ export class UsersServiceRegistrationUseCase implements ICommandHandler<UsersSer
         //     .execute<EmailServiceSendRegistrationMailCommand, EmailServiceExecutionStatus>
         //     (new EmailServiceSendRegistrationMailCommand(userInputData.email, registrationCode, CONFIRM_REGISTRATION_URL))
 
-        this.emailService.SendRegistrationMail(userInputData.email, registrationCode, CONFIRM_REGISTRATION_URL);
+        this.emailService.SendRegistrationMail(userInputData.email, registrationCode, _MAIN_.ADDRES + "/auth/registration-confirmation");
 
         return RegistrationUserStatus.Success;
     }
