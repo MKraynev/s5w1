@@ -3,7 +3,7 @@ import { UserControllerRegistrationEntity } from "../../../users/controllers/ent
 import { UserRepoEntity } from "../../_entities/users.repo.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { UsersRepoService } from "../users.repo.service";
+import { UsersRepoService } from "../../users.repo.service";
 import { Injectable } from "@nestjs/common";
 
 export class UsersRepoCreateUserCommand {

@@ -8,6 +8,7 @@ import { EmailServiceSendRegistrationMailCommand, EmailServiceSendRegistrationMa
 import { EmailSendStatus, EmailServiceExecutionStatus } from "src/adapters/email/entities/email.service.entity";
 import { CONFIRM_REGISTRATION_URL } from "src/settings";
 import { JwtServiceGenerateRegistrationCodeCommand, JwtServiceGenerateRegistrationCodeUseCase } from "src/jwt/_application/use-cases/jwt.service.generate.registrationCode.usecase";
+import { UsersRepoService } from "src/features/repo/users.repo.service";
 
 export class UsersServiceRegistrationCommand {
     constructor(public command: UserControllerRegistrationEntity) { }
@@ -24,15 +25,17 @@ export enum RegistrationUserStatus {
 @CommandHandler(UsersServiceRegistrationCommand)
 export class UsersServiceRegistrationUseCase implements ICommandHandler<UsersServiceRegistrationCommand, RegistrationUserStatus>{
 
-    constructor(private commandBus: CommandBus) { }
+    constructor(private commandBus: CommandBus, private usersRepo: UsersRepoService) { }
 
     async execute(command: UsersServiceRegistrationCommand): Promise<RegistrationUserStatus> {
         let userInputData = command.command;
 
-        let findUsersByLoginByEmail = await this
-            .commandBus
-            .execute<UsersRepoReadManyByLoginByEmailCommand, UserRepoEntity[]>
-            (new UsersRepoReadManyByLoginByEmailCommand(userInputData.login, userInputData.email))
+        // let findUsersByLoginByEmail = await this
+        //     .commandBus
+        //     .execute<UsersRepoReadManyByLoginByEmailCommand, UserRepoEntity[]>
+        //     (new UsersRepoReadManyByLoginByEmailCommand(userInputData.login, userInputData.email))
+
+        let findUsersByLoginByEmail = await this.usersRepo.ReadManyByLoginByEmail(userInputData.login, userInputData.email)
 
         if (findUsersByLoginByEmail.length) {
             let status = findUsersByLoginByEmail[0].login === userInputData.login ?
@@ -42,10 +45,12 @@ export class UsersServiceRegistrationUseCase implements ICommandHandler<UsersSer
             return status;
         }
 
-        let savedUser = await this
-            .commandBus
-            .execute<UsersRepoCreateUserCommand, UserRepoEntity>
-            (new UsersRepoCreateUserCommand(command.command))
+        // let savedUser = await this
+        //     .commandBus
+        //     .execute<UsersRepoCreateUserCommand, UserRepoEntity>
+        //     (new UsersRepoCreateUserCommand(command.command))
+
+        let savedUser = await this.usersRepo.Create(userInputData);
 
         let registrationCode = await this
             .commandBus

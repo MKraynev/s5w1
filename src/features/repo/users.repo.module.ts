@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserRepoEntity } from "./_entities/users.repo.entity";
 import { UsersRepoCreateUserUseCase } from "./_application/use-cases/users.repo.create.usecase";
-import { UsersRepoService } from "./_application/users.repo.service";
+import { UsersRepoService } from "./users.repo.service";
 import { UsersRepoReadOneByPropertyValueUseCase } from "./_application/use-cases/users.repo.readOneByProperty.usecase";
 import { UsersRepoClearUseCase } from "./_application/use-cases/users.repo.clear.usecase";
 import { UsersRepoReadOneByLoginOrEmailUseCase } from "./_application/use-cases/users.repo.readOneByLoginOrEmail.usecase";
