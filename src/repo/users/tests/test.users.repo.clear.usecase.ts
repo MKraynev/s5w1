@@ -1,10 +1,10 @@
 import { TestingModule } from "@nestjs/testing";
-import { UsersRepoCreateUserCommand, UsersRepoCreateUserUseCase } from "../application/use-cases/users.repo.create.usecase";
-import { UsersRepoReadOneByPropertyValueCommand, UsersRepoReadOneByPropertyValueUseCase } from "../application/use-cases/users.repo.readOneByProperty.usecase";
+import { UsersRepoCreateUserCommand, UsersRepoCreateUserUseCase } from "../use-cases/users.repo.create.usecase";
+import { UsersRepoReadOneByPropertyValueCommand, UsersRepoReadOneByPropertyValueUseCase } from "../use-cases/users.repo.readOneByProperty.usecase";
 import { TestUsersRepoTestingModule } from "./settings/users.repo.testingModule";
-import { UsersRepoClearCommand, UsersRepoClearUseCase } from "../application/use-cases/users.repo.clear.usecase";
-import { UserControllerRegistrationEntity } from "../../users/controllers/entities/users.controller.registration.entity";
+import { UsersRepoClearCommand, UsersRepoClearUseCase } from "../use-cases/users.repo.clear.usecase";
 import exp from "constants";
+import { UserControllerRegistrationEntity } from "src/features/users/controllers/entities/users.controller.registration.entity";
 
 describe("UsersRepo UseCase: Clear", () => {
 

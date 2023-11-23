@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { RequestDeviceMetaData } from "src/adapters/deviceMetaData/entities/request.deviceMetaData.entity";
 import { JwtHandlerService } from "src/auth/jwt/jwt.service";
-import { UsersRepoService } from "src/features/repo/users.repo.service";
+import { UsersRepoService } from "src/repo/users/users.repo.service";
 
 export enum UserLoginStatus {
     Success,

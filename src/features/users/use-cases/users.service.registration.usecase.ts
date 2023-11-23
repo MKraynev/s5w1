@@ -1,10 +1,10 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { UserControllerRegistrationEntity } from "../controllers/entities/users.controller.registration.entity";
 import { Injectable } from "@nestjs/common";
-import { UsersRepoService } from "src/features/repo/users.repo.service";
 import { EmailService } from "src/adapters/email/email.service";
 import { _MAIN_ } from "src/main";
 import { JwtHandlerService } from "src/auth/jwt/jwt.service";
+import { UsersRepoService } from "src/repo/users/users.repo.service";
 
 
 export class UsersServiceRegistrationCommand {

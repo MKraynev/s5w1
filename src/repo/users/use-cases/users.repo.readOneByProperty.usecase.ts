@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { UserRepoEntity } from "../../entities/users.repo.entity";
+import { UserRepoEntity } from "../entities/users.repo.entity";
 import { FindOptionsWhere, Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 

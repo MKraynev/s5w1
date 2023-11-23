@@ -1,10 +1,10 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { UserControllerRegistrationEntity } from "../../../users/controllers/entities/users.controller.registration.entity";
-import { UserRepoEntity } from "../../entities/users.repo.entity";
+import { UserRepoEntity } from "../entities/users.repo.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { UsersRepoService } from "../../users.repo.service";
+import { UsersRepoService } from "../users.repo.service";
 import { Injectable } from "@nestjs/common";
+import { UserControllerRegistrationEntity } from "src/features/users/controllers/entities/users.controller.registration.entity";
 
 export class UsersRepoCreateUserCommand {
     constructor(public message: UserControllerRegistrationEntity) { }

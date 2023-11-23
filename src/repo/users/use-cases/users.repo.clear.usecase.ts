@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserRepoEntity } from "../../entities/users.repo.entity";
+import { UserRepoEntity } from "../entities/users.repo.entity";
 import { Repository } from "typeorm";
 
 export class UsersRepoClearCommand {

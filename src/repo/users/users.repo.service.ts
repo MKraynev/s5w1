@@ -25,12 +25,25 @@ export class UsersRepoService {
         return savedUser
     }
 
-    public async ReadManyByLoginByEmail(login: string, email: string) {
+    public async ReadManyByLoginByEmail(
+        login: string,
+        email: string,
+        sortBy: keyof (UserRepoEntity) = "createdAt",
+        sortDirection: "asc" | "desc" = "desc",
+        skip: number = 0,
+        limit: number = 10
+    ) {
+        let orderObj: any = {}
+        orderObj[sortBy] = sortDirection;
+
         let foundusers = await this.userRepo.find({
             where: [
                 { login: login },
                 { email: email }
-            ]
+            ],
+            order: orderObj,
+            skip: skip,
+            take: limit
         })
 
         return foundusers;

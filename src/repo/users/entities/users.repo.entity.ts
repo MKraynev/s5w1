@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { UserControllerRegistrationEntity } from "../../users/controllers/entities/users.controller.registration.entity";
 import bcrypt from "bcrypt"
+import { UserControllerRegistrationEntity } from "src/features/users/controllers/entities/users.controller.registration.entity";
 
 @Entity("Users")
 export class UserRepoEntity {

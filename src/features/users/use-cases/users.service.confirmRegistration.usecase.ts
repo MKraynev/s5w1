@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { CommandBus, CommandHandler, ICommandHandler } from "@nestjs/cqrs";
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { JwtHandlerService } from "src/auth/jwt/jwt.service";
-import { UsersRepoService } from "src/features/repo/users.repo.service";
+import { UsersRepoService } from "src/repo/users/users.repo.service";
 
 export enum ConfirmRegistrationUserStatus {
     Success,

@@ -1,11 +1,9 @@
-import { UsersRepoClearUseCase } from "src/features/repo/application/use-cases/users.repo.clear.usecase";
 import { UserLoginStatus, UsersServiceLoginCommand, UsersServiceLoginUseCase } from "../use-cases/users.service.login.usecase";
 import { TestUsersServiceTestingModule } from "./settings/users.service.testingModule";
 import { TestingModule } from "@nestjs/testing";
-import { UsersRepoService } from "src/features/repo/users.repo.service";
-import { UsersServiceRegistrationUseCase } from "../use-cases/users.service.registration.usecase";
 import { UserControllerRegistrationEntity } from "../controllers/entities/users.controller.registration.entity";
 import { RequestDeviceMetaData } from "src/adapters/deviceMetaData/entities/request.deviceMetaData.entity";
+import { UsersRepoService } from "src/repo/users/users.repo.service";
 
 describe(`${UsersServiceLoginUseCase.name} test`, () => {
     let module: TestingModule;

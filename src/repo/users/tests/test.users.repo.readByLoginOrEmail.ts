@@ -1,10 +1,10 @@
 import { TestingModule } from "@nestjs/testing";
-import { UsersRepoReadOneByLoginOrEmailCommand, UsersRepoReadOneByLoginOrEmailUseCase } from "../application/use-cases/users.repo.readOneByLoginOrEmail.usecase";
-import { UsersRepoCreateUserCommand, UsersRepoCreateUserUseCase } from "../application/use-cases/users.repo.create.usecase";
-import { UsersRepoReadOneByPropertyValueCommand, UsersRepoReadOneByPropertyValueUseCase } from "../application/use-cases/users.repo.readOneByProperty.usecase";
-import { UsersRepoClearCommand, UsersRepoClearUseCase } from "../application/use-cases/users.repo.clear.usecase";
+import { UsersRepoReadOneByLoginOrEmailCommand, UsersRepoReadOneByLoginOrEmailUseCase } from "../use-cases/users.repo.readOneByLoginOrEmail.usecase";
+import { UsersRepoCreateUserCommand, UsersRepoCreateUserUseCase } from "../use-cases/users.repo.create.usecase";
+import { UsersRepoReadOneByPropertyValueCommand, UsersRepoReadOneByPropertyValueUseCase } from "../use-cases/users.repo.readOneByProperty.usecase";
+import { UsersRepoClearCommand, UsersRepoClearUseCase } from "../use-cases/users.repo.clear.usecase";
 import { TestUsersRepoTestingModule } from "./settings/users.repo.testingModule";
-import { UserControllerRegistrationEntity } from "../../users/controllers/entities/users.controller.registration.entity";
+import { UserControllerRegistrationEntity } from "src/features/users/controllers/entities/users.controller.registration.entity";
 
 describe(`${UsersRepoReadOneByLoginOrEmailUseCase.name}: read user`, () => {
     let module: TestingModule;
