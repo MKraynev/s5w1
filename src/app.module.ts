@@ -21,8 +21,6 @@ export const typeormConfiguration = TypeOrmModule.forRoot({
 @Module({
   imports: [
     UsersModule,
-    EmailModule,
-    JwtModule,
     typeormConfiguration,
     ThrottlerModule.forRoot([{ ttl: 10000, limit: 200, }])
   ],

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { FindOptionsWhere, Repository } from "typeorm";
-import { UserRepoEntity } from "./_entities/users.repo.entity";
+import { UserRepoEntity } from "./entities/users.repo.entity";
 import { UserControllerRegistrationEntity } from "src/features/users/controllers/entities/users.controller.registration.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -49,8 +49,10 @@ export class UsersRepoService {
     }
 
     public async ReadOneByPropertyValue(propertyName: keyof UserRepoEntity, propertyValue: any) {
-        let findObj: FindOptionsWhere<UserRepoEntity> = {};
+        // let findObj: FindOptionsWhere<UserRepoEntity> = {};
+        let findObj: any = {};
         findObj[propertyName] = propertyValue;
+
         return await this.userRepo.findOneBy(findObj)
     }
 

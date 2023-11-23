@@ -1,10 +1,10 @@
-import { CommandBus, CommandHandler, ICommandHandler } from "@nestjs/cqrs";
+import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { UserControllerRegistrationEntity } from "../controllers/entities/users.controller.registration.entity";
 import { Injectable } from "@nestjs/common";
-import { JwtServiceGenerateRegistrationCodeCommand } from "src/jwt/_application/use-cases/jwt.service.generate.registrationCode.usecase";
 import { UsersRepoService } from "src/features/repo/users.repo.service";
 import { EmailService } from "src/adapters/email/email.service";
 import { _MAIN_ } from "src/main";
+import { JwtHandlerService } from "src/auth/jwt/jwt.service";
 
 
 export class UsersServiceRegistrationCommand {
@@ -22,7 +22,7 @@ export enum RegistrationUserStatus {
 @CommandHandler(UsersServiceRegistrationCommand)
 export class UsersServiceRegistrationUseCase implements ICommandHandler<UsersServiceRegistrationCommand, RegistrationUserStatus>{
 
-    constructor(private commandBus: CommandBus, private usersRepo: UsersRepoService, private emailService: EmailService) { }
+    constructor(private usersRepo: UsersRepoService, private emailService: EmailService, private jwtHandler: JwtHandlerService) { }
 
     async execute(command: UsersServiceRegistrationCommand): Promise<RegistrationUserStatus> {
         let userInputData = command.command;
@@ -39,16 +39,9 @@ export class UsersServiceRegistrationUseCase implements ICommandHandler<UsersSer
 
         let savedUser = await this.usersRepo.Create(userInputData);
 
-        let registrationCode = await this
-            .commandBus
-            .execute<JwtServiceGenerateRegistrationCodeCommand, string>
-            (new JwtServiceGenerateRegistrationCodeCommand({ id: savedUser.id }))
-
-        // this.commandBus
-        //     .execute<EmailServiceSendRegistrationMailCommand, EmailServiceExecutionStatus>
-        //     (new EmailServiceSendRegistrationMailCommand(userInputData.email, registrationCode, CONFIRM_REGISTRATION_URL))
-
-        this.emailService.SendRegistrationMail(userInputData.email, registrationCode, _MAIN_.ADDRES + "/auth/registration-confirmation");
+        let registrationCode = await this.jwtHandler.GenerateUserRegistrationCode({ id: savedUser.id });
+        //_MAIN_.ADDRES + 
+        this.emailService.SendRegistrationMail(userInputData.email, registrationCode,  "/auth/registration-confirmation");
 
         return RegistrationUserStatus.Success;
     }

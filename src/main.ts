@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { PORT } from './settings';
 import ngrok from "ngrok"
 import cookieParser from 'cookie-parser';
+
+
 export class Main {
   public ADDRES: string;
 
@@ -19,8 +21,6 @@ export class Main {
     console.log(url);
   }
 }
-
-// export const CONFIRM_REGISTRATION_URL = await bootstrap() + "/auth/registration-confirmation";
 
 export const _MAIN_ = new Main();
 _MAIN_.Init();

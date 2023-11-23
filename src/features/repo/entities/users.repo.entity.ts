@@ -41,4 +41,16 @@ export class UserRepoEntity {
 
         return user;
     }
+
+    public async PasswordIsValid(password: string): Promise<boolean> {
+        try {
+            let calculatedHash = await bcrypt.hash(password, this.salt);
+            if (calculatedHash === this.hash)
+                return true;
+            return false;
+        }
+        catch {
+            return false;
+        }
+    }
 }

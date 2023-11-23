@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { CommandBus, CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { JwtServiceReadRegistrationCodeCommand } from "src/jwt/_application/use-cases/jwt.service.read.registrationCode.usecase";
-import { UserRegistrationLoad } from "src/jwt/_application/use-cases/jwt.service.generate.registrationCode.usecase";
+import { JwtHandlerService } from "src/auth/jwt/jwt.service";
 import { UsersRepoService } from "src/features/repo/users.repo.service";
 
 export enum ConfirmRegistrationUserStatus {
@@ -19,12 +18,11 @@ export class UsersServiceConfirmRegistrationCommand {
 @CommandHandler(UsersServiceConfirmRegistrationCommand)
 export class UsersServiceConfirmRegistrationUseCase implements ICommandHandler<UsersServiceConfirmRegistrationCommand, ConfirmRegistrationUserStatus>{
 
-    constructor(private commandBus: CommandBus, private usersRepo: UsersRepoService) { }
+    constructor(private usersRepo: UsersRepoService, private jwtHandler: JwtHandlerService) { }
 
     async execute(command: UsersServiceConfirmRegistrationCommand): Promise<ConfirmRegistrationUserStatus> {
-        let decodeConfirmCode = await this.commandBus.execute<JwtServiceReadRegistrationCodeCommand, UserRegistrationLoad>(new JwtServiceReadRegistrationCodeCommand(command.confrimCode));
+        let decodeConfirmCode = await this.jwtHandler.ReadUserRegistrationCode(command.confrimCode)
 
-        // let findUser = await this.commandBus.execute<UsersRepoReadOneByPropertyValueCommand, UserRepoEntity>(new UsersRepoReadOneByPropertyValueCommand({ propertyName: "id", propertyValue: decodeConfirmCode.id }));
         let findUser = await this.usersRepo.ReadOneByPropertyValue("id", decodeConfirmCode.id)
 
         if (!findUser)
@@ -34,7 +32,7 @@ export class UsersServiceConfirmRegistrationUseCase implements ICommandHandler<U
             return ConfirmRegistrationUserStatus.EmailAlreadyConfirmed;
 
         findUser.emailConfirmed = true;
-        // let updateUser = await this.commandBus.execute<UsersRepoUpdateOneCommand, UserRepoEntity>(new UsersRepoUpdateOneCommand(findUser));
+
         let updateUser = await this.usersRepo.UpdateOne(findUser);
 
         return ConfirmRegistrationUserStatus.Success;

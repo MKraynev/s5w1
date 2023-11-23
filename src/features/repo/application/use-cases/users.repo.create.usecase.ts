@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { UserControllerRegistrationEntity } from "../../../users/controllers/entities/users.controller.registration.entity";
-import { UserRepoEntity } from "../../_entities/users.repo.entity";
+import { UserRepoEntity } from "../../entities/users.repo.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UsersRepoService } from "../../users.repo.service";

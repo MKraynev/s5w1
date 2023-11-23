@@ -1,9 +1,9 @@
 import { TestingModule } from "@nestjs/testing"
 import { UserControllerRegistrationEntity } from "src/features/users/controllers/entities/users.controller.registration.entity";
-import { UsersRepoCreateUserCommand, UsersRepoCreateUserUseCase } from "src/features/repo/_application/use-cases/users.repo.create.usecase";
-import { UsersRepoReadOneByPropertyValueCommand, UsersRepoReadOneByPropertyValueUseCase } from "../_application/use-cases/users.repo.readOneByProperty.usecase";
+import { UsersRepoCreateUserCommand, UsersRepoCreateUserUseCase } from "src/features/repo/application/use-cases/users.repo.create.usecase";
+import { UsersRepoReadOneByPropertyValueCommand, UsersRepoReadOneByPropertyValueUseCase } from "../application/use-cases/users.repo.readOneByProperty.usecase";
 import { TestUsersRepoTestingModule } from "./settings/users.repo.testingModule";
-import { UserRepoEntity } from "../_entities/users.repo.entity";
+import { UserRepoEntity } from "../entities/users.repo.entity";
 
 
 

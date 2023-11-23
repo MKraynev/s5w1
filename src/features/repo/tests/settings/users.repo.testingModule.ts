@@ -1,7 +1,7 @@
 import { CqrsModule } from "@nestjs/cqrs"
 import { Test } from "@nestjs/testing"
 import { TypeOrmModule } from "@nestjs/typeorm"
-import { UserRepoEntity } from "../../_entities/users.repo.entity"
+import { UserRepoEntity } from "../../entities/users.repo.entity"
 import { UsersRepoService } from "../../users.repo.service"
 import { UsersRepoUseCases } from "../../users.repo.module"
 import { POSTGRES_PASSWORD, POSTGRES_PORT, POSTGRES_URL, POSTGRES_USERNAME } from "src/settings"

@@ -1,8 +1,8 @@
 import { TestingModule } from "@nestjs/testing";
-import { UsersRepoReadOneByLoginOrEmailCommand, UsersRepoReadOneByLoginOrEmailUseCase } from "../_application/use-cases/users.repo.readOneByLoginOrEmail.usecase";
-import { UsersRepoCreateUserCommand, UsersRepoCreateUserUseCase } from "../_application/use-cases/users.repo.create.usecase";
-import { UsersRepoReadOneByPropertyValueCommand, UsersRepoReadOneByPropertyValueUseCase } from "../_application/use-cases/users.repo.readOneByProperty.usecase";
-import { UsersRepoClearCommand, UsersRepoClearUseCase } from "../_application/use-cases/users.repo.clear.usecase";
+import { UsersRepoReadOneByLoginOrEmailCommand, UsersRepoReadOneByLoginOrEmailUseCase } from "../application/use-cases/users.repo.readOneByLoginOrEmail.usecase";
+import { UsersRepoCreateUserCommand, UsersRepoCreateUserUseCase } from "../application/use-cases/users.repo.create.usecase";
+import { UsersRepoReadOneByPropertyValueCommand, UsersRepoReadOneByPropertyValueUseCase } from "../application/use-cases/users.repo.readOneByProperty.usecase";
+import { UsersRepoClearCommand, UsersRepoClearUseCase } from "../application/use-cases/users.repo.clear.usecase";
 import { TestUsersRepoTestingModule } from "./settings/users.repo.testingModule";
 import { UserControllerRegistrationEntity } from "../../users/controllers/entities/users.controller.registration.entity";
 

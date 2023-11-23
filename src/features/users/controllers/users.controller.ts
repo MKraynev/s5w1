@@ -1,9 +1,9 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, ValidationPipe } from '@nestjs/common';
 import { UserControllerRegistrationEntity } from './entities/users.controller.registration.entity';
 import { CommandBus } from '@nestjs/cqrs';
-import { UsersRepoCreateUserCommand } from '../../repo/_application/use-cases/users.repo.create.usecase';
-import { UserRepoEntity } from '../../repo/_entities/users.repo.entity';
-import { UsersRepoReadOneByPropertyValueCommand } from '../../repo/_application/use-cases/users.repo.readOneByProperty.usecase';
+import { UsersRepoCreateUserCommand } from '../../repo/application/use-cases/users.repo.create.usecase';
+import { UserRepoEntity } from '../../repo/entities/users.repo.entity';
+import { UsersRepoReadOneByPropertyValueCommand } from '../../repo/application/use-cases/users.repo.readOneByProperty.usecase';
 import { RegistrationUserStatus, UsersServiceRegistrationCommand } from '../use-cases/users.service.registration.usecase';
 
 @Controller('users')

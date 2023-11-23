@@ -1,8 +1,8 @@
 import { TestingModule } from "@nestjs/testing";
 import { RegistrationUserStatus, UsersServiceRegistrationCommand, UsersServiceRegistrationUseCase } from "../use-cases/users.service.registration.usecase";
-import { UsersRepoReadOneByPropertyValueCommand, UsersRepoReadOneByPropertyValueUseCase } from "../../repo/_application/use-cases/users.repo.readOneByProperty.usecase";
+import { UsersRepoReadOneByPropertyValueCommand, UsersRepoReadOneByPropertyValueUseCase } from "../../repo/application/use-cases/users.repo.readOneByProperty.usecase";
 import { TestUsersServiceTestingModule } from "./settings/users.service.testingModule";
-import { UsersRepoClearCommand, UsersRepoClearUseCase } from "../../repo/_application/use-cases/users.repo.clear.usecase";
+import { UsersRepoClearCommand, UsersRepoClearUseCase } from "../../repo/application/use-cases/users.repo.clear.usecase";
 import { UserControllerRegistrationEntity } from "../controllers/entities/users.controller.registration.entity";
 
 describe(`${UsersServiceRegistrationUseCase.name}`, () => {
