@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { FindOptionsWhere, Like, Repository } from "typeorm";
+import { FindOptionsWhere, Like, Raw, Repository } from "typeorm";
 import { UserRepoEntity } from "./entities/users.repo.entity";
 import { UserControllerRegistrationEntity } from "src/features/users/controllers/entities/users.controller.registration.entity";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -25,7 +25,7 @@ export class UsersRepoService {
         return savedUser
     }
 
-    public async ReadManyByLoginByEmail(
+    public async ReadManyLikeByLoginByEmail(
         login: string,
         email: string,
         sortBy: keyof (UserRepoEntity) = "createdAt",
@@ -36,21 +36,23 @@ export class UsersRepoService {
         let orderObj: any = {}
         orderObj[sortBy] = sortDirection;
 
-        let loginPattern: string = login || "";
-        let emailPattern: string = email || "";
+        let loginValue: string = login || "";
+        let emailValue: string = email || "";
+
+        let caseInsensitiveSearchPattern = (column: string, inputValue: string) => `LOWER(${column}) Like '%${inputValue.toLowerCase()}%'`;
 
         let countAll = await this.userRepo.count({
             where: [
-                { login: Like(`%${loginPattern}%`) },
-                { email: Like(`%${emailPattern}%`) }
+                { login: Raw(alias => caseInsensitiveSearchPattern(alias, loginValue)) },
+                { email: Raw(alias => caseInsensitiveSearchPattern(alias, emailValue)) }
             ]
         });
 
 
         let foundusers = await this.userRepo.find({
             where: [
-                { login: Like(`%${loginPattern}%`) },
-                { email: Like(`%${emailPattern}%`) }
+                { login: Raw(alias => caseInsensitiveSearchPattern(alias, loginValue)) },
+                { email: Raw(alias => caseInsensitiveSearchPattern(alias, emailValue)) }
             ],
             order: orderObj,
             skip: skip,
@@ -59,6 +61,20 @@ export class UsersRepoService {
 
         return { countAll, foundusers };
     }
+
+    public async ReadManyCertainByLoginByPassword(login: string, email: string) {
+        let founduser = await this.userRepo.find({
+            where: [
+                { login: login },
+                { email: email }
+            ]
+        }
+        )
+
+        return founduser;
+    }
+
+
 
     public async ReadOneByLoginOrEmail(loginOrEmail: string) {
         let founduser = await this.userRepo.findOne({
@@ -73,7 +89,7 @@ export class UsersRepoService {
     }
 
     public async ReadOneByPropertyValue(propertyName: keyof UserRepoEntity, propertyValue: any) {
-        // let findObj: FindOptionsWhere<UserRepoEntity> = {};
+
         let findObj: any = {};
         findObj[propertyName] = propertyValue;
 

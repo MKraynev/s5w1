@@ -21,7 +21,7 @@ export class UsersController {
         @QueryPaginator() paginator: InputPaginator
     ) {
         // let findUsers = await this.authService.userService.TakeByLoginOrEmail(sortBy, sortDirecrion, loginTerm, emailTerm, paginator.skipElements, paginator.pageSize);
-        let findUsers = await this.usersRepo.ReadManyByLoginByEmail(loginTerm, emailTerm, sortBy, sortDirecrion, paginator.skipElements, paginator.pageSize);
+        let findUsers = await this.usersRepo.ReadManyLikeByLoginByEmail(loginTerm, emailTerm, sortBy, sortDirecrion, paginator.skipElements, paginator.pageSize);
 
 
         let users = findUsers.foundusers.map(user => {

@@ -27,7 +27,7 @@ export class UsersServiceRegistrationUseCase implements ICommandHandler<UsersSer
     async execute(command: UsersServiceRegistrationCommand): Promise<RegistrationUserStatus> {
         let userInputData = command.command;
 
-        let {countAll, foundusers} = await this.usersRepo.ReadManyByLoginByEmail(userInputData.login, userInputData.email)
+        let foundusers = await this.usersRepo.ReadManyCertainByLoginByPassword(userInputData.login, userInputData.email)
 
         if (foundusers.length) {
             let status = foundusers[0].login === userInputData.login ?
@@ -41,7 +41,7 @@ export class UsersServiceRegistrationUseCase implements ICommandHandler<UsersSer
 
         let registrationCode = await this.jwtHandler.GenerateUserRegistrationCode({ id: savedUser.id });
         //_MAIN_.ADDRES + 
-        this.emailService.SendRegistrationMail(userInputData.email, registrationCode,  "/auth/registration-confirmation");
+        this.emailService.SendRegistrationMail(userInputData.email, registrationCode, "/auth/registration-confirmation");
 
         return RegistrationUserStatus.Success;
     }
