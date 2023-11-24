@@ -1,4 +1,6 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, UseGuards, ValidationPipe } from '@nestjs/common';
+import { use } from 'passport';
+import { AdminGuard } from 'src/auth/guards/admin/guard.admin';
 import { InputPaginator } from 'src/common/paginator/entities/query.paginator.inputEntity';
 import { QueryPaginator } from 'src/common/paginator/query.paginator.decorator';
 import { UserRepoEntity } from 'src/repo/users/entities/users.repo.entity';
@@ -6,36 +8,28 @@ import { UsersRepoService } from 'src/repo/users/users.repo.service';
 
 
 @Controller('users')
+@UseGuards(AdminGuard)
 export class UsersController {
     constructor(private usersRepo: UsersRepoService) { }
 
-    // @Get()
-    // async GetUsers(
-    //     @Query('searchLoginTerm') loginTerm: string | undefined,
-    //     @Query('searchEmailTerm') emailTerm: string | undefined,
-    //     @Query('sortBy') sortBy: keyof (UserRepoEntity) = "createdAt",
-    //     @Query('sortDirection') sortDirecrion: "desc" | "asc" = "desc",
-    //     @QueryPaginator() paginator: InputPaginator
-    // ) {
-    //     let findUsers = await this.authService.userService.TakeByLoginOrEmail(sortBy, sortDirecrion, loginTerm, emailTerm, paginator.skipElements, paginator.pageSize);
+    @Get()
+    async GetUsers(
+        @Query('searchLoginTerm') loginTerm: string | undefined,
+        @Query('searchEmailTerm') emailTerm: string | undefined,
+        @Query('sortBy') sortBy: keyof (UserRepoEntity) = "createdAt",
+        @Query('sortDirection') sortDirecrion: "desc" | "asc" = "desc",
+        @QueryPaginator() paginator: InputPaginator
+    ) {
+        // let findUsers = await this.authService.userService.TakeByLoginOrEmail(sortBy, sortDirecrion, loginTerm, emailTerm, paginator.skipElements, paginator.pageSize);
+        let findUsers = await this.usersRepo.ReadManyByLoginByEmail(loginTerm, emailTerm, sortBy, sortDirecrion, paginator.skipElements, paginator.pageSize);
 
-    //     switch (findUsers.executionStatus) {
-    //         case ServiceExecutionResultStatus.Success:
-    //             let users = findUsers.executionResultObject.items.map(user => {
-    //                 let { updatedAt, emailConfirmed, hash, salt, refreshPasswordTime, ...rest } = user;
-    //                 return rest;
-    //             })
-    //             let count = findUsers.executionResultObject.count;
-    //             let pagedUsers = new OutputPaginator(count, users, paginator);
 
-    //             return pagedUsers;
-    //             break;
-
-    //         default:
-    //             throw new NotFoundException();
-    //             break;
-    //     }
-    // }
+        let users = findUsers.foundusers.map(user => {
+            let { updatedAt, emailConfirmed, hash, salt, refreshPasswordTime, ...rest } = user;
+            return rest;
+        })
+        return users;
+    }
 
     // @Post()
     // @HttpCode(HttpStatus.CREATED)

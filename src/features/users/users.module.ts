@@ -8,6 +8,7 @@ import { EmailModule } from 'src/adapters/email/email.module';
 import { UsersServiceConfirmRegistrationUseCase } from './use-cases/users.service.confirmRegistration.usecase';
 import { UsersServiceLoginUseCase } from './use-cases/users.service.login.usecase';
 import { UsersRepoModule } from 'src/repo/users/users.repo.module';
+import { AdminStrategy } from 'src/auth/guards/admin/strategy.admin';
 
 export const UsersServiceUseCases = [
   UsersServiceRegistrationUseCase,
@@ -18,6 +19,6 @@ export const UsersServiceUseCases = [
 @Module({
   imports: [CqrsModule, UsersRepoModule, JwtHandlerModule, EmailModule],
   controllers: [UsersController, UsersAuthController],
-  providers: [...UsersServiceUseCases]
+  providers: [...UsersServiceUseCases, AdminStrategy]
 })
 export class UsersModule { }

@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { FindOptionsWhere, Repository } from "typeorm";
+import { FindOptionsWhere, Like, Repository } from "typeorm";
 import { UserRepoEntity } from "./entities/users.repo.entity";
 import { UserControllerRegistrationEntity } from "src/features/users/controllers/entities/users.controller.registration.entity";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -36,17 +36,28 @@ export class UsersRepoService {
         let orderObj: any = {}
         orderObj[sortBy] = sortDirection;
 
+        let loginPattern: string = login || "";
+        let emailPattern: string = email || "";
+
+        let countAll = await this.userRepo.count({
+            where: [
+                { login: Like(`%${loginPattern}%`) },
+                { email: Like(`%${emailPattern}%`) }
+            ]
+        });
+
+
         let foundusers = await this.userRepo.find({
             where: [
-                { login: login },
-                { email: email }
+                { login: Like(`%${loginPattern}%`) },
+                { email: Like(`%${emailPattern}%`) }
             ],
             order: orderObj,
             skip: skip,
             take: limit
         })
 
-        return foundusers;
+        return { countAll, foundusers };
     }
 
     public async ReadOneByLoginOrEmail(loginOrEmail: string) {
