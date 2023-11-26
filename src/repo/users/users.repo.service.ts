@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { FindOptionsWhere, Like, Raw, Repository } from "typeorm";
+import { FindOptionsWhere, Raw, Repository } from "typeorm";
 import { UserRepoEntity } from "./entities/users.repo.entity";
 import { UserControllerRegistrationEntity } from "src/features/users/controllers/entities/users.controller.registration.entity";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -12,14 +12,8 @@ export class UsersRepoService {
         private userRepo: Repository<UserRepoEntity>
     ) { }
 
-    public async DeleteAll() {
-        let deleteAll = await this.userRepo.delete({});
-
-        return deleteAll.affected;
-    }
-
-    public async Create(userData: UserControllerRegistrationEntity) {
-        let userDto = await UserRepoEntity.Init(userData);
+    public async Create(userData: UserControllerRegistrationEntity, confirmed: boolean = false) {
+        let userDto = await UserRepoEntity.Init(userData, confirmed);
         let savedUser = await this.userRepo.save(userDto);
 
         return savedUser
@@ -33,27 +27,36 @@ export class UsersRepoService {
         skip: number = 0,
         limit: number = 10
     ) {
-        let orderObj: any = {}
-        orderObj[sortBy] = sortDirection;
-
-        let loginValue: string = login || "";
-        let emailValue: string = email || "";
+        if ((login === undefined) && (email === undefined))
+            return { countAll: 0, foundusers: [] }
 
         let caseInsensitiveSearchPattern = (column: string, inputValue: string) => `LOWER(${column}) Like '%${inputValue.toLowerCase()}%'`;
 
-        let countAll = await this.userRepo.count({
-            where: [
-                { login: Raw(alias => caseInsensitiveSearchPattern(alias, loginValue)) },
-                { email: Raw(alias => caseInsensitiveSearchPattern(alias, emailValue)) }
-            ]
-        });
+        let loginSearchPatten: FindOptionsWhere<UserRepoEntity> = {};
+        let emailSearchPatten: FindOptionsWhere<UserRepoEntity> = {};
+        let whereStatement: FindOptionsWhere<UserRepoEntity>[] = [];
+
+        if (login) {
+            loginSearchPatten['login'] = Raw(alias => caseInsensitiveSearchPattern(alias, login));
+
+            whereStatement.push(loginSearchPatten)
+        }
+
+        if (email) {
+            emailSearchPatten['email'] = Raw(alias => caseInsensitiveSearchPattern(alias, email));
+            whereStatement.push(emailSearchPatten);
+        }
+
+
+
+        let orderObj: any = {}
+        orderObj[sortBy] = sortDirection;
+
+        let countAll = await this.userRepo.count({ where: whereStatement })
 
 
         let foundusers = await this.userRepo.find({
-            where: [
-                { login: Raw(alias => caseInsensitiveSearchPattern(alias, loginValue)) },
-                { email: Raw(alias => caseInsensitiveSearchPattern(alias, emailValue)) }
-            ],
+            where: whereStatement,
             order: orderObj,
             skip: skip,
             take: limit
@@ -73,8 +76,6 @@ export class UsersRepoService {
 
         return founduser;
     }
-
-
 
     public async ReadOneByLoginOrEmail(loginOrEmail: string) {
         let founduser = await this.userRepo.findOne({
@@ -101,4 +102,17 @@ export class UsersRepoService {
 
         return updatedUser;
     }
+
+
+    public async DeleteOne(id: number) {
+        let del = await this.userRepo.delete({ id: id })
+
+        return del.affected;
+    }
+
+    public async DeleteAll() {
+        let deleteAll = await this.userRepo.delete({});
+
+        return deleteAll.affected;
+    } Í
 }

@@ -6,6 +6,8 @@ import { EmailModule } from './adapters/email/email.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { AdminTestingController } from './features/adminTesting/admin.testing.controller';
+import { AdminTestingModule } from './features/adminTesting/admin.testing.module';
 
 export const typeormConfiguration = TypeOrmModule.forRoot({
   type: 'postgres',
@@ -22,7 +24,8 @@ export const typeormConfiguration = TypeOrmModule.forRoot({
   imports: [
     UsersModule,
     typeormConfiguration,
-    ThrottlerModule.forRoot([{ ttl: 10000, limit: 200, }])
+    ThrottlerModule.forRoot([{ ttl: 10000, limit: 200, }]),
+    AdminTestingModule
   ],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

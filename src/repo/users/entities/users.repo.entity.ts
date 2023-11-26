@@ -1,6 +1,7 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import bcrypt from "bcrypt"
 import { UserControllerRegistrationEntity } from "src/features/users/controllers/entities/users.controller.registration.entity";
+import { UsersControllerGetEntity } from "src/features/users/controllers/entities/users.controller.getEntity";
 
 @Entity("Users")
 export class UserRepoEntity {
@@ -52,5 +53,9 @@ export class UserRepoEntity {
         catch {
             return false;
         }
+    }
+
+    public Transform(): UsersControllerGetEntity {
+        return new UsersControllerGetEntity(this);
     }
 }

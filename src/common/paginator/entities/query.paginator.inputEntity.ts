@@ -13,4 +13,3 @@ export class InputPaginator{
         this.skipElements = (this.pageNumber - 1) * this.pageSize;
     }
 }
-
