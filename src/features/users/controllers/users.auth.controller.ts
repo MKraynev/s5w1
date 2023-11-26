@@ -4,7 +4,7 @@ import { UserControllerRegistrationEntity } from "./entities/users.controller.re
 import { CommandBus } from "@nestjs/cqrs";
 import { Response } from "express";
 import { RegistrationUserStatus, UsersServiceRegistrationCommand } from "../use-cases/users.service.registration.usecase";
-import { ValidationPipe } from "src/common/pipes/validation.pipe";
+import { ValidateParameters } from "src/common/pipes/validation.pipe";
 import { UsersControllerRegistrationConfirmEntity } from "./entities/users.controller.registrationConfirm.entity";
 import { ConfirmRegistrationUserStatus, UsersServiceConfirmRegistrationCommand } from "../use-cases/users.service.confirmRegistration.usecase";
 import { UserLoginEntity } from "./entities/users.controller.login.entity";
@@ -26,7 +26,7 @@ export class UsersAuthController {
     @Post('login')
     @HttpCode(HttpStatus.OK)
     async Login(
-        @Body(new ValidationPipe()) userDto: UserLoginEntity,
+        @Body(new ValidateParameters()) userDto: UserLoginEntity,
         @Res({ passthrough: true }) response: Response,
         @ReadRequestDeviceMetaData() device: RequestDeviceMetaData
     ) {
@@ -35,7 +35,7 @@ export class UsersAuthController {
         switch (login.status) {
             case UserLoginStatus.Success:
                 response.cookie("refreshToken", login.refreshToken, { httpOnly: true, secure: true })
-                response.status(200).send(login.accessToken)
+                response.status(200).send({ accessToken: login.accessToken })
                 break;
 
             default:
@@ -51,7 +51,7 @@ export class UsersAuthController {
     //post -> /hometask_14/api/auth/registration-confirmation
     @Post('registration-confirmation')
     @HttpCode(HttpStatus.NO_CONTENT)
-    async ConfrimEmail(@Body(new ValidationPipe()) codeDto: UsersControllerRegistrationConfirmEntity) {
+    async ConfrimEmail(@Body(new ValidateParameters()) codeDto: UsersControllerRegistrationConfirmEntity) {
 
         let confirmEmailStatus = await this.commandBus.execute<UsersServiceConfirmRegistrationCommand, ConfirmRegistrationUserStatus>(new UsersServiceConfirmRegistrationCommand(codeDto.code))
 
@@ -72,7 +72,7 @@ export class UsersAuthController {
     @Post('registration')
     @HttpCode(HttpStatus.NO_CONTENT)
     async Registration(
-        @Body(new ValidationPipe()) user: UserControllerRegistrationEntity
+        @Body(new ValidateParameters()) user: UserControllerRegistrationEntity
     ) {
         let saveUserStatus = await this.commandBus.execute<UsersServiceRegistrationCommand, RegistrationUserStatus>(new UsersServiceRegistrationCommand(user));
 

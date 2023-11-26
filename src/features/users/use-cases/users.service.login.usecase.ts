@@ -37,7 +37,7 @@ export class UsersServiceLoginUseCase implements ICommandHandler<UsersServiceLog
         if (!findUser.emailConfirmed)
             return new UserLoginDto(UserLoginStatus.UserNotConfirmed)
 
-        if (!findUser.PasswordIsValid(command.password))
+        if (!(await findUser.PasswordIsValid(command.password)))
             return new UserLoginDto(UserLoginStatus.WrongPassword)
 
         let { accessTokenCode, refreshTokenCode } = await this.jwtHandler.GenerateUserLoginTokens(findUser.id, findUser.login, command.deviceInfo);

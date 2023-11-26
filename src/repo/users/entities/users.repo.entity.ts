@@ -48,6 +48,7 @@ export class UserRepoEntity {
             let calculatedHash = await bcrypt.hash(password, this.salt);
             if (calculatedHash === this.hash)
                 return true;
+
             return false;
         }
         catch {

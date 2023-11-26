@@ -1,5 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Query, UseGuards, ValidationPipe } from '@nestjs/common';
-import { use } from 'passport';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { AdminGuard } from 'src/auth/guards/admin/guard.admin';
 import { InputPaginator } from 'src/common/paginator/entities/query.paginator.inputEntity';
 import { OutputPaginator } from 'src/common/paginator/entities/query.paginator.outputEntity';
@@ -7,6 +6,7 @@ import { QueryPaginator } from 'src/common/paginator/query.paginator.decorator';
 import { UserRepoEntity } from 'src/repo/users/entities/users.repo.entity';
 import { UsersRepoService } from 'src/repo/users/users.repo.service';
 import { UserControllerRegistrationEntity } from './entities/users.controller.registration.entity';
+import { ValidateParameters } from 'src/common/pipes/validation.pipe';
 
 
 @Controller('sa/users')
@@ -40,7 +40,7 @@ export class UsersController {
 
     @Post()
     @HttpCode(HttpStatus.CREATED)
-    async SaveUser(@Body(new ValidationPipe()) user: UserControllerRegistrationEntity) {
+    async SaveUser(@Body(new ValidateParameters()) user: UserControllerRegistrationEntity) {
 
         let dbUser = await this.usersRepo.Create(user, true);
         let transformedUser = dbUser.Transform();
