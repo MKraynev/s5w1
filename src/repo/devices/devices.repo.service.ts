@@ -5,6 +5,7 @@ import { Repository } from "typeorm";
 import { RequestDeviceEntity } from "src/common/decorators/requestedDeviceInfo/entity/request.device.entity";
 import { UserRepoEntity } from "../users/entities/users.repo.entity";
 import { delay } from "rxjs";
+import { UsersRepoService } from "../users/users.repo.service";
 
 @Injectable()
 export class DeviceRepoService {
@@ -14,8 +15,8 @@ export class DeviceRepoService {
         private deviceRepo: Repository<DeviceRepoEntity>
     ) { }
 
-    public async Create(deviceInfo: RequestDeviceEntity, userId: number): Promise<DeviceRepoEntity> {
-        let repoDevice = DeviceRepoEntity.Init(deviceInfo, userId);
+    public async Create(deviceInfo: RequestDeviceEntity, user: UserRepoEntity): Promise<DeviceRepoEntity> {
+        let repoDevice = DeviceRepoEntity.Init(deviceInfo, user);
 
         let savedDevice = await this.deviceRepo.save(repoDevice);
 
@@ -34,16 +35,16 @@ export class DeviceRepoService {
         return delAll.affected;
     }
 
-    public async FindOneOrCreate(userId: number, deviceInfo: RequestDeviceEntity) {
+    public async FindOneOrCreate(user: UserRepoEntity, deviceInfo: RequestDeviceEntity) {
+        //{ user: userId },
         let findOne = await this.deviceRepo.findOne({
             where: [
-                { userId: userId },
                 { name: deviceInfo.name }
             ]
         });
 
         if (!findOne)
-            findOne = await this.Create(deviceInfo, userId);
+            findOne = await this.Create(deviceInfo, user);
 
         findOne.UpdateRefreshTime();
 

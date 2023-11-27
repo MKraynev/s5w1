@@ -3,6 +3,7 @@
 import { UserRepoEntity } from "src/repo/users/entities/users.repo.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { RequestDeviceEntity } from "../../../common/decorators/requestedDeviceInfo/entity/request.device.entity";
+import { UsersRepoService } from "src/repo/users/users.repo.service";
 
 @Entity('Devices')
 export class DeviceRepoEntity {
@@ -17,8 +18,8 @@ export class DeviceRepoEntity {
 
     // @ManyToOne(() => UserRepoEntity)
     // user: UserRepoEntity;
-    @ManyToOne(() => UserRepoEntity)
-    userId: number;
+    @ManyToOne(() => UserRepoEntity, (user) => user.devices, { nullable: false })
+    user: UserRepoEntity;
 
     @Column({ nullable: true })
     refreshTime: Date;
@@ -29,12 +30,12 @@ export class DeviceRepoEntity {
     @UpdateDateColumn({ type: 'timestamptz' })
     updatedAt: Date;
 
-    public static Init(inputDeviceData: RequestDeviceEntity, userId: number): DeviceRepoEntity {
+    public static Init(inputDeviceData: RequestDeviceEntity, user: UserRepoEntity): DeviceRepoEntity {
         let device = new DeviceRepoEntity();
 
         device.name = inputDeviceData.name;
         device.ip = inputDeviceData.ip;
-        device.userId = userId;
+        device.user = user;
         device.UpdateRefreshTime();
 
         return device;

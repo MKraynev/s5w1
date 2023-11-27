@@ -24,8 +24,8 @@ export class UserRepoEntity {
     @Column()
     emailConfirmed: boolean;
 
-    // @OneToMany(() => DeviceRepoEntity, (device) => device.user)
-    // devices: DeviceRepoEntity[];
+    @OneToMany(() => DeviceRepoEntity, (device) => device.user)
+    devices: DeviceRepoEntity[];
 
     @Column({ nullable: true })
     refreshPasswordTime: Date | null;
