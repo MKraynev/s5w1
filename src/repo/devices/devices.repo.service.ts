@@ -49,6 +49,9 @@ export class DeviceRepoService {
 
         if (!findOne)
             findOne = await this.Create(deviceInfo, user);
+        else {
+            Object.assign(findOne, deviceInfo);
+        }
 
         findOne.UpdateRefreshTime();
 

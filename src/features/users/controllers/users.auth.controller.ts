@@ -15,9 +15,10 @@ import { JwtAuthGuard } from "src/auth/guards/common/guad.jwt";
 import { ReadAccessToken } from "src/auth/jwt/decorators/jwt.request.read.accessToken";
 import { JwtServiceUserAccessTokenLoad } from "src/auth/jwt/entities/jwt.service.accessTokenLoad";
 import { UserPersonalInfo, UsersServiceGetMyDataCommand, UsersServiceGetMyDataUseCase } from "../use-cases/users.service.getMyData";
-import { NotFoundError } from "rxjs";
 import { ReadRequestDevice } from "src/common/decorators/requestedDeviceInfo/request.device.read";
 import { RequestDeviceEntity } from "src/common/decorators/requestedDeviceInfo/entity/request.device.entity";
+import { UserControllerPasswordRecoveryEntity } from "./entities/users.controller.passwordRecoverty.entity";
+import { PasswordRecoveryStatus, UsersServicePasswordRecoveryCommand } from "../use-cases/users.service.passwordRecovery";
 
 @Throttle({ default: { limit: 5, ttl: 10000 } })
 @Controller('auth')
@@ -26,6 +27,22 @@ export class UsersAuthController {
     constructor(private commandBus: CommandBus) { }
 
     //post -> /hometask_14/api/auth/password-recovery
+    @Post('password-recovery')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    async PasswordRecovery(@Body(new ValidateParameters()) recoveryDto: UserControllerPasswordRecoveryEntity) {
+        let startRecoveryStatus = await this.commandBus.execute<UsersServicePasswordRecoveryCommand, PasswordRecoveryStatus>(new UsersServicePasswordRecoveryCommand(recoveryDto.email));
+
+        switch (startRecoveryStatus) {
+            case PasswordRecoveryStatus.Succsess:
+                return;
+
+            default:
+            case PasswordRecoveryStatus.EmailNotConfirmed:
+            case PasswordRecoveryStatus.UserNotFound:
+                return;
+        }
+    }
+
 
     //post -> /hometask_14/api/auth/new-password
 

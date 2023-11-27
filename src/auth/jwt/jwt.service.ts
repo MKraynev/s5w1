@@ -7,6 +7,7 @@ import { SignOptions } from "jsonwebtoken";
 import { Injectable } from "@nestjs/common";
 import { RequestDeviceEntity } from "src/common/decorators/requestedDeviceInfo/entity/request.device.entity";
 import { DeviceRepoEntity } from "src/repo/devices/entities/devices.repo.entity";
+import { JwtServicePasswordRecoveryTokenLoad } from "./entities/jwt.service.passwordRecoveryLoad";
 
 @Injectable()
 export class JwtHandlerService {
@@ -48,5 +49,21 @@ export class JwtHandlerService {
         let refreshTokenCode = await this.jwtService.signAsync(refreshTokenData, refreshJwtOption);
 
         return { accessTokenCode, refreshTokenCode }
+    }
+
+    public async GeneratePasswordRecoveryToken(userId: number, recoveryTime: Date): Promise<string> {
+        let token: JwtServicePasswordRecoveryTokenLoad = {
+            id: userId,
+            recoveryTime: recoveryTime
+        }
+        let tokenVal = await this.jwtService.signAsync(token);
+
+        return tokenVal;
+    }
+
+    public async ReadPasswordRecoveryToken(token: string): Promise<JwtServicePasswordRecoveryTokenLoad> {
+        let decoded = await this.jwtService.verifyAsync(token) as JwtServicePasswordRecoveryTokenLoad;
+
+        return decoded;
     }
 }
