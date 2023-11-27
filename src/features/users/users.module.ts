@@ -10,11 +10,13 @@ import { UsersServiceLoginUseCase } from './use-cases/users.service.login.usecas
 import { UsersRepoModule } from 'src/repo/users/users.repo.module';
 import { AdminStrategy } from 'src/auth/guards/admin/strategy.admin';
 import { UsersRepoService } from 'src/repo/users/users.repo.service';
+import { UsersServiceResendingRegistrationUseCase } from './use-cases/users.service.resendingEmailRegistration';
 
 export const UsersServiceUseCases = [
   UsersServiceRegistrationUseCase,
   UsersServiceConfirmRegistrationUseCase,
-  UsersServiceLoginUseCase
+  UsersServiceLoginUseCase,
+  UsersServiceResendingRegistrationUseCase
 ]
 
 @Module({

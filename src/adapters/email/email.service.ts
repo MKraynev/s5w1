@@ -16,6 +16,8 @@ export class EmailService {
             .catch(err => {
                 result.status = EmailSendStatus.NotDelivered,
                     result.error = err;
+                
+                    console.log(result)
             })
 
         return result;

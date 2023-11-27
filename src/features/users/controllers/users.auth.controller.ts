@@ -11,6 +11,8 @@ import { UserLoginEntity } from "./entities/users.controller.login.entity";
 import { ReadRequestDeviceMetaData } from "src/adapters/deviceMetaData/request.device";
 import { RequestDeviceMetaData } from "src/adapters/deviceMetaData/entities/request.deviceMetaData.entity";
 import { UserLoginDto, UserLoginStatus, UsersServiceLoginCommand } from "../use-cases/users.service.login.usecase";
+import { UsersControllerResending } from "./entities/users.controller.resending";
+import { ResendingRegistrationStatus, UsersServiceResendingRegistrationCommand } from "../use-cases/users.service.resendingEmailRegistration";
 
 @Throttle({ default: { limit: 5, ttl: 10000 } })
 @Controller('auth')
@@ -92,6 +94,23 @@ export class UsersAuthController {
     }
 
     //post -> /hometask_14/api/auth/registration-email-resending
+    @Post('registration-email-resending')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    public async ResendingEmail(@Body(new ValidateParameters()) userDto: UsersControllerResending) {
+        let resendingStatus = await this.commandBus.execute<UsersServiceResendingRegistrationCommand, ResendingRegistrationStatus>(new UsersServiceResendingRegistrationCommand(userDto))
+
+        switch (resendingStatus) {
+            case ResendingRegistrationStatus.Success:
+                return;
+                break;
+
+            default:
+            case ResendingRegistrationStatus.UserNotFound:
+            case ResendingRegistrationStatus.EmailAlreadyConfirmed:
+                throw new BadRequestException({ errorsMessages: [{ message: "Wrong email", field: "email" }] })
+                break;
+        }
+    }
 
     //post -> /hometask_14/api/auth/logout
 
