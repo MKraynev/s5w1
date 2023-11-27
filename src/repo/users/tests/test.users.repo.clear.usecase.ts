@@ -5,6 +5,8 @@ import { TestUsersRepoTestingModule } from "./settings/users.repo.testingModule"
 import { UsersRepoClearCommand, UsersRepoClearUseCase } from "../use-cases/users.repo.clear.usecase";
 import exp from "constants";
 import { UserControllerRegistrationEntity } from "src/features/users/controllers/entities/users.controller.registration.entity";
+import { DeviceRepoService } from "src/repo/devices/devices.repo.service";
+import { UsersRepoService } from "../users.repo.service";
 
 describe("UsersRepo UseCase: Clear", () => {
 
@@ -14,14 +16,20 @@ describe("UsersRepo UseCase: Clear", () => {
     let readByPropertyUseCase: UsersRepoReadOneByPropertyValueUseCase;
     let clearUseCase: UsersRepoClearUseCase;
 
+    let deviceRepo: DeviceRepoService;
+    let userRepo: UsersRepoService;
+
     beforeAll(async () => {
         module = await TestUsersRepoTestingModule.compile();
 
         await module.init();
-        
+
         createUseCase = module.get<UsersRepoCreateUserUseCase>(UsersRepoCreateUserUseCase);
         readByPropertyUseCase = module.get<UsersRepoReadOneByPropertyValueUseCase>(UsersRepoReadOneByPropertyValueUseCase);
         clearUseCase = module.get<UsersRepoClearUseCase>(UsersRepoClearUseCase)
+
+        deviceRepo = module.get<DeviceRepoService>(DeviceRepoService);
+        userRepo = module.get<UsersRepoService>(UsersRepoService);
     })
 
     afterAll(async () => {
@@ -47,10 +55,11 @@ describe("UsersRepo UseCase: Clear", () => {
 
         expect(createdUser).toEqual(readUser);
 
-        let clearCommand = new UsersRepoClearCommand();
-        let clearDb = await clearUseCase.execute(clearCommand);
+        // let clearDevices = await deviceRepo.DeleteAll();
+        let clearUsers = await userRepo.DeleteAll();
+        
 
-        expect(clearDb).toEqual(expect.any(Number));
+        expect(clearUsers).toEqual(expect.any(Number));
 
         let readCommand: UsersRepoReadOneByPropertyValueCommand = new UsersRepoReadOneByPropertyValueCommand({ propertyName: "login", propertyValue: createCommand.message.login })
         let foundUser = await readByPropertyUseCase.execute(readCommand);

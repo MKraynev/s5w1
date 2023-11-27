@@ -18,8 +18,11 @@ export class DeviceRepoEntity {
 
     // @ManyToOne(() => UserRepoEntity)
     // user: UserRepoEntity;
-    @ManyToOne(() => UserRepoEntity, (user) => user.devices, { nullable: false })
+    @ManyToOne(() => UserRepoEntity, (user) => user.devices, { nullable: false, onDelete: "CASCADE" })
     user: UserRepoEntity;
+
+    @ManyToOne(() => UserRepoEntity, { nullable: false, onDelete: "CASCADE" })
+    userId: number;
 
     @Column({ nullable: true })
     refreshTime: Date;
@@ -30,12 +33,12 @@ export class DeviceRepoEntity {
     @UpdateDateColumn({ type: 'timestamptz' })
     updatedAt: Date;
 
-    public static Init(inputDeviceData: RequestDeviceEntity, user: UserRepoEntity): DeviceRepoEntity {
+    public static Init(inputDeviceData: RequestDeviceEntity): DeviceRepoEntity {
         let device = new DeviceRepoEntity();
 
         device.name = inputDeviceData.name;
         device.ip = inputDeviceData.ip;
-        device.user = user;
+
         device.UpdateRefreshTime();
 
         return device;

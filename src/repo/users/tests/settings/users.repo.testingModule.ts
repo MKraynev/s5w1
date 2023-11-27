@@ -5,6 +5,8 @@ import { UserRepoEntity } from "../../entities/users.repo.entity"
 import { UsersRepoService } from "../../users.repo.service"
 import { UsersRepoUseCases } from "../../users.repo.module"
 import { POSTGRES_PASSWORD, POSTGRES_PORT, POSTGRES_URL, POSTGRES_USERNAME } from "src/settings"
+import { DeviceRepoEntity } from "src/repo/devices/entities/devices.repo.entity"
+import { DeviceRepoService } from "src/repo/devices/devices.repo.service"
 
 export const testDbConfiguration = TypeOrmModule.forRoot({
     type: 'postgres',
@@ -22,7 +24,7 @@ export const TestUsersRepoTestingModule = Test.createTestingModule({
     imports: [
         testDbConfiguration,
         CqrsModule,
-        TypeOrmModule.forFeature([UserRepoEntity])
+        TypeOrmModule.forFeature([UserRepoEntity, DeviceRepoEntity])
     ],
-    providers: [UsersRepoService, ...UsersRepoUseCases]
+    providers: [UsersRepoService, DeviceRepoService, ...UsersRepoUseCases]
 })

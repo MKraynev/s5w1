@@ -6,6 +6,7 @@ import { RequestDeviceEntity } from "src/common/decorators/requestedDeviceInfo/e
 import { UserRepoEntity } from "../users/entities/users.repo.entity";
 import { delay } from "rxjs";
 import { UsersRepoService } from "../users/users.repo.service";
+import { use } from "passport";
 
 @Injectable()
 export class DeviceRepoService {
@@ -16,7 +17,9 @@ export class DeviceRepoService {
     ) { }
 
     public async Create(deviceInfo: RequestDeviceEntity, user: UserRepoEntity): Promise<DeviceRepoEntity> {
-        let repoDevice = DeviceRepoEntity.Init(deviceInfo, user);
+        let repoDevice = DeviceRepoEntity.Init(deviceInfo);
+        repoDevice.user = user;
+        repoDevice.userId = user.id;
 
         let savedDevice = await this.deviceRepo.save(repoDevice);
 
@@ -35,10 +38,11 @@ export class DeviceRepoService {
         return delAll.affected;
     }
 
-    public async FindOneOrCreate(user: UserRepoEntity, deviceInfo: RequestDeviceEntity) {
+    public async FindOneOrCreate(user: UserRepoEntity, deviceInfo: RequestDeviceEntity): Promise<DeviceRepoEntity> {
         //{ user: userId },
         let findOne = await this.deviceRepo.findOne({
             where: [
+                { userId: user.id },
                 { name: deviceInfo.name }
             ]
         });
