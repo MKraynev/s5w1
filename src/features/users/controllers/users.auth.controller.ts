@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post, Res, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, NotFoundException, Post, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
 import { UserControllerRegistrationEntity } from "./entities/users.controller.registration.entity";
 import { CommandBus } from "@nestjs/cqrs";
@@ -8,11 +8,16 @@ import { ValidateParameters } from "src/common/pipes/validation.pipe";
 import { UsersControllerRegistrationConfirmEntity } from "./entities/users.controller.registrationConfirm.entity";
 import { ConfirmRegistrationUserStatus, UsersServiceConfirmRegistrationCommand } from "../use-cases/users.service.confirmRegistration.usecase";
 import { UserLoginEntity } from "./entities/users.controller.login.entity";
-import { ReadRequestDeviceMetaData } from "src/adapters/deviceMetaData/request.device";
-import { RequestDeviceMetaData } from "src/adapters/deviceMetaData/entities/request.deviceMetaData.entity";
 import { UserLoginDto, UserLoginStatus, UsersServiceLoginCommand } from "../use-cases/users.service.login.usecase";
 import { UsersControllerResending } from "./entities/users.controller.resending";
 import { ResendingRegistrationStatus, UsersServiceResendingRegistrationCommand } from "../use-cases/users.service.resendingEmailRegistration";
+import { JwtAuthGuard } from "src/auth/guards/common/guad.jwt";
+import { ReadAccessToken } from "src/auth/jwt/decorators/jwt.request.read.accessToken";
+import { JwtServiceUserAccessTokenLoad } from "src/auth/jwt/entities/jwt.service.accessTokenLoad";
+import { UserPersonalInfo, UsersServiceGetMyDataCommand, UsersServiceGetMyDataUseCase } from "../use-cases/users.service.getMyData";
+import { NotFoundError } from "rxjs";
+import { ReadRequestDevice } from "src/common/decorators/requestedDeviceInfo/request.device.read";
+import { RequestDeviceEntity } from "src/common/decorators/requestedDeviceInfo/entity/request.device.entity";
 
 @Throttle({ default: { limit: 5, ttl: 10000 } })
 @Controller('auth')
@@ -30,8 +35,10 @@ export class UsersAuthController {
     async Login(
         @Body(new ValidateParameters()) userDto: UserLoginEntity,
         @Res({ passthrough: true }) response: Response,
-        @ReadRequestDeviceMetaData() device: RequestDeviceMetaData
+        @ReadRequestDevice() device: RequestDeviceEntity
     ) {
+        console.log(device);
+
         let login = await this.commandBus.execute<UsersServiceLoginCommand, UserLoginDto>(new UsersServiceLoginCommand(userDto.loginOrEmail, userDto.password, device))
 
         switch (login.status) {
@@ -114,5 +121,16 @@ export class UsersAuthController {
 
     //post -> /hometask_14/api/auth/logout
 
+
     //get -> /hometask_14/api/auth/me
+    @Get('me')
+    @UseGuards(JwtAuthGuard)
+    public async GetPersonalData(@ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad) {
+        let foundUserData = await this.commandBus.execute<UsersServiceGetMyDataCommand, UserPersonalInfo>(new UsersServiceGetMyDataCommand(tokenLoad))
+
+        if (foundUserData)
+            return foundUserData;
+
+        throw new NotFoundException();
+    }
 }

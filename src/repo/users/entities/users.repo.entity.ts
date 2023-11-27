@@ -1,7 +1,8 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import bcrypt from "bcrypt"
 import { UserControllerRegistrationEntity } from "src/features/users/controllers/entities/users.controller.registration.entity";
 import { UsersControllerGetEntity } from "src/features/users/controllers/entities/users.controller.getEntity";
+import { DeviceRepoEntity } from "src/repo/devices/entities/devices.repo.entity";
 
 @Entity("Users")
 export class UserRepoEntity {
@@ -22,6 +23,9 @@ export class UserRepoEntity {
 
     @Column()
     emailConfirmed: boolean;
+
+    // @OneToMany(() => DeviceRepoEntity, (device) => device.user)
+    // devices: DeviceRepoEntity[];
 
     @Column({ nullable: true })
     refreshPasswordTime: Date | null;

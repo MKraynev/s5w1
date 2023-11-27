@@ -2,8 +2,8 @@ import { UserLoginStatus, UsersServiceLoginCommand, UsersServiceLoginUseCase } f
 import { TestUsersServiceTestingModule } from "./settings/users.service.testingModule";
 import { TestingModule } from "@nestjs/testing";
 import { UserControllerRegistrationEntity } from "../controllers/entities/users.controller.registration.entity";
-import { RequestDeviceMetaData } from "src/adapters/deviceMetaData/entities/request.deviceMetaData.entity";
 import { UsersRepoService } from "src/repo/users/users.repo.service";
+import { RequestDeviceEntity } from "src/common/decorators/requestedDeviceInfo/entity/request.device.entity";
 
 describe(`${UsersServiceLoginUseCase.name} test`, () => {
     let module: TestingModule;
@@ -33,7 +33,7 @@ describe(`${UsersServiceLoginUseCase.name} test`, () => {
         savedUser.emailConfirmed = true;
         savedUser = await usersRepo.UpdateOne(savedUser);
 
-        let registration = await loginUseCase.execute(new UsersServiceLoginCommand(user.login, user.password, new RequestDeviceMetaData("somedev", "1312313213")));
+        let registration = await loginUseCase.execute(new UsersServiceLoginCommand(user.login, user.password, new RequestDeviceEntity("somedev", "1312313213")));
 
         expect(registration.status).toEqual(UserLoginStatus.Success);
         expect(registration.accessToken).not.toBeUndefined();

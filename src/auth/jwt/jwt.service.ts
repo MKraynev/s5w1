@@ -4,8 +4,9 @@ import { JwtServiceUserAccessTokenLoad } from "./entities/jwt.service.accessToke
 import { JwtServiceUserRefreshTokenLoad } from "./entities/jwt.service.refreshTokenLoad";
 import { ACCESS_TOKEN_EXPIRE, REFRESH_TOKEN_EXPIRE } from "src/settings";
 import { SignOptions } from "jsonwebtoken";
-import { RequestDeviceMetaData } from "src/adapters/deviceMetaData/entities/request.deviceMetaData.entity";
 import { Injectable } from "@nestjs/common";
+import { RequestDeviceEntity } from "src/common/decorators/requestedDeviceInfo/entity/request.device.entity";
+import { DeviceRepoEntity } from "src/repo/devices/entities/devices.repo.entity";
 
 @Injectable()
 export class JwtHandlerService {
@@ -24,7 +25,7 @@ export class JwtHandlerService {
         return token;
     }
 
-    public async GenerateUserLoginTokens(userId: number, userName: string, userDevice: RequestDeviceMetaData) {
+    public async GenerateUserLoginTokens(userId: number, userName: string, userDevice: DeviceRepoEntity) {
         let accessJwtOption: SignOptions = { expiresIn: ACCESS_TOKEN_EXPIRE }
         let refreshJwtOption: SignOptions = { expiresIn: REFRESH_TOKEN_EXPIRE }
 
@@ -38,8 +39,8 @@ export class JwtHandlerService {
         let refreshTokenData: JwtServiceUserRefreshTokenLoad = {
             id: userId,
             login: userName,
-            time: new Date().toISOString(),
-            deviceId: 0
+            time: userDevice.refreshTime,
+            deviceId: userDevice.id.toString()
         }
 
 

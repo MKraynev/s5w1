@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { RequestDeviceMetaData } from "src/adapters/deviceMetaData/entities/request.deviceMetaData.entity";
 import { JwtHandlerService } from "src/auth/jwt/jwt.service";
+import { RequestDeviceEntity } from "src/common/decorators/requestedDeviceInfo/entity/request.device.entity";
+import { DeviceRepoService } from "src/repo/devices/devices.repo.service";
 import { UsersRepoService } from "src/repo/users/users.repo.service";
 
 export enum UserLoginStatus {
@@ -19,14 +20,14 @@ export class UserLoginDto {
 
 
 export class UsersServiceLoginCommand {
-    constructor(public loginOrEmail: string, public password: string, public deviceInfo: RequestDeviceMetaData) { }
+    constructor(public loginOrEmail: string, public password: string, public deviceInfo: RequestDeviceEntity) { }
 }
 
 @Injectable()
 @CommandHandler(UsersServiceLoginCommand)
 export class UsersServiceLoginUseCase implements ICommandHandler<UsersServiceLoginCommand, UserLoginDto>{
 
-    constructor(private userRepo: UsersRepoService, private jwtHandler: JwtHandlerService) { }
+    constructor(private userRepo: UsersRepoService, private jwtHandler: JwtHandlerService, private deviceRepo: DeviceRepoService) { }
 
     async execute(command: UsersServiceLoginCommand): Promise<UserLoginDto> {
         let findUser = await this.userRepo.ReadOneByLoginOrEmail(command.loginOrEmail);
@@ -40,7 +41,9 @@ export class UsersServiceLoginUseCase implements ICommandHandler<UsersServiceLog
         if (!(await findUser.PasswordIsValid(command.password)))
             return new UserLoginDto(UserLoginStatus.WrongPassword)
 
-        let { accessTokenCode, refreshTokenCode } = await this.jwtHandler.GenerateUserLoginTokens(findUser.id, findUser.login, command.deviceInfo);
+        let userDevice = await this.deviceRepo.FindOneOrCreate(findUser.id, command.deviceInfo);
+
+        let { accessTokenCode, refreshTokenCode } = await this.jwtHandler.GenerateUserLoginTokens(findUser.id, findUser.login, userDevice);
 
         return new UserLoginDto(UserLoginStatus.Success, accessTokenCode, refreshTokenCode)
     }
