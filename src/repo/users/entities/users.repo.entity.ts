@@ -40,11 +40,18 @@ export class UserRepoEntity {
         let user: UserRepoEntity = new UserRepoEntity();
         user.login = inputUser.login;
         user.email = inputUser.email;
-        user.salt = (await bcrypt.genSalt()).toString();
-        user.hash = await bcrypt.hash(inputUser.password, user.salt);
+
+        await user.UpdatePassword(inputUser.password);
+
         user.emailConfirmed = confirmEmail;
 
         return user;
+    }
+
+    public async UpdatePassword(password: string) {
+        this.salt = (await bcrypt.genSalt()).toString();
+        this.hash = await bcrypt.hash(password, this.salt);
+        this.refreshPasswordTime = undefined;
     }
 
     public async PasswordIsValid(password: string): Promise<boolean> {

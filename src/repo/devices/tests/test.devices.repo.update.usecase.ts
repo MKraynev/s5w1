@@ -40,8 +40,6 @@ describe(`DeviceRepoUpdate test`, () => {
 
         let updatedDevice = await deviceRepo.UpdateOne(createdDevice);
 
-        console.log(createdDevice);
-
         expect(createdDevice.name).toEqual(device.name);
         expect(initIp).toEqual(device.ip);
 

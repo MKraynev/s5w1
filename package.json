@@ -36,7 +36,7 @@
     "@types/bcrypt": "^5.0.1",
     "@types/cookie-parser": "^1.4.6",
     "@types/nodemailer": "^6.4.13",
-    "@types/passport-jwt": "^3.0.12",
+    "@types/passport-jwt": "^3.0.13",
     "add": "^2.0.6",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
@@ -82,7 +82,9 @@
     "typescript": "^5.1.3"
   },
   "jest": {
-    "testPathIgnorePatterns": ["/settings"],
+    "testPathIgnorePatterns": [
+      "/settings"
+    ],
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/$1"
     },

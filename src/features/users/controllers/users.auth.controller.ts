@@ -11,7 +11,7 @@ import { UserLoginEntity } from "./entities/users.controller.login.entity";
 import { UserLoginDto, UserLoginStatus, UsersServiceLoginCommand } from "../use-cases/users.service.login.usecase";
 import { UsersControllerResending } from "./entities/users.controller.resending";
 import { ResendingRegistrationStatus, UsersServiceResendingRegistrationCommand } from "../use-cases/users.service.resendingEmailRegistration";
-import { JwtAuthGuard } from "src/auth/guards/common/guad.jwt";
+import { JwtAuthGuard } from "src/auth/guards/common/jwt-auth.guard";
 import { ReadAccessToken } from "src/auth/jwt/decorators/jwt.request.read.accessToken";
 import { JwtServiceUserAccessTokenLoad } from "src/auth/jwt/entities/jwt.service.accessTokenLoad";
 import { UserPersonalInfo, UsersServiceGetMyDataCommand, UsersServiceGetMyDataUseCase } from "../use-cases/users.service.getMyData";
@@ -19,6 +19,8 @@ import { ReadRequestDevice } from "src/common/decorators/requestedDeviceInfo/req
 import { RequestDeviceEntity } from "src/common/decorators/requestedDeviceInfo/entity/request.device.entity";
 import { UserControllerPasswordRecoveryEntity } from "./entities/users.controller.passwordRecoverty.entity";
 import { PasswordRecoveryStatus, UsersServicePasswordRecoveryCommand } from "../use-cases/users.service.passwordRecovery";
+import { UserControllerNewPasswordEntity } from "./entities/users.controller.newPassword.entity";
+import { NewPasswordStatus, UsersServiceNewPasswordCommand } from "../use-cases/users.service.newPassword.usecase";
 
 @Throttle({ default: { limit: 5, ttl: 10000 } })
 @Controller('auth')
@@ -45,6 +47,22 @@ export class UsersAuthController {
 
 
     //post -> /hometask_14/api/auth/new-password
+    @Post('new-password')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    async SaveNewUserPassword(@Body(new ValidateParameters()) newPassDto: UserControllerNewPasswordEntity) {
+        let setNewPasswordStatus = await this.commandBus.execute<UsersServiceNewPasswordCommand, NewPasswordStatus>(new UsersServiceNewPasswordCommand(newPassDto.newPassword, newPassDto.recoveryCode))
+
+        switch (setNewPasswordStatus) {
+            case NewPasswordStatus.Success:
+                return;
+
+            default:
+            case NewPasswordStatus.UserNotFound:
+            case NewPasswordStatus.NotRelevantCode:
+            case NewPasswordStatus.SamePassword:
+                throw new BadRequestException();
+        }
+    }
 
     //post -> /hometask_14/api/auth/login
     @Post('login')
@@ -54,7 +72,6 @@ export class UsersAuthController {
         @Res({ passthrough: true }) response: Response,
         @ReadRequestDevice() device: RequestDeviceEntity
     ) {
-        console.log(device);
 
         let login = await this.commandBus.execute<UsersServiceLoginCommand, UserLoginDto>(new UsersServiceLoginCommand(userDto.loginOrEmail, userDto.password, device))
 
@@ -73,6 +90,7 @@ export class UsersAuthController {
     }
 
     //post -> /hometask_14/api/auth/refresh-token
+
 
     //post -> /hometask_14/api/auth/registration-confirmation
     @Post('registration-confirmation')

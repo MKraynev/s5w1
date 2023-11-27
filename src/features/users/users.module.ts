@@ -12,18 +12,24 @@ import { AdminStrategy } from 'src/auth/guards/admin/strategy.admin';
 import { UsersServiceResendingRegistrationUseCase } from './use-cases/users.service.resendingEmailRegistration';
 import { UsersServiceGetMyDataUseCase } from './use-cases/users.service.getMyData';
 import { DeviceRepoModule } from 'src/repo/devices/devices.repo.module';
+import { UsersServiceNewPasswordUseCase } from './use-cases/users.service.newPassword.usecase';
+import { UsersServicePasswordRecoveryUseCase } from './use-cases/users.service.passwordRecovery';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from 'src/auth/guards/common/strategy.jwt';
 
 export const UsersServiceUseCases = [
   UsersServiceRegistrationUseCase,
   UsersServiceConfirmRegistrationUseCase,
   UsersServiceLoginUseCase,
   UsersServiceResendingRegistrationUseCase,
-  UsersServiceGetMyDataUseCase
+  UsersServiceGetMyDataUseCase,
+  UsersServicePasswordRecoveryUseCase,
+  UsersServiceNewPasswordUseCase
 ]
 
 @Module({
-  imports: [CqrsModule, UsersRepoModule, JwtHandlerModule, EmailModule, DeviceRepoModule],
+  imports: [CqrsModule, UsersRepoModule, JwtHandlerModule, EmailModule, DeviceRepoModule, PassportModule],
   controllers: [UsersController, UsersAuthController],
-  providers: [...UsersServiceUseCases, AdminStrategy],
+  providers: [...UsersServiceUseCases, AdminStrategy, JwtStrategy],
 })
 export class UsersModule { }
