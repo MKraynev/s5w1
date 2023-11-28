@@ -21,6 +21,9 @@ import { UserControllerPasswordRecoveryEntity } from "./entities/users.controlle
 import { PasswordRecoveryStatus, UsersServicePasswordRecoveryCommand } from "../use-cases/users.service.passwordRecovery";
 import { UserControllerNewPasswordEntity } from "./entities/users.controller.newPassword.entity";
 import { NewPasswordStatus, UsersServiceNewPasswordCommand } from "../use-cases/users.service.newPassword.usecase";
+import { ReadRefreshToken } from "src/auth/jwt/decorators/jwt.request.read.refreshToken";
+import { JwtServiceUserRefreshTokenLoad } from "src/auth/jwt/entities/jwt.service.refreshTokenLoad";
+import { RefreshTokenDto, RefreshTokenStatus, UsersSerivceRefreshTokenCommand } from "../use-cases/users.service.refreshToken.usecase";
 
 @Throttle({ default: { limit: 5, ttl: 10000 } })
 @Controller('auth')
@@ -90,12 +93,35 @@ export class UsersAuthController {
     }
 
     //post -> /hometask_14/api/auth/refresh-token
+    @Post('refresh-token')
+    public async RefreshToken(
+        @ReadRequestDevice() device: RequestDeviceEntity,
+        @ReadRefreshToken() token: JwtServiceUserRefreshTokenLoad,
+        @Res({ passthrough: true }) response: Response
+    ) {
+        let getRefreshTokens = await this.commandBus.execute<UsersSerivceRefreshTokenCommand, RefreshTokenDto>(new UsersSerivceRefreshTokenCommand(token, device))
 
+        switch (getRefreshTokens.status) {
+            case RefreshTokenStatus.Success:
+                response.cookie("refreshToken", getRefreshTokens.refreshToken, { httpOnly: true, secure: true })
+                response.status(200).send({ accessToken: getRefreshTokens.accessToken })
+                break;
+
+            default:
+            case RefreshTokenStatus.TokenExpired:
+            case RefreshTokenStatus.UserDeviceNotFound:
+            case RefreshTokenStatus.UserNotFound:
+            case RefreshTokenStatus.WrongDevice:
+                throw new UnauthorizedException();
+                break;
+        }
+    }
 
     //post -> /hometask_14/api/auth/registration-confirmation
     @Post('registration-confirmation')
     @HttpCode(HttpStatus.NO_CONTENT)
-    async ConfrimEmail(@Body(new ValidateParameters()) codeDto: UsersControllerRegistrationConfirmEntity) {
+    async ConfrimEmail(@Body(new ValidateParameters()) codeDto: UsersControllerRegistrationConfirmEntity,
+        @ReadRequestDevice() device: RequestDeviceEntity) {
 
         let confirmEmailStatus = await this.commandBus.execute<UsersServiceConfirmRegistrationCommand, ConfirmRegistrationUserStatus>(new UsersServiceConfirmRegistrationCommand(codeDto.code))
 

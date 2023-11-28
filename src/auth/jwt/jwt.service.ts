@@ -41,7 +41,7 @@ export class JwtHandlerService {
             id: userId,
             login: userName,
             time: userDevice.refreshTime,
-            deviceId: userDevice.id.toString()
+            deviceId: userDevice.id
         }
 
 

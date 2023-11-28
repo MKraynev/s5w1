@@ -16,6 +16,7 @@ import { UsersServiceNewPasswordUseCase } from './use-cases/users.service.newPas
 import { UsersServicePasswordRecoveryUseCase } from './use-cases/users.service.passwordRecovery';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from 'src/auth/guards/common/strategy.jwt';
+import { UsersSerivceRefreshTokenUseCase } from './use-cases/users.service.refreshToken.usecase';
 
 export const UsersServiceUseCases = [
   UsersServiceRegistrationUseCase,
@@ -24,7 +25,8 @@ export const UsersServiceUseCases = [
   UsersServiceResendingRegistrationUseCase,
   UsersServiceGetMyDataUseCase,
   UsersServicePasswordRecoveryUseCase,
-  UsersServiceNewPasswordUseCase
+  UsersServiceNewPasswordUseCase,
+  UsersSerivceRefreshTokenUseCase
 ]
 
 @Module({
