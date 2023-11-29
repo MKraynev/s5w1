@@ -16,7 +16,7 @@ export const ReadRequestDevice = createParamDecorator(
 
         const userAgentPos = req.rawHeaders.findIndex((header) => header === "User-Agent");
         const userAgent = req.rawHeaders[userAgentPos + 1];
-
+        // console.log(userAgent)
         const device = new RequestDeviceEntity(userAgent, clientIp);
 
         return device;

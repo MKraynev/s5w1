@@ -77,16 +77,23 @@ export class UsersRepoService {
         return founduser;
     }
 
-    public async ReadOneByLoginOrEmail(loginOrEmail: string) {
+    public async ReadOneFullyByLoginOrEmail(loginOrEmail: string) {
         let founduser = await this.userRepo.findOne({
             where: [
                 { login: loginOrEmail },
                 { email: loginOrEmail }
-            ]
+            ],
+            relations: { devices: true }
         }
         )
 
         return founduser;
+    }
+
+    public async ReadOneById(userId: string) {
+        let id_num = +userId;
+
+        return await this.userRepo.findOne({ where: { id: id_num }, relations: { devices: true } });
     }
 
     public async ReadOneByPropertyValue(propertyName: keyof UserRepoEntity, propertyValue: any) {
@@ -94,7 +101,8 @@ export class UsersRepoService {
         let findObj: any = {};
         findObj[propertyName] = propertyValue;
 
-        return await this.userRepo.findOneBy(findObj)
+        return await this.userRepo.findOne({ where: findObj });
+        // return await this.userRepo.findOne(findObj)
     }
 
     public async UpdateOne(user: UserRepoEntity) {

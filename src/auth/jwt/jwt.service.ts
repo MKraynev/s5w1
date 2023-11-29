@@ -38,10 +38,10 @@ export class JwtHandlerService {
         // device.refreshTime = new Date();
 
         let refreshTokenData: JwtServiceUserRefreshTokenLoad = {
-            id: userId,
+            id: userId.toString(),
             login: userName,
-            time: userDevice.refreshTime,
-            deviceId: userDevice.id
+            time: userDevice.refreshTime.toISOString(),
+            deviceId: userDevice.id.toString()
         }
 
 
@@ -53,7 +53,7 @@ export class JwtHandlerService {
 
     public async GeneratePasswordRecoveryToken(userId: number, recoveryTime: Date): Promise<string> {
         let token: JwtServicePasswordRecoveryTokenLoad = {
-            id: userId,
+            id: userId.toString(),
             recoveryTime: recoveryTime
         }
         let tokenVal = await this.jwtService.signAsync(token);

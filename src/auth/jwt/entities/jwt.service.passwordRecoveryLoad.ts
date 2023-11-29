@@ -1,5 +1,5 @@
 export type JwtServicePasswordRecoveryTokenLoad = {
-    id: number,
+    id: string,
     recoveryTime: Date
     
 }

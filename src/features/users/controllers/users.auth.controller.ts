@@ -24,6 +24,7 @@ import { NewPasswordStatus, UsersServiceNewPasswordCommand } from "../use-cases/
 import { ReadRefreshToken } from "src/auth/jwt/decorators/jwt.request.read.refreshToken";
 import { JwtServiceUserRefreshTokenLoad } from "src/auth/jwt/entities/jwt.service.refreshTokenLoad";
 import { RefreshTokenDto, RefreshTokenStatus, UsersSerivceRefreshTokenCommand } from "../use-cases/users.service.refreshToken.usecase";
+import { LogoutStatus, UsersServiceLogoutCommand } from "../use-cases/users.service.logout.usecase";
 
 @Throttle({ default: { limit: 5, ttl: 10000 } })
 @Controller('auth')
@@ -75,7 +76,7 @@ export class UsersAuthController {
         @Res({ passthrough: true }) response: Response,
         @ReadRequestDevice() device: RequestDeviceEntity
     ) {
-
+        console.log('login with:', device, userDto)
         let login = await this.commandBus.execute<UsersServiceLoginCommand, UserLoginDto>(new UsersServiceLoginCommand(userDto.loginOrEmail, userDto.password, device))
 
         switch (login.status) {
@@ -181,7 +182,27 @@ export class UsersAuthController {
     }
 
     //post -> /hometask_14/api/auth/logout
+    @Post('logout')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    public async Logout(
+        @ReadRefreshToken() refreshToken: JwtServiceUserRefreshTokenLoad,
+        @ReadRequestDevice() device: RequestDeviceEntity) {
 
+        let logoutStatus = await this.commandBus.execute<UsersServiceLogoutCommand, LogoutStatus>(new UsersServiceLogoutCommand(device, refreshToken))
+
+        switch (logoutStatus) {
+            case LogoutStatus.Success:
+                return;
+                break;
+
+            default:
+            case LogoutStatus.DeviceNotFound:
+            case LogoutStatus.ExpiredToken:
+            case LogoutStatus.WrongDevice:
+                throw new UnauthorizedException();
+                break;
+        }
+    }
 
     //get -> /hometask_14/api/auth/me
     @Get('me')

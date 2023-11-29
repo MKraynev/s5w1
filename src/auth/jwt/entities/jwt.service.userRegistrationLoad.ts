@@ -1,3 +1,3 @@
 export type UserRegistrationLoad = {
-    id: number;
+    id: string;
 };

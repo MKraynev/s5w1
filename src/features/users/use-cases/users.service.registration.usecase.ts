@@ -39,7 +39,7 @@ export class UsersServiceRegistrationUseCase implements ICommandHandler<UsersSer
 
         let savedUser = await this.usersRepo.Create(userInputData);
 
-        let registrationCode = await this.jwtHandler.GenerateUserRegistrationCode({ id: savedUser.id });
+        let registrationCode = await this.jwtHandler.GenerateUserRegistrationCode({ id: savedUser.id.toString() });
         //_MAIN_.ADDRES + 
         this.emailService.SendRegistrationMail(userInputData.email, registrationCode, "/auth/registration-confirmation");
 

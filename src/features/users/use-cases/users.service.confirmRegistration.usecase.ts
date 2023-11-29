@@ -23,7 +23,7 @@ export class UsersServiceConfirmRegistrationUseCase implements ICommandHandler<U
     async execute(command: UsersServiceConfirmRegistrationCommand): Promise<ConfirmRegistrationUserStatus> {
         let decodeConfirmCode = await this.jwtHandler.ReadUserRegistrationCode(command.confrimCode)
 
-        let findUser = await this.usersRepo.ReadOneByPropertyValue("id", decodeConfirmCode.id)
+        let findUser = await this.usersRepo.ReadOneById(decodeConfirmCode.id)
 
         if (!findUser)
             return ConfirmRegistrationUserStatus.NotFound;

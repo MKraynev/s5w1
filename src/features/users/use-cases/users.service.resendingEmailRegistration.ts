@@ -24,7 +24,7 @@ export class UsersServiceResendingRegistrationUseCase implements ICommandHandler
 
     async execute(command: UsersServiceResendingRegistrationCommand): Promise<ResendingRegistrationStatus> {
 
-        let founduser = await this.usersRepo.ReadOneByLoginOrEmail(command.command.email);
+        let founduser = await this.usersRepo.ReadOneFullyByLoginOrEmail(command.command.email);
 
         if (!founduser)
             return ResendingRegistrationStatus.UserNotFound;
@@ -33,9 +33,9 @@ export class UsersServiceResendingRegistrationUseCase implements ICommandHandler
             return ResendingRegistrationStatus.EmailAlreadyConfirmed;
 
 
-        let registrationCode = await this.jwtHandler.GenerateUserRegistrationCode({ id: founduser.id });
+        let registrationCode = await this.jwtHandler.GenerateUserRegistrationCode({ id: founduser.id.toString() });
         //_MAIN_.ADDRES + 
-        await this.emailService.SendRegistrationMail(founduser.email, registrationCode, _MAIN_.ADDRES + "/auth/registration-confirmation");
+        this.emailService.SendRegistrationMail(founduser.email, registrationCode, _MAIN_.ADDRES + "/auth/registration-confirmation");
 
         return ResendingRegistrationStatus.Success;
     }

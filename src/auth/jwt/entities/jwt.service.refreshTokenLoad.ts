@@ -1,6 +1,6 @@
 export type JwtServiceUserRefreshTokenLoad = {
-    id: number,
+    id: string,
     login: string,
-    time: Date,
-    deviceId: number
+    time: string,
+    deviceId: string
 }

@@ -34,7 +34,7 @@ describe(`${UsersController.name} test`, () => {
 
         let deletedUser = await usersController.DeleteUser(savedUser.id.toString());
         
-        let findUser = await usersRepo.ReadOneByLoginOrEmail(user.login);
+        let findUser = await usersRepo.ReadOneFullyByLoginOrEmail(user.login);
 
         expect(findUser).toEqual(null);
     })

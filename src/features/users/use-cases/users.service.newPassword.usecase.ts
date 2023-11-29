@@ -27,7 +27,7 @@ export class UsersServiceNewPasswordUseCase implements ICommandHandler<UsersServ
         let tokenData = await this.jwtService.ReadPasswordRecoveryToken(command.recoveryCode);
 
 
-        let foundUser = await this.userRepo.ReadOneByPropertyValue("id", tokenData.id);
+        let foundUser = await this.userRepo.ReadOneById(tokenData.id);
         if (!foundUser)
             return NewPasswordStatus.UserNotFound;
 

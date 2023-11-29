@@ -30,7 +30,7 @@ export class UsersServiceLoginUseCase implements ICommandHandler<UsersServiceLog
     constructor(private userRepo: UsersRepoService, private jwtHandler: JwtHandlerService, private deviceRepo: DeviceRepoService) { }
 
     async execute(command: UsersServiceLoginCommand): Promise<UserLoginDto> {
-        let findUser = await this.userRepo.ReadOneByLoginOrEmail(command.loginOrEmail);
+        let findUser = await this.userRepo.ReadOneFullyByLoginOrEmail(command.loginOrEmail);
 
         if (!findUser)
             return new UserLoginDto(UserLoginStatus.NotFound)
@@ -41,7 +41,14 @@ export class UsersServiceLoginUseCase implements ICommandHandler<UsersServiceLog
         if (!(await findUser.PasswordIsValid(command.password)))
             return new UserLoginDto(UserLoginStatus.WrongPassword)
 
-        let userDevice = await this.deviceRepo.FindOneOrCreate(findUser, command.deviceInfo);
+        let userDevice = findUser.devices.find(device => device.name === command.deviceInfo.name);
+        if(!userDevice){
+            userDevice = await this.deviceRepo.Create(command.deviceInfo, findUser);
+        }
+        
+        userDevice.refreshTime = new Date();
+
+        await this.deviceRepo.UpdateOne(userDevice);
 
         let { accessTokenCode, refreshTokenCode } = await this.jwtHandler.GenerateUserLoginTokens(findUser.id, findUser.login, userDevice);
 
