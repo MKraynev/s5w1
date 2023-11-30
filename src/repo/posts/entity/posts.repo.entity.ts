@@ -1,3 +1,7 @@
+import {
+  PostCreateEntity,
+  PostWithExpectedBlogIdCreateEntity,
+} from 'src/features/superAdmin/controllers/entities/super.admin.create.post.entity';
 import { BlogRepoEntity } from 'src/repo/blogs/entity/blogs.repo.entity';
 import {
   Column,
@@ -8,7 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('Posts')
 export class PostRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -28,11 +32,23 @@ export class PostRepoEntity {
   })
   blog: BlogRepoEntity;
   @Column()
-  blogId: string;
+  blogId: number;
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
+
+  public static Init(
+    postData: PostCreateEntity | PostWithExpectedBlogIdCreateEntity,
+    blogId?: number,
+  ): PostRepoEntity {
+    let post = new PostRepoEntity();
+    post.title = postData.title;
+    post.shortDescription = postData.shortDescription;
+    post.content = postData.content;
+    post.blogId = blogId;
+    return post;
+  }
 }
