@@ -4,7 +4,7 @@ import { POSTGRES_DATABASE, POSTGRES_PASSWORD, POSTGRES_PORT, POSTGRES_URL, POST
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
-import { AdminTestingModule } from './features/adminTesting/admin.testing.module';
+import { AdminTestingModule } from './features/superAdmin/super.admin.module';
 import { DevicesModule } from './features/devices/devices.module';
 
 export const typeormConfiguration = TypeOrmModule.forRoot({
