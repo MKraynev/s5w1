@@ -51,6 +51,12 @@ export class JwtHandlerService {
         return { accessTokenCode, refreshTokenCode }
     }
 
+    public async ReadRefreshToken(token: string): Promise<JwtServiceUserRefreshTokenLoad> {
+        let tokenData: JwtServiceUserRefreshTokenLoad = await this.jwtService.verifyAsync(token);
+
+        return tokenData;
+    }
+
     public async GeneratePasswordRecoveryToken(userId: number, recoveryTime: Date): Promise<string> {
         let token: JwtServicePasswordRecoveryTokenLoad = {
             id: userId.toString(),

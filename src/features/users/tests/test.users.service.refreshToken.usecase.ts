@@ -35,58 +35,43 @@ describe(`${UsersServiceLoginUseCase.name} test`, () => {
         await module.close();
     })
 
-    it(`${UsersServiceLoginUseCase.name} login valid user`, async () => {
+    it(`${UsersServiceLoginUseCase.name} refreshToken doesnt create new devices`, async () => {
         await usersRepo.DeleteAll();
+        let allUsers = await usersRepo.ReadAll();
+        expect(allUsers.length).toEqual(0);
 
+        await deviceRepo.DeleteAll();
+        let allDevices = await deviceRepo.ReadAll();
+        expect(allDevices.length).toEqual(0);
+
+        
         let user = new UserControllerRegistrationEntity("someLogin", "some@mail.com", "1233123");
-        let savedUser = await usersRepo.Create(user);
-        savedUser.emailConfirmed = true;
-        savedUser = await usersRepo.UpdateOne(savedUser);
-
-        let registration = await loginUseCase.execute(new UsersServiceLoginCommand(user.login, user.password, new RequestDeviceEntity("somedev", "1312313213")));
-
-        expect(registration.status).toEqual(UserLoginStatus.Success);
-        expect(registration.accessToken).not.toBeUndefined();
-
-        let userFromDb = await usersRepo.ReadManyCertainByLoginByEmail(user.login, user.email);
-        expect(userFromDb).not.toBeUndefined();
-    })
-
-    it('Login and refreshToken doesnt create another device', async () => {
-        await usersRepo.DeleteAll();
-
-        let user = new UserControllerRegistrationEntity("someLogin", "some@mail.com", "1233123");
-        let device = new RequestDeviceEntity("somedev", "1312313213");
+        let userDevice = new RequestDeviceEntity("somedev", "1312313213");
 
         let savedUser = await usersRepo.Create(user);
         savedUser.emailConfirmed = true;
         savedUser = await usersRepo.UpdateOne(savedUser);
+        expect(savedUser.login).toEqual(user.login);
 
-        let registration = await loginUseCase.execute(new UsersServiceLoginCommand(user.login, user.password, device));
 
-        let userFromDb = (await usersRepo.ReadManyCertainByLoginByEmail(user.login, user.email))[0] as UserRepoEntity;
-        expect(userFromDb).not.toBeUndefined();
+        let registration = await loginUseCase.execute(new UsersServiceLoginCommand(user.login, user.password, userDevice));
+        let decodedRefreshJwt = await jwtHandleService.ReadRefreshToken(registration.refreshToken);
 
-        let userDevices = await deviceRepo.ReadManyByUserId(userFromDb.id.toString())
-        let usDev = userDevices[0];
+        let refreshUser = await refreshUseCase.execute(new UsersSerivceRefreshTokenCommand(decodedRefreshJwt, userDevice));
 
-        expect(userDevices.length).toEqual(1);
-        expect(usDev).toMatchObject(device);
+        let savedUserDevices = await deviceRepo.ReadManyByUserId(savedUser.id.toString())
 
-        let previousLoginTime = usDev.refreshTime;
+        expect(savedUserDevices.length).toEqual(1);
+        expect(savedUserDevices[0]).toMatchObject(userDevice);
 
-        for (let a = 0; a < 5; a++) {
-            registration = await loginUseCase.execute(new UsersServiceLoginCommand(user.login, user.password, device));
-            userDevices = await deviceRepo.ReadManyByUserId(userFromDb.id.toString())
+        for (let i = 0; i < 10; i++) {
+            decodedRefreshJwt = await jwtHandleService.ReadRefreshToken(refreshUser.refreshToken);
+            refreshUser = await refreshUseCase.execute(new UsersSerivceRefreshTokenCommand(decodedRefreshJwt, userDevice));
 
-            expect(userDevices.length).toEqual(1);
-            let curUsDev = userDevices[0];
-            let currentTime = curUsDev.refreshTime;
+            savedUserDevices = await deviceRepo.ReadManyByUserId(savedUser.id.toString())
 
-            expect(userDevices[0]).toMatchObject(device);
-            expect(currentTime.valueOf() - previousLoginTime.valueOf()).toBeGreaterThan(0);
-
-            previousLoginTime = currentTime;
+            expect(savedUserDevices.length).toEqual(1);
+            expect(savedUserDevices[0]).toMatchObject(userDevice);
         }
     })
 })

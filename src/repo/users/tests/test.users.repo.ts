@@ -35,7 +35,7 @@ describe(`${UsersRepoService.name}: read user`, () => {
         let createUser_3 = await usersRepoService.Create(createUserEntity_3);
         let createUser_4 = await usersRepoService.Create(createUserEntity_4);
 
-        let findUsersByLoginByEmail = await usersRepoService.ReadManyCertainByLoginByPassword(createUser_2.login, createUser_3.email);
+        let findUsersByLoginByEmail = await usersRepoService.ReadManyCertainByLoginByEmail(createUser_2.login, createUser_3.email);
 
         expect(findUsersByLoginByEmail).toMatchObject([createUser_2, createUser_3]);
     })

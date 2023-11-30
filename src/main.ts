@@ -8,7 +8,7 @@ import cookieParser from 'cookie-parser';
 export class Main {
   public ADDRES: string;
 
-  public async Init() {
+  public async Start() {
     const app = await NestFactory.create(AppModule);
 
     app.enableCors();
@@ -23,4 +23,4 @@ export class Main {
 }
 
 export const _MAIN_ = new Main();
-_MAIN_.Init();
+_MAIN_.Start();

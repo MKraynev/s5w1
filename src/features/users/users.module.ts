@@ -35,5 +35,7 @@ export const UsersServiceUseCases = [
   imports: [CqrsModule, UsersRepoModule, JwtHandlerModule, EmailModule, DeviceRepoModule, PassportModule],
   controllers: [UsersController, UsersAuthController],
   providers: [...UsersServiceUseCases, AdminStrategy, JwtStrategy],
+  exports:[...UsersServiceUseCases]
+  
 })
 export class UsersModule { }

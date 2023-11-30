@@ -21,8 +21,7 @@ export class DeviceRepoEntity {
     @ManyToOne(() => UserRepoEntity, (user) => user.devices, { nullable: false, onDelete: "CASCADE" })
     @JoinColumn()
     user: UserRepoEntity;
-
-    @ManyToOne(() => UserRepoEntity, { nullable: false, onDelete: "CASCADE" })
+    @Column()
     userId: number;
 
     @Column({ nullable: true })

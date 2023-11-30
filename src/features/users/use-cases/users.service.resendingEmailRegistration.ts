@@ -35,7 +35,7 @@ export class UsersServiceResendingRegistrationUseCase implements ICommandHandler
 
         let registrationCode = await this.jwtHandler.GenerateUserRegistrationCode({ id: founduser.id.toString() });
         //_MAIN_.ADDRES + 
-        this.emailService.SendRegistrationMail(founduser.email, registrationCode, _MAIN_.ADDRES + "/auth/registration-confirmation");
+        this.emailService.SendRegistrationMail(founduser.email, registrationCode, "/auth/registration-confirmation");
 
         return ResendingRegistrationStatus.Success;
     }

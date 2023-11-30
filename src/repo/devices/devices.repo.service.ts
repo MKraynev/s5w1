@@ -37,6 +37,10 @@ export class DeviceRepoService {
 
         return delAll.affected;
     }
+    public async ReadAll() {
+        return await this.deviceRepo.find({});
+    }
+
 
     public async DeleteOne(id: string) {
         let numId = +id;
@@ -99,7 +103,7 @@ export class DeviceRepoService {
         let del = await this.deviceRepo.createQueryBuilder()
             .delete()
             .where('id != :id', { id: id_num })
-            .where("userId = :userId", { userId: userId_num })
+            .andWhere("userId = :userId", { userId: userId_num })
             .execute();
 
         return del.affected;

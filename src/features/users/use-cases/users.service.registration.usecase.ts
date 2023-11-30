@@ -27,7 +27,7 @@ export class UsersServiceRegistrationUseCase implements ICommandHandler<UsersSer
     async execute(command: UsersServiceRegistrationCommand): Promise<RegistrationUserStatus> {
         let userInputData = command.command;
 
-        let foundusers = await this.usersRepo.ReadManyCertainByLoginByPassword(userInputData.login, userInputData.email)
+        let foundusers = await this.usersRepo.ReadManyCertainByLoginByEmail(userInputData.login, userInputData.email)
 
         if (foundusers.length) {
             let status = foundusers[0].login === userInputData.login ?

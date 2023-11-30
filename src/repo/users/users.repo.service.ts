@@ -65,7 +65,7 @@ export class UsersRepoService {
         return { countAll, foundusers };
     }
 
-    public async ReadManyCertainByLoginByPassword(login: string, email: string) {
+    public async ReadManyCertainByLoginByEmail(login: string, email: string) {
         let founduser = await this.userRepo.find({
             where: [
                 { login: login },
@@ -122,5 +122,9 @@ export class UsersRepoService {
         let deleteAll = await this.userRepo.delete({});
 
         return deleteAll.affected;
-    } Í
+    }
+
+    public async ReadAll(){
+        return await this.userRepo.find({});
+    }
 }
