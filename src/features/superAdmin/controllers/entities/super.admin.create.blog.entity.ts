@@ -11,4 +11,12 @@ export class BlogCreateEntity {
   @MaxLength(100)
   @IsUrl()
   public websiteUrl: string;
+  /**
+   *
+   */
+  constructor(name: string, desc: string, web: string) {
+    this.name = name;
+    this.description = desc;
+    this.websiteUrl = web;
+  }
 }

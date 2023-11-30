@@ -21,4 +21,9 @@ export class PostsRepoService {
 
     return await this.postsRepo.save(post);
   }
+
+  public async DeleteAll() {
+    let del = await this.postsRepo.delete({});
+    return del.affected;
+  }
 }

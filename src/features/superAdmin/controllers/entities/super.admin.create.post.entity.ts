@@ -12,6 +12,12 @@ export class PostCreateEntity {
   @MaxLength(1000)
   @MinLength(1)
   public content: string;
+
+  constructor(title: string, short: string, content: string) {
+    this.title = title;
+    this.shortDescription = short;
+    this.content = content;
+  }
 }
 
 export class PostWithExpectedBlogIdCreateEntity extends PostCreateEntity {

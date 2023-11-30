@@ -14,6 +14,7 @@ export class BlogRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column()
   name: string;
 
   @Column()
