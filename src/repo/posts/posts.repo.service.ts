@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { PostRepoEntity } from './entity/posts.repo.entity';
 import {
   PostCreateEntity,
@@ -11,6 +11,28 @@ export class PostsRepoService {
     @InjectRepository(PostRepoEntity)
     private postsRepo: Repository<PostRepoEntity>,
   ) {}
+
+  public async ReadManyByBlogId(
+    blogId: number,
+    sortBy: keyof PostRepoEntity = 'createdAt',
+    sortDirection: 'asc' | 'desc' = 'desc',
+    skip: number = 0,
+    limit: number = 10,
+  ) {
+    let orderObj: any = {};
+    orderObj[sortBy] = sortDirection;
+
+    let count = await this.postsRepo.count({ where: { blogId: blogId } });
+    let posts = await this.postsRepo.find({
+      where: { blogId: blogId },
+      select: [],
+      order: orderObj,
+      skip: skip,
+      take: limit,
+    });
+    //TODO добавить селект имени блога
+    return { count, posts };
+  }
 
   public async Create(
     postData: PostCreateEntity | PostWithExpectedBlogIdCreateEntity,

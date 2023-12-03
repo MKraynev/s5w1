@@ -3,6 +3,7 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { QueryFailedError } from 'typeorm';
@@ -15,10 +16,8 @@ export class DataBaseException implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
     const status = exception.message;
 
-    // response.status(status).json({
-    //   statusCode: status,
-    //   timestamp: new Date().toISOString(),
-    //   path: request.url,
-    // });
+    response.status(HttpStatus.BAD_REQUEST).json({
+      errorMessage: 'id doesnt exist',
+    });
   }
 }

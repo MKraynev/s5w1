@@ -10,6 +10,7 @@ import {
   Post,
   Put,
   Query,
+  UseFilters,
   UseGuards,
 } from '@nestjs/common';
 import { AdminGuard } from 'src/auth/guards/admin/guard.admin';
@@ -25,8 +26,12 @@ import {
   PostWithExpectedBlogIdCreateEntity,
 } from './entities/super.admin.create.post.entity';
 import { PostsRepoService } from 'src/repo/posts/posts.repo.service';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
+import { DataBaseException } from './exceptions/super.admin.controller.exception.filter';
+import { PostRepoEntity } from 'src/repo/posts/entity/posts.repo.entity';
 
 @Controller('sa/blogs')
+@UseGuards(AdminGuard)
 export class SuperAdminBlogController {
   constructor(
     private blogRepo: BlogsRepoService,
@@ -62,11 +67,9 @@ export class SuperAdminBlogController {
   @UseGuards(AdminGuard)
   @HttpCode(HttpStatus.CREATED)
   async saveBlog(@Body(new ValidateParameters()) blog: BlogCreateEntity) {
-    let savedBlog = await this.blogRepo.Create(blog);
+    let savedBlog = await this.blogRepo.Create(blog, true);
 
-    let { updatedAt, posts, id, ...rest } = savedBlog;
-    rest['id'] = id.toString();
-    return rest;
+    return savedBlog;
   }
 
   @Put(':id')
@@ -76,12 +79,10 @@ export class SuperAdminBlogController {
     @Param('id') id: string,
     @Body(new ValidateParameters()) blogData: BlogCreateEntity,
   ) {
-    let updatedBlog = await this.blogRepo.UpdateById(+id, blogData);
+    let updatedBlog = await this.blogRepo.UpdateById(+id, blogData, true);
 
     if (updatedBlog) {
-      let { updatedAt, posts, id, ...rest } = updatedBlog;
-      rest['id'] = id.toString();
-      return rest;
+      return updatedBlog;
     }
 
     throw new NotFoundException();
@@ -102,6 +103,7 @@ export class SuperAdminBlogController {
   //post -> hometask_13/api/blogs/{blogId}/posts
   @Post(':id/posts')
   @UseGuards(AdminGuard)
+  @UseFilters(DataBaseException)
   @HttpCode(HttpStatus.CREATED)
   async SaveBlogsPosts(
     @Param('id') id: string,
@@ -111,23 +113,27 @@ export class SuperAdminBlogController {
     let createdPost = await this.postRepo.Create(postData, postData.blogId);
 
     return createdPost;
-    // switch (createPost.executionStatus) {
-    //   case ServiceExecutionResultStatus.Success:
-    //     let { updatedAt, ...returnPost } = createPost.executionResultObject;
-    //     let decoratedPost = await this.likeService.DecorateWithExtendedInfo(
-    //       undefined,
-    //       'posts',
-    //       returnPost.id,
-    //       returnPost,
-    //     );
+  }
 
-    //     return decoratedPost;
-    //     break;
+  @Get(':id/posts')
+  @UseFilters(DataBaseException)
+  async GetBlogsPosts(
+    @Param('id') id: string,
+    @Query('searchNameTerm') nameTerm: string | undefined,
+    @Query('sortBy') sortBy: keyof PostRepoEntity = 'createdAt',
+    @Query('sortDirection') sortDirecrion: 'desc' | 'asc' = 'desc',
+    @QueryPaginator() paginator: InputPaginator,
+  ) {
+    let findPosts = await this.postRepo.ReadManyByBlogId(
+      +id,
+      sortBy,
+      sortDirecrion,
+      paginator.skipElements,
+      paginator.pageSize,
+    );
 
-    //   default:
-    //   case ServiceExecutionResultStatus.NotFound:
-    //     throw new NotFoundException();
-    //     break;
-    // }
+    let decoratedPosts = findPosts.posts.map((post) => {
+      let { id, updatedAt, ...rest } = post;
+    });
   }
 }
