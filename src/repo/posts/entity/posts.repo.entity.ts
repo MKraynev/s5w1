@@ -7,6 +7,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -30,6 +31,7 @@ export class PostRepoEntity {
     nullable: false,
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   blog: BlogRepoEntity;
   @Column()
   blogId: number;
