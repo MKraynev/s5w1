@@ -46,6 +46,7 @@ export class BlogsRepoService {
       let formatedBlogs = blogs.map(
         (blogDb) => new BlogGetResultEntity(blogDb),
       );
+
       return { count, blogs: formatedBlogs };
     }
 

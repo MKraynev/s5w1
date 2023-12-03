@@ -22,16 +22,13 @@ export class BlogsController {
     @Query('sortDirection') sortDirecrion: 'desc' | 'asc' = 'desc',
     @QueryPaginator() paginator: InputPaginator,
   ) {
-    let searchPropName: keyof BlogRepoEntity | undefined = nameTerm
-      ? 'name'
-      : undefined;
-
     let { count, blogs } = await this.blogRepo.CountAndReadManyByName(
-      searchPropName,
+      nameTerm,
       sortBy,
       sortDirecrion,
       paginator.skipElements,
       paginator.pageSize,
+      true,
     );
 
     let pagedBlogs = new OutputPaginator(count, blogs, paginator);
@@ -42,7 +39,7 @@ export class BlogsController {
   public async GetById(@Param('id') id: string) {
     let numId = +id;
     let blog = await this.blogRepo.ReadById(numId, true);
-    console.log('blog by id', id, blog);
+
     if (blog) return blog;
 
     throw new NotFoundException();

@@ -46,16 +46,13 @@ export class SuperAdminBlogController {
     @Query('sortDirection') sortDirecrion: 'desc' | 'asc' = 'desc',
     @QueryPaginator() paginator: InputPaginator,
   ) {
-    let searchPropName: keyof BlogRepoEntity | undefined = nameTerm
-      ? 'name'
-      : undefined;
-
     let { count, blogs } = await this.blogRepo.CountAndReadManyByName(
-      searchPropName,
+      nameTerm,
       sortBy,
       sortDirecrion,
       paginator.skipElements,
       paginator.pageSize,
+      true,
     );
 
     let pagedBlogs = new OutputPaginator(count, blogs, paginator);
