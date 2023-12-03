@@ -118,7 +118,6 @@ export class SuperAdminBlogController {
   @UseFilters(DataBaseException)
   async GetBlogsPosts(
     @Param('id') id: string,
-    @Query('searchNameTerm') nameTerm: string | undefined,
     @Query('sortBy') sortBy: keyof PostRepoEntity = 'createdAt',
     @Query('sortDirection') sortDirecrion: 'desc' | 'asc' = 'desc',
     @QueryPaginator() paginator: InputPaginator,
