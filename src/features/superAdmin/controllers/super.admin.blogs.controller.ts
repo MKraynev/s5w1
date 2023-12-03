@@ -134,4 +134,21 @@ export class SuperAdminBlogController {
 
     return pagedPosts;
   }
+
+  //put -> //sa/blogs/:blogId/posts/:postId
+  @Put(':blogId/posts/:postId')
+  @UseGuards(AdminGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async UpdatePost(
+    @Param('blogId') blogId: string,
+    @Param('postId') postId: string,
+    @Body(new ValidateParameters())
+    postData: PostCreateEntity,
+  ) {
+    let updatePost = await this.postRepo.UpdateOne(+postId, +blogId, postData);
+
+    if (updatePost) return;
+
+    throw new NotFoundException();
+  }
 }

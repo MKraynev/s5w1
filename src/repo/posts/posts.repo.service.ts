@@ -86,4 +86,25 @@ export class PostsRepoService {
     }
     return post;
   }
+
+  public async UpdateOne(
+    postId: number,
+    blogId: number,
+    postData: PostCreateEntity,
+    format: boolean = false,
+  ) {
+    let post = await this.postsRepo.findOne({
+      where: { id: postId, blogId: blogId },
+    });
+
+    if (!post) return null;
+
+    post.content = postData.content;
+    post.shortDescription = postData.shortDescription;
+    post.title = postData.title;
+
+    let savedPost = await this.postsRepo.save(post);
+
+    return savedPost;
+  }
 }
