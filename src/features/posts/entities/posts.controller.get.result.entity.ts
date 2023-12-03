@@ -17,6 +17,8 @@ export class PostGetResultEntity {
     this.blogId = post.blogId.toString();
     this.blogName = post.blog.name;
     this.createdAt = post.createdAt.toISOString();
+
+    this.InitLikes();
   }
 
   public InitLikes() {

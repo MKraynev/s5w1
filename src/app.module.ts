@@ -13,6 +13,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { SuperAdminModule } from './features/superAdmin/super.admin.module';
 import { DevicesModule } from './features/devices/devices.module';
 import { BlogModule } from './features/blogs/blogs.module';
+import { PostModule } from './features/posts/post.module';
 
 export const typeormConfiguration = TypeOrmModule.forRoot({
   type: 'postgres',
@@ -30,6 +31,7 @@ export const typeormConfiguration = TypeOrmModule.forRoot({
     UsersModule,
     DevicesModule,
     BlogModule,
+    PostModule,
     typeormConfiguration,
     ThrottlerModule.forRoot([{ ttl: 10000, limit: 200 }]),
     SuperAdminModule,

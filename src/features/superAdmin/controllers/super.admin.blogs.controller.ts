@@ -29,6 +29,7 @@ import { PostsRepoService } from 'src/repo/posts/posts.repo.service';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 import { DataBaseException } from './exceptions/super.admin.controller.exception.filter';
 import { PostRepoEntity } from 'src/repo/posts/entity/posts.repo.entity';
+import { PostGetResultEntity } from 'src/features/posts/entities/posts.controller.get.result.entity';
 
 @Controller('sa/blogs')
 @UseGuards(AdminGuard)
@@ -101,9 +102,14 @@ export class SuperAdminBlogController {
   async SaveBlogsPosts(
     @Param('id') id: string,
     @Body(new ValidateParameters())
-    postData: PostWithExpectedBlogIdCreateEntity,
+    postData: PostCreateEntity,
   ) {
-    let createdPost = await this.postRepo.Create(postData, postData.blogId);
+    let createdPost = (await this.postRepo.Create(
+      postData,
+      id,
+      true,
+    )) as PostGetResultEntity;
+    createdPost.InitLikes();
 
     return createdPost;
   }
@@ -117,16 +123,16 @@ export class SuperAdminBlogController {
     @Query('sortDirection') sortDirecrion: 'desc' | 'asc' = 'desc',
     @QueryPaginator() paginator: InputPaginator,
   ) {
-    let findPosts = await this.postRepo.ReadManyByBlogId(
+    let { count, posts } = await this.postRepo.ReadManyByBlogId(
       +id,
       sortBy,
       sortDirecrion,
       paginator.skipElements,
       paginator.pageSize,
+      true,
     );
+    let pagedPosts = new OutputPaginator(count, posts, paginator);
 
-    let decoratedPosts = findPosts.posts.map((post) => {
-      let { id, updatedAt, ...rest } = post;
-    });
+    return pagedPosts;
   }
 }

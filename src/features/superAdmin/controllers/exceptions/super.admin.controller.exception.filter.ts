@@ -1,5 +1,6 @@
 import {
   ArgumentsHost,
+  BadRequestException,
   Catch,
   ExceptionFilter,
   HttpException,
@@ -11,6 +12,7 @@ import { QueryFailedError } from 'typeorm';
 @Catch(HttpException)
 export class DataBaseException implements ExceptionFilter {
   catch(exception: QueryFailedError, host: ArgumentsHost) {
+    if (typeof exception === typeof BadRequestException) return exception;
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
