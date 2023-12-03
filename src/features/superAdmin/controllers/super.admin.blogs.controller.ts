@@ -64,7 +64,6 @@ export class SuperAdminBlogController {
 
   //post -> hometask_13/api/blogs
   @Post()
-  @UseGuards(AdminGuard)
   @HttpCode(HttpStatus.CREATED)
   async saveBlog(@Body(new ValidateParameters()) blog: BlogCreateEntity) {
     let savedBlog = await this.blogRepo.Create(blog, true);
@@ -73,7 +72,6 @@ export class SuperAdminBlogController {
   }
 
   @Put(':id')
-  @UseGuards(AdminGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async UpdateBlog(
     @Param('id') id: string,
@@ -90,7 +88,6 @@ export class SuperAdminBlogController {
 
   //delete -> /hometask_13/api/blogs/{id}
   @Delete(':id')
-  @UseGuards(AdminGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async DeleteBlog(@Param('id') id: string) {
     let count = await this.blogRepo.DeleteOne(+id);
@@ -102,7 +99,6 @@ export class SuperAdminBlogController {
 
   //post -> hometask_13/api/blogs/{blogId}/posts
   @Post(':id/posts')
-  @UseGuards(AdminGuard)
   @UseFilters(DataBaseException)
   @HttpCode(HttpStatus.CREATED)
   async SaveBlogsPosts(
