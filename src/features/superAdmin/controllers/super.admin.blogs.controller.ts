@@ -97,7 +97,7 @@ export class SuperAdminBlogController {
 
   //post -> hometask_13/api/blogs/{blogId}/posts
   @Post(':id/posts')
-  @UseFilters(DataBaseException)
+  // @UseFilters(DataBaseException)
   @HttpCode(HttpStatus.CREATED)
   async SaveBlogsPosts(
     @Param('id') id: string,
