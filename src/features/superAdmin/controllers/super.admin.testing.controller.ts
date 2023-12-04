@@ -5,7 +5,7 @@ import {
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
-import { AdminGuard } from 'src/auth/guards/admin/guard.admin';
+import { SuperAdminGuard } from 'src/auth/guards/admin/guard.admin';
 import { BlogsRepoService } from 'src/repo/blogs/blogs.repo.service';
 import { DeviceRepoService } from 'src/repo/devices/devices.repo.service';
 import { UsersRepoService } from 'src/repo/users/users.repo.service';

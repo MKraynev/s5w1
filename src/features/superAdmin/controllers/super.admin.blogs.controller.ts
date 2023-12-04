@@ -13,7 +13,7 @@ import {
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
-import { AdminGuard } from 'src/auth/guards/admin/guard.admin';
+import { SuperAdminGuard } from 'src/auth/guards/admin/guard.admin';
 import { ValidateParameters } from 'src/common/pipes/validation.pipe';
 import { BlogCreateEntity } from './entities/super.admin.create.blog.entity';
 import { BlogsRepoService } from 'src/repo/blogs/blogs.repo.service';
@@ -32,7 +32,7 @@ import { PostRepoEntity } from 'src/repo/posts/entity/posts.repo.entity';
 import { PostGetResultEntity } from 'src/features/posts/entities/posts.controller.get.result.entity';
 
 @Controller('sa/blogs')
-@UseGuards(AdminGuard)
+@UseGuards(SuperAdminGuard)
 export class SuperAdminBlogController {
   constructor(
     private blogRepo: BlogsRepoService,
@@ -138,7 +138,7 @@ export class SuperAdminBlogController {
 
   //put -> //sa/blogs/:blogId/posts/:postId
   @Put(':blogId/posts/:postId')
-  @UseGuards(AdminGuard)
+  @UseGuards(SuperAdminGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async UpdatePost(
     @Param('blogId') blogId: string,
@@ -155,7 +155,7 @@ export class SuperAdminBlogController {
 
   //delete -> //sa/blogs/:blogId/posts/:postId
   @Delete(':blogId/posts/:postId')
-  @UseGuards(AdminGuard)
+  @UseGuards(SuperAdminGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async DeletePost(
     @Param('blogId') blogId: string,
