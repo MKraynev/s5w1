@@ -1,9 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { PORT } from './settings';
-import ngrok from "ngrok"
+import ngrok from 'ngrok';
 import cookieParser from 'cookie-parser';
-
 
 export class Main {
   public ADDRES: string;
@@ -12,13 +11,13 @@ export class Main {
     const app = await NestFactory.create(AppModule);
 
     app.enableCors();
-    app.use(cookieParser())
+    app.use(cookieParser());
 
     await app.listen(PORT);
 
-    let url = await ngrok.connect();
-    this.ADDRES = url;
-    console.log(url);
+    // let url = await ngrok.connect();
+    // this.ADDRES = url;
+    // console.log(url);
   }
 }
 
