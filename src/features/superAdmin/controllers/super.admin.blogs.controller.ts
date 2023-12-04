@@ -151,4 +151,19 @@ export class SuperAdminBlogController {
 
     throw new NotFoundException();
   }
+
+  //delete -> //sa/blogs/:blogId/posts/:postId
+  @Delete(':blogId/posts/:postId')
+  @UseGuards(AdminGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async DeletePost(
+    @Param('blogId') blogId: string,
+    @Param('postId') postId: string,
+  ) {
+    let updatePost = await this.postRepo.DeleteOne(+postId, +blogId);
+
+    if (updatePost > 0) return;
+
+    throw new NotFoundException();
+  }
 }

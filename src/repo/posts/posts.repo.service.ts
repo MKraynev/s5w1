@@ -107,4 +107,10 @@ export class PostsRepoService {
 
     return savedPost;
   }
+
+  public async DeleteOne(postId: number, blogId: number) {
+    let post = await this.postsRepo.delete({ id: postId, blogId: blogId });
+
+    return post.affected;
+  }
 }
