@@ -6,6 +6,7 @@ import {
   PostWithExpectedBlogIdCreateEntity,
 } from 'src/features/superAdmin/controllers/entities/super.admin.create.post.entity';
 import { PostGetResultEntity } from 'src/features/posts/entities/posts.controller.get.result.entity';
+import { NotFoundException } from '@nestjs/common';
 
 export class PostsRepoService {
   constructor(
@@ -54,19 +55,22 @@ export class PostsRepoService {
   ): Promise<PostRepoEntity | PostGetResultEntity> {
     let blogId_num = +blogId;
     let post = PostRepoEntity.Init(postData, blogId_num);
+    try {
+      let savedPost = await this.postsRepo.save(post);
+      let fulfieldPost = await this.postsRepo.findOne({
+        where: { id: savedPost.id },
+        relations: { blog: true },
+      });
 
-    let savedPost = await this.postsRepo.save(post);
-    let fulfieldPost = await this.postsRepo.findOne({
-      where: { id: savedPost.id },
-      relations: { blog: true },
-    });
-
-    if (format) {
-      let fpost = new PostGetResultEntity(fulfieldPost);
-      fpost.InitLikes();
-      return fpost;
+      if (format) {
+        let fpost = new PostGetResultEntity(fulfieldPost);
+        fpost.InitLikes();
+        return fpost;
+      }
+      return fulfieldPost;
+    } catch (e) {
+      throw new NotFoundException();
     }
-    return fulfieldPost;
   }
 
   public async DeleteAll() {

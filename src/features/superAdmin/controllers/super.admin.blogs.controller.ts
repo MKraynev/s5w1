@@ -109,6 +109,7 @@ export class SuperAdminBlogController {
       id,
       true,
     )) as PostGetResultEntity;
+
     createdPost.InitLikes();
 
     return createdPost;
