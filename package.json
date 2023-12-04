@@ -49,7 +49,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.17",
-    "vercel": "^32.4.1",
+    "vercel": "^32.6.1",
     "yarn": "^1.22.21"
   },
   "devDependencies": {
