@@ -5,7 +5,7 @@ import ngrok from 'ngrok';
 import cookieParser from 'cookie-parser';
 
 export class Main {
-  public ADDRES: string;
+  // public ADDRES: string;
 
   public async Start() {
     const app = await NestFactory.create(AppModule);

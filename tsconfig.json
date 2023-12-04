@@ -18,6 +18,8 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
+    "strict": true,
+    "noImplicitReturns": true,
     "paths": {
       "src/*": ["./src/*"],
       "tests/*": ["__tests__/*"]
