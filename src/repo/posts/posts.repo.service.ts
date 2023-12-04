@@ -14,6 +14,37 @@ export class PostsRepoService {
     private postsRepo: Repository<PostRepoEntity>,
   ) {}
 
+  public async ReadMany(
+    sortBy: keyof PostRepoEntity = 'createdAt',
+    sortDirection: 'asc' | 'desc' = 'desc',
+    skip: number = 0,
+    limit: number = 10,
+    format: boolean = false,
+  ) {
+    let orderObj: any = {};
+    orderObj[sortBy] = sortDirection;
+
+    let count = await this.postsRepo.count({});
+    let posts = await this.postsRepo.find({
+      where: {},
+      order: orderObj,
+      skip: skip,
+      take: limit,
+      relations: { blog: true },
+    });
+    if (format) {
+      let formatedPosts = posts.map((post) => {
+        let fpost = new PostGetResultEntity(post);
+        fpost.InitLikes();
+        return fpost;
+      });
+
+      return { count, posts: formatedPosts };
+    }
+
+    return { count, posts };
+  }
+
   public async ReadManyByBlogId(
     blogId: number,
     sortBy: keyof PostRepoEntity = 'createdAt',

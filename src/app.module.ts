@@ -33,7 +33,7 @@ export const typeormConfiguration = TypeOrmModule.forRoot({
     BlogModule,
     PostModule,
     typeormConfiguration,
-    ThrottlerModule.forRoot([{ ttl: 10000, limit: 200 }]),
+    ThrottlerModule.forRoot([{ ttl: 20000, limit: 300 }]),
     SuperAdminModule,
   ],
   controllers: [],

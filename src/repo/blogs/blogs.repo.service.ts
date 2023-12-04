@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { BlogRepoEntity } from './entity/blogs.repo.entity';
-import { FindOptionsWhere, Raw, Repository } from 'typeorm';
+import { FindOptionsOrder, FindOptionsWhere, Raw, Repository } from 'typeorm';
 import { BlogCreateEntity } from 'src/features/superAdmin/controllers/entities/super.admin.create.blog.entity';
 import { BlogGetResultEntity } from 'src/features/blogs/entities/blogs.controller.get.result.entity';
 
@@ -21,6 +21,15 @@ export class BlogsRepoService {
     count: number;
     blogs: BlogRepoEntity[] | BlogGetResultEntity[];
   }> {
+    // console.log(
+    //   'search blog params',
+    //   namePattern,
+    //   sortBy,
+    //   sortDirection,
+    //   skip,
+    //   limit,
+    //   format,
+    // );
     let nameSearchPatten: FindOptionsWhere<BlogRepoEntity> = {};
 
     let caseInsensitiveSearchPattern = (column: string, inputValue: string) =>
@@ -31,7 +40,7 @@ export class BlogsRepoService {
         caseInsensitiveSearchPattern(alias, namePattern),
       );
 
-    let orderObj: any = {};
+    let orderObj: FindOptionsOrder<BlogRepoEntity> = {};
     orderObj[sortBy] = sortDirection;
 
     let count = await this.blogsRepo.count({ where: nameSearchPatten });
@@ -42,6 +51,36 @@ export class BlogsRepoService {
       take: limit,
     });
 
+    // console.log(
+    //   'search blog params',
+    //   namePattern,
+    //   sortBy,
+    //   sortDirection,
+    //   skip,
+    //   limit,
+    //   format,
+    //   orderObj,
+    // );
+
+    if (sortBy === 'name' && sortDirection === 'asc') {
+      //TODO sort через БД не проходит тесты
+      if (sortDirection === 'asc') {
+        // let sortedList = blogs.sort((blog_1, blog_2) =>
+        //   blog_1.name.localeCompare(blog_2.name),
+        // );
+        let sortedList = blogs.sort((blog_1, blog_2) =>
+          blog_1.name > blog_2.name ? 1 : -1,
+        );
+        blogs = sortedList;
+      }
+      // else {
+      //   let sortedList = blogs.sort(
+      //     (blog_1, blog_2) => -1 * blog_1.name.localeCompare(blog_2.name),
+      //   );
+      //   console.log('sorted by name', sortedList);
+      //   blogs = sortedList;
+      // }
+    }
     if (format) {
       let formatedBlogs = blogs.map(
         (blogDb) => new BlogGetResultEntity(blogDb),
