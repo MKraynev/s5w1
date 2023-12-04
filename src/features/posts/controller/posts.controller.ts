@@ -10,8 +10,8 @@ import {
   TokenExpectation,
 } from 'src/auth/jwt/decorators/jwt.request.read.accessToken';
 import { JwtServiceUserAccessTokenLoad } from 'src/auth/jwt/entities/jwt.service.accessTokenLoad';
-import { InputPaginator } from 'src/common/paginator/entities/query.paginator.inputEntity';
-import { OutputPaginator } from 'src/common/paginator/entities/query.paginator.outputEntity';
+import { InputPaginator } from 'src/common/paginator/entities/query.paginator.input.entity';
+import { OutputPaginator } from 'src/common/paginator/entities/query.paginator.output.entity';
 import { QueryPaginator } from 'src/common/paginator/query.paginator.decorator';
 import { PostRepoEntity } from 'src/repo/posts/entity/posts.repo.entity';
 import { PostsRepoService } from 'src/repo/posts/posts.repo.service';

@@ -11,8 +11,8 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { InputPaginator } from 'src/common/paginator/entities/query.paginator.inputEntity';
-import { OutputPaginator } from 'src/common/paginator/entities/query.paginator.outputEntity';
+import { InputPaginator } from 'src/common/paginator/entities/query.paginator.input.entity';
+import { OutputPaginator } from 'src/common/paginator/entities/query.paginator.output.entity';
 import { QueryPaginator } from 'src/common/paginator/query.paginator.decorator';
 import { UserRepoEntity } from 'src/repo/users/entities/users.repo.entity';
 import { UsersRepoService } from 'src/repo/users/users.repo.service';

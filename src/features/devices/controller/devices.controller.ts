@@ -14,15 +14,15 @@ import { JwtServiceUserRefreshTokenLoad } from 'src/auth/jwt/entities/jwt.servic
 import {
   DeviceSerivceGetUserDevicesCommand,
   UserDevice,
-} from '../use-cases/devices.service.getUsersDevices.usecase';
+} from '../use-cases/devices.service.get.users.devices.usecase';
 import {
   DeleteUserDevicesStatus,
   DeviceSerivceDeleteRestDevicesCommand,
-} from '../use-cases/devices.service.deleteRestDevices.usecase';
+} from '../use-cases/devices.service.delete.rest.devices.usecase';
 import {
   DeleteCertainUserDeviceStatus,
   DeviceSerivceDeleteCertainDeviceCommand,
-} from '../use-cases/devices.service.deleteCertainDevice.usecase';
+} from '../use-cases/devices.service.delete.certain.device.usecase';
 
 @Controller('security/devices')
 export class DeviceController {

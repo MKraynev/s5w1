@@ -19,8 +19,8 @@ import { BlogCreateEntity } from './entities/super.admin.create.blog.entity';
 import { BlogsRepoService } from 'src/repo/blogs/blogs.repo.service';
 import { BlogRepoEntity } from 'src/repo/blogs/entity/blogs.repo.entity';
 import { QueryPaginator } from 'src/common/paginator/query.paginator.decorator';
-import { InputPaginator } from 'src/common/paginator/entities/query.paginator.inputEntity';
-import { OutputPaginator } from 'src/common/paginator/entities/query.paginator.outputEntity';
+import { InputPaginator } from 'src/common/paginator/entities/query.paginator.input.entity';
+import { OutputPaginator } from 'src/common/paginator/entities/query.paginator.output.entity';
 import {
   PostCreateEntity,
   PostWithExpectedBlogIdCreateEntity,

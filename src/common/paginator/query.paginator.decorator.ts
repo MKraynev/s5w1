@@ -1,11 +1,15 @@
-import { ExecutionContext, createParamDecorator } from "@nestjs/common";
-import { InputPaginator } from "./entities/query.paginator.inputEntity";
+import { ExecutionContext, createParamDecorator } from '@nestjs/common';
+import { InputPaginator } from './entities/query.paginator.input.entity';
 
 export const QueryPaginator = createParamDecorator(
-    (data: unknown, ctx: ExecutionContext) => {
-        let query = ctx.getArgs()[0].query;
-        let inputPaginator = new InputPaginator(query.pageNumber, query.pageSize, query.sortDirection)
+  (data: unknown, ctx: ExecutionContext) => {
+    let query = ctx.getArgs()[0].query;
+    let inputPaginator = new InputPaginator(
+      query.pageNumber,
+      query.pageSize,
+      query.sortDirection,
+    );
 
-        return inputPaginator;
-    },
+    return inputPaginator;
+  },
 );

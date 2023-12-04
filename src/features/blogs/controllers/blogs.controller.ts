@@ -11,8 +11,8 @@ import {
   TokenExpectation,
 } from 'src/auth/jwt/decorators/jwt.request.read.accessToken';
 import { JwtServiceUserAccessTokenLoad } from 'src/auth/jwt/entities/jwt.service.accessTokenLoad';
-import { InputPaginator } from 'src/common/paginator/entities/query.paginator.inputEntity';
-import { OutputPaginator } from 'src/common/paginator/entities/query.paginator.outputEntity';
+import { InputPaginator } from 'src/common/paginator/entities/query.paginator.input.entity';
+import { OutputPaginator } from 'src/common/paginator/entities/query.paginator.output.entity';
 import { QueryPaginator } from 'src/common/paginator/query.paginator.decorator';
 import { DataBaseException } from 'src/features/superAdmin/controllers/exceptions/super.admin.controller.exception.filter';
 import { BlogsRepoService } from 'src/repo/blogs/blogs.repo.service';
