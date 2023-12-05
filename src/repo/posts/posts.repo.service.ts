@@ -7,11 +7,14 @@ import {
 } from 'src/features/superAdmin/controllers/entities/super.admin.create.post.entity';
 import { PostGetResultEntity } from 'src/features/posts/entities/posts.controller.get.result.entity';
 import { NotFoundException } from '@nestjs/common';
+import { BlogsRepoService } from '../blogs/blogs.repo.service';
+import { BlogRepoEntity } from '../blogs/entity/blogs.repo.entity';
 
 export class PostsRepoService {
   constructor(
     @InjectRepository(PostRepoEntity)
     private postsRepo: Repository<PostRepoEntity>,
+    private blogRepo: BlogsRepoService,
   ) {}
 
   public async ReadMany(
@@ -87,6 +90,9 @@ export class PostsRepoService {
     let blogId_num = +blogId;
     let post = PostRepoEntity.Init(postData, blogId_num);
     try {
+      let blog = (await this.blogRepo.ReadById(blogId_num)) as BlogRepoEntity;
+      post.blog = blog;
+      post.blogName = blog.name;
       let savedPost = await this.postsRepo.save(post);
       let fulfieldPost = await this.postsRepo.findOne({
         where: { id: savedPost.id },

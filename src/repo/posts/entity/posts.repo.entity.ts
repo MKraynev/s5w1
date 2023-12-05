@@ -36,6 +36,9 @@ export class PostRepoEntity {
   @Column()
   blogId: number;
 
+  @Column()
+  blogName: string;
+
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 

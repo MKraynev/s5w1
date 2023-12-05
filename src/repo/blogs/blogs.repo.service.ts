@@ -30,6 +30,7 @@ export class BlogsRepoService {
     //   limit,
     //   format,
     // );
+    await new Promise((f) => setTimeout(f, 1500));
     let nameSearchPatten: FindOptionsWhere<BlogRepoEntity> = {};
 
     let caseInsensitiveSearchPattern = (column: string, inputValue: string) =>
@@ -107,6 +108,7 @@ export class BlogsRepoService {
     blogData: BlogCreateEntity,
     format: boolean = false,
   ): Promise<BlogRepoEntity | BlogGetResultEntity> {
+    await new Promise((f) => setTimeout(f, 1500));
     let blog = BlogRepoEntity.Init(blogData);
 
     let savedBlog = await this.blogsRepo.save(blog);
