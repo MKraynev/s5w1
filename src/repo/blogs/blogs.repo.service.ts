@@ -21,15 +21,6 @@ export class BlogsRepoService {
     count: number;
     blogs: BlogRepoEntity[] | BlogGetResultEntity[];
   }> {
-    // console.log(
-    //   'search blog params',
-    //   namePattern,
-    //   sortBy,
-    //   sortDirection,
-    //   skip,
-    //   limit,
-    //   format,
-    // );
     await new Promise((f) => setTimeout(f, 1500));
     let nameSearchPatten: FindOptionsWhere<BlogRepoEntity> = {};
 
@@ -52,17 +43,6 @@ export class BlogsRepoService {
       take: limit,
     });
 
-    // console.log(
-    //   'search blog params',
-    //   namePattern,
-    //   sortBy,
-    //   sortDirection,
-    //   skip,
-    //   limit,
-    //   format,
-    //   orderObj,
-    // );
-
     if (sortBy === 'name' && sortDirection === 'asc') {
       //TODO sort через БД не проходит тесты
       if (sortDirection === 'asc') {
@@ -74,13 +54,6 @@ export class BlogsRepoService {
         );
         blogs = sortedList;
       }
-      // else {
-      //   let sortedList = blogs.sort(
-      //     (blog_1, blog_2) => -1 * blog_1.name.localeCompare(blog_2.name),
-      //   );
-      //   console.log('sorted by name', sortedList);
-      //   blogs = sortedList;
-      // }
     }
     if (format) {
       let formatedBlogs = blogs.map(

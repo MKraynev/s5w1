@@ -132,7 +132,6 @@ export class UsersAuthController {
     @Res({ passthrough: true }) response: Response,
     @ReadRequestDevice() device: RequestDeviceEntity,
   ) {
-    console.log('login with:', device, userDto);
     let login = await this.commandBus.execute<
       UsersServiceLoginCommand,
       UserLoginDto
