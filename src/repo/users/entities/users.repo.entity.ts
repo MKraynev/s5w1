@@ -11,6 +11,7 @@ import bcrypt from 'bcrypt';
 import { UserControllerRegistrationEntity } from 'src/features/users/controllers/entities/users.controller.registration.entity';
 import { UsersControllerGetEntity } from 'src/features/users/controllers/entities/users.controller.get.entity';
 import { DeviceRepoEntity } from 'src/repo/devices/entities/devices.repo.entity';
+import { LikeForPostRepoEntity } from 'src/repo/likes/postLikes/entity/like.for.posts.repo.entity';
 
 @Entity('Users')
 export class UserRepoEntity {
@@ -43,6 +44,9 @@ export class UserRepoEntity {
 
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
+
+  @OneToMany(() => LikeForPostRepoEntity, (like) => like.user)
+  likes: LikeForPostRepoEntity[];
 
   public static async Init(
     inputUser: UserControllerRegistrationEntity,

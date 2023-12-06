@@ -3,12 +3,14 @@ import {
   PostWithExpectedBlogIdCreateEntity,
 } from 'src/features/superAdmin/controllers/entities/super.admin.create.post.entity';
 import { BlogRepoEntity } from 'src/repo/blogs/entity/blogs.repo.entity';
+import { LikeForPostRepoEntity } from 'src/repo/likes/postLikes/entity/like.for.posts.repo.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -35,6 +37,9 @@ export class PostRepoEntity {
   blog: BlogRepoEntity;
   @Column()
   blogId: number;
+
+  @OneToMany(() => LikeForPostRepoEntity, (like) => like.post)
+  likes: LikeForPostRepoEntity[];
 
   @Column()
   blogName: string;
