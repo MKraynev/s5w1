@@ -11,6 +11,7 @@ import { UserRepoEntity } from '../../users/entities/users.repo.entity';
 import { PostRepoEntity } from '../../posts/entity/posts.repo.entity';
 
 export type AvailableLikeTarget = 'post' | 'comment';
+
 @Injectable()
 export class LikeRepoService {
   constructor(

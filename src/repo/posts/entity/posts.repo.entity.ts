@@ -3,6 +3,7 @@ import {
   PostWithExpectedBlogIdCreateEntity,
 } from 'src/features/superAdmin/controllers/entities/super.admin.create.post.entity';
 import { BlogRepoEntity } from 'src/repo/blogs/entity/blogs.repo.entity';
+import { CommentRepoEntity } from 'src/repo/comments/entities/commen.repo.entity';
 import { LikeForPostRepoEntity } from 'src/repo/likes/postLikes/entity/like.for.posts.repo.entity';
 import {
   Column,
@@ -28,6 +29,10 @@ export class PostRepoEntity {
 
   @Column()
   content: string;
+
+  @OneToMany(() => CommentRepoEntity, (comment) => comment.post)
+  @JoinColumn()
+  comments: CommentRepoEntity[];
 
   @ManyToOne(() => BlogRepoEntity, (blog) => blog.posts, {
     nullable: false,

@@ -19,7 +19,7 @@ export const AvailableLikeStatusArray: AvailableLikeStatus[] = [
   'None',
 ];
 
-@Entity('Likes')
+@Entity('LikesForPosts')
 export class LikeForPostRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
