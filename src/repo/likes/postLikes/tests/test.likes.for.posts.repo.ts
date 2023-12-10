@@ -1,13 +1,14 @@
-import { TestingModule } from '@nestjs/testing';
+import { TestingModule } from "@nestjs/testing";
 import { BlogCreateEntity } from 'src/features/superAdmin/controllers/entities/super.admin.create.blog.entity';
 import { BlogsRepoService } from 'src/repo/blogs/blogs.repo.service';
 import { TestBlogsRepoTestingModule } from 'src/repo/blogs/tests/settings/blogs.repo.testingModule';
 import { PostCreateEntity } from 'src/features/superAdmin/controllers/entities/super.admin.create.post.entity';
 import { PostsRepoService } from 'src/repo/posts/posts.repo.service';
 import { UsersRepoService } from 'src/repo/users/users.repo.service';
-import { LikeRepoService } from '../likes.repo.service';
+import { LikeForPostRepoService } from '../likes.for.post.repo.service';
 import { UserControllerRegistrationEntity } from 'src/features/users/controllers/entities/users.controller.registration.entity';
 import { TestLikesForPostsRepoTestingModule } from './settings/likes.for.posts.repo.testingModule';
+import { PostRepoEntity } from "src/repo/posts/entity/posts.repo.entity";
 
 describe('Blogs test', () => {
   let module: TestingModule;
@@ -15,7 +16,7 @@ describe('Blogs test', () => {
   let blogRepo: BlogsRepoService;
   let postRepo: PostsRepoService;
   let userRepo: UsersRepoService;
-  let likeRepo: LikeRepoService;
+  let likeRepo: LikeForPostRepoService;
 
   beforeAll(async () => {
     module = await TestLikesForPostsRepoTestingModule.compile();
@@ -25,7 +26,7 @@ describe('Blogs test', () => {
     userRepo = module.get<UsersRepoService>(UsersRepoService);
     blogRepo = module.get<BlogsRepoService>(BlogsRepoService);
     postRepo = module.get<PostsRepoService>(PostsRepoService);
-    likeRepo = module.get<LikeRepoService>(LikeRepoService);
+    likeRepo = module.get<LikeForPostRepoService>(LikeForPostRepoService);
   });
 
   afterAll(async () => {
@@ -52,7 +53,7 @@ describe('Blogs test', () => {
       'some short',
       'some content lorem lorem lorem lorem lorem lorem',
     );
-    let createPost = await postRepo.Create(post, createdBlog.id.toString());
+    let createPost = await postRepo.Create(post, createdBlog.id.toString()) as PostRepoEntity;
 
     let userCreateData = new UserControllerRegistrationEntity(
       'somelogin',
@@ -62,9 +63,9 @@ describe('Blogs test', () => {
     let user = await userRepo.Create(userCreateData, true);
 
     let savedLike = await likeRepo.SetUserLikeForPost(
-      user.id,
+      user.id.toString(),
       'Like',
-      +createPost.id,
+      createPost.id.toString(),
     );
 
     let readAllLikes = await likeRepo.ReadAll();

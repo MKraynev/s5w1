@@ -8,7 +8,7 @@ import { BlogRepoEntity } from 'src/repo/blogs/entity/blogs.repo.entity';
 import { BlogsRepoService } from 'src/repo/blogs/blogs.repo.service';
 import { PostsRepoService } from 'src/repo/posts/posts.repo.service';
 import { UsersRepoService } from 'src/repo/users/users.repo.service';
-import { LikeRepoService } from '../../likes.repo.service';
+import { LikeForPostRepoService } from '../../likes.for.post.repo.service';
 import { UsersRepoModule } from 'src/repo/users/users.repo.module';
 import { BlogsRepoModule } from 'src/repo/blogs/blogs.repo.module';
 import { PostsRepoModule } from 'src/repo/posts/posts.repo.module';
@@ -31,6 +31,6 @@ export const TestLikesForPostsRepoTestingModule = Test.createTestingModule({
     BlogsRepoService,
     PostsRepoService,
     UsersRepoService,
-    LikeRepoService,
+    LikeForPostRepoService,
   ],
 });

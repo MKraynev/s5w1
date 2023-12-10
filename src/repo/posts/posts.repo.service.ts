@@ -115,9 +115,14 @@ export class PostsRepoService {
     return del.affected;
   }
 
-  public async ReadById(id: number, format: boolean = false) {
+  public async IdExist(id: string): Promise<boolean> {
+    let count = await this.postsRepo.count({ where: { id: +id } });
+    return count === 1;
+  }
+
+  public async ReadById(id: string, format: boolean = false) {
     let post = await this.postsRepo.findOne({
-      where: { id: id },
+      where: { id: +id },
       relations: { blog: true },
     });
 

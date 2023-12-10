@@ -1,15 +1,16 @@
-import { TestingModule } from '@nestjs/testing';
+import { TestingModule } from "@nestjs/testing";
 import { BlogCreateEntity } from 'src/features/superAdmin/controllers/entities/super.admin.create.blog.entity';
 import { BlogsRepoService } from 'src/repo/blogs/blogs.repo.service';
 import { TestBlogsRepoTestingModule } from 'src/repo/blogs/tests/settings/blogs.repo.testingModule';
 import { PostCreateEntity } from 'src/features/superAdmin/controllers/entities/super.admin.create.post.entity';
 import { PostsRepoService } from 'src/repo/posts/posts.repo.service';
 import { UsersRepoService } from 'src/repo/users/users.repo.service';
-import { LikeRepoService } from 'src/repo/likes/postLikes/likes.repo.service';
+import { LikeForPostRepoService } from 'src/repo/likes/postLikes/likes.for.post.repo.service';
 import { TestCommentsRepoTestingModule } from './settings/comments.repo.testingModule';
 import { CommentsRepoService } from '../comments.repo.service';
 import { UserControllerRegistrationEntity } from 'src/features/users/controllers/entities/users.controller.registration.entity';
 import { CommentSetEntity } from 'src/features/posts/entities/post.controller.set.comment';
+import { PostRepoEntity } from "src/repo/posts/entity/posts.repo.entity";
 
 describe('CommentsRepo test', () => {
   let module: TestingModule;
@@ -17,7 +18,7 @@ describe('CommentsRepo test', () => {
   let blogRepo: BlogsRepoService;
   let postRepo: PostsRepoService;
   let userRepo: UsersRepoService;
-  let likeRepo: LikeRepoService;
+  let likeRepo: LikeForPostRepoService;
   let commentRepo: CommentsRepoService;
 
   beforeAll(async () => {
@@ -28,7 +29,7 @@ describe('CommentsRepo test', () => {
     userRepo = module.get<UsersRepoService>(UsersRepoService);
     blogRepo = module.get<BlogsRepoService>(BlogsRepoService);
     postRepo = module.get<PostsRepoService>(PostsRepoService);
-    likeRepo = module.get<LikeRepoService>(LikeRepoService);
+    likeRepo = module.get<LikeForPostRepoService>(LikeForPostRepoService);
     commentRepo = module.get<CommentsRepoService>(CommentsRepoService);
   });
 
@@ -57,7 +58,7 @@ describe('CommentsRepo test', () => {
       'some short',
       'some content lorem lorem lorem lorem lorem lorem',
     );
-    let createPost = await postRepo.Create(post, createdBlog.id.toString());
+    let createPost = await postRepo.Create(post, createdBlog.id.toString()) as PostRepoEntity;
 
     let userCreateData = new UserControllerRegistrationEntity(
       'somelogin',
@@ -70,9 +71,10 @@ describe('CommentsRepo test', () => {
     comment.content = 'some content for comment';
 
     let savedComment = await commentRepo.Create(
+      user,
+      createPost,
       comment,
-      user.id.toString(),
-      createPost.id.toString(),
+      
     );
 
     let readAllComments = await commentRepo.ReadAll();

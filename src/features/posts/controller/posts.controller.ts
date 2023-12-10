@@ -1,10 +1,17 @@
 import {
-  Controller,
-  Get,
-  NotFoundException,
-  Param,
-  Query,
-} from '@nestjs/common';
+	Body,
+	Controller,
+	Get,
+	HttpCode,
+	HttpStatus,
+	NotFoundException,
+	Param,
+	Post,
+	Put,
+	Query,
+	UseGuards,
+} from "@nestjs/common";
+import { JwtAuthGuard } from 'src/auth/guards/common/jwt-auth.guard';
 import {
   ReadAccessToken,
   TokenExpectation,
@@ -13,12 +20,25 @@ import { JwtServiceUserAccessTokenLoad } from 'src/auth/jwt/entities/jwt.service
 import { InputPaginator } from 'src/common/paginator/entities/query.paginator.input.entity';
 import { OutputPaginator } from 'src/common/paginator/entities/query.paginator.output.entity';
 import { QueryPaginator } from 'src/common/paginator/query.paginator.decorator';
+import { ValidateParameters } from 'src/common/pipes/validation.pipe';
 import { PostRepoEntity } from 'src/repo/posts/entity/posts.repo.entity';
 import { PostsRepoService } from 'src/repo/posts/posts.repo.service';
+import { CommentSetEntity } from '../entities/post.controller.set.comment';
+import { CommentsRepoService } from 'src/repo/comments/comments.repo.service';
+import { LikeForPostRepoService } from 'src/repo/likes/postLikes/likes.for.post.repo.service';
+import { LikeSetEntity } from '../entities/post.controller.set.like.status';
+import { CommandBus } from '@nestjs/cqrs';
+import { PostServiceSavePostCommentCommand } from '../use-cases/post.service.save.post.comment.usecase';
+import { CommentInfo } from '../entities/post.controller.get.comment';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private postRepo: PostsRepoService) {}
+  constructor(
+    private postRepo: PostsRepoService,
+    private commentRepo: CommentsRepoService,
+    private likeRepo: LikeForPostRepoService,
+    private commandBus: CommandBus,
+  ) {}
 
   @Get()
   async GetPosts(
@@ -46,10 +66,50 @@ export class PostsController {
     @ReadAccessToken(TokenExpectation.Possibly)
     tokenLoad: JwtServiceUserAccessTokenLoad | undefined,
   ) {
-    let post = await this.postRepo.ReadById(+id, true);
+    let post = await this.postRepo.ReadById(id, true);
 
     if (post) return post;
 
     throw new NotFoundException();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/comments')
+  @HttpCode(HttpStatus.CREATED)
+  @UseGuards(JwtAuthGuard)
+  async SaveComment(
+    @Param('id') id: string,
+    @Body(new ValidateParameters()) commentData: CommentSetEntity,
+    @ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad,
+  ) {
+    let comment = await this.commandBus.execute<
+      PostServiceSavePostCommentCommand,
+      CommentInfo
+    >(new PostServiceSavePostCommentCommand(tokenLoad.id, id, commentData));
+
+    return comment;
+    // let savedComment = await this.commentRepo.Create(
+    //   commentData,
+    //   tokenLoad.id.toString(),
+    //   id,
+    // );
+  }
+
+  ///hometask_19/api/posts/{postId}/like-status
+  @Put(':id/like-status')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async PutLike(
+    @Body(new ValidateParameters()) likeData: LikeSetEntity,
+    @Param('id') id: string,
+    @ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad,
+  ) {
+    let savedLikestatus = await this.likeRepo.SetUserLikeForPost(
+      tokenLoad.id,
+      likeData.likeStatus,
+      id,
+    );
+
+    return;
   }
 }

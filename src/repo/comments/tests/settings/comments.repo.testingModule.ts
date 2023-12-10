@@ -14,9 +14,9 @@ import { BlogsRepoModule } from 'src/repo/blogs/blogs.repo.module';
 import { PostsRepoModule } from 'src/repo/posts/posts.repo.module';
 import { CommentRepoEntity } from '../../entities/commen.repo.entity';
 import { LikeForPostRepoEntity } from 'src/repo/likes/postLikes/entity/like.for.posts.repo.entity';
-import { LikeRepoService } from 'src/repo/likes/postLikes/likes.repo.service';
+import { LikeForPostRepoService } from 'src/repo/likes/postLikes/likes.for.post.repo.service';
 import { CommentsRepoService } from '../../comments.repo.service';
-import { LikesRepoModule } from 'src/repo/likes/postLikes/likes.for.post.repo.module';
+import { LikesForPostRepoModule } from 'src/repo/likes/postLikes/likes.for.post.repo.module';
 
 export const TestCommentsRepoTestingModule = Test.createTestingModule({
   imports: [
@@ -31,13 +31,13 @@ export const TestCommentsRepoTestingModule = Test.createTestingModule({
     UsersRepoModule,
     BlogsRepoModule,
     PostsRepoModule,
-    LikesRepoModule,
+    LikesForPostRepoModule,
   ],
   providers: [
     BlogsRepoService,
     PostsRepoService,
     UsersRepoService,
-    LikeRepoService,
+    LikeForPostRepoService,
     CommentsRepoService,
   ],
 });

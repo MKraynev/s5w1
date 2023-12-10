@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { Repository } from 'typeorm';
 import { CommentRepoEntity } from './entities/commen.repo.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,20 +21,16 @@ export class CommentsRepoService {
   ) {}
 
   public async Create(
+    user: UserRepoEntity,
+    post: PostRepoEntity,
     commentData: CommentSetEntity,
-    userId: string,
-    postId: string,
   ) {
-    let user = await this.userRepoService.ReadOneById(userId);
-    if (!user) throw new NotFoundException();
-
-    let post = (await this.postRepoService.ReadById(+postId)) as PostRepoEntity;
-    if (!post) throw new NotFoundException();
-
     let comment = CommentRepoEntity.Init(user, post, commentData.content);
 
     return await this.commentRepo.save(comment);
   }
+
+  public ReadOneById = async (id:string) => await this.commentRepo.findOne({where: {id: +id}, relations: {user: true}})
 
   public ReadAll = async () => await this.commentRepo.find({});
 

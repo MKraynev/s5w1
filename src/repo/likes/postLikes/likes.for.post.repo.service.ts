@@ -13,7 +13,7 @@ import { PostRepoEntity } from '../../posts/entity/posts.repo.entity';
 export type AvailableLikeTarget = 'post' | 'comment';
 
 @Injectable()
-export class LikeRepoService {
+export class LikeForPostRepoService {
   constructor(
     @InjectRepository(LikeForPostRepoEntity)
     private postLikes: Repository<LikeForPostRepoEntity>,
@@ -22,12 +22,12 @@ export class LikeRepoService {
   ) {}
 
   public async SetUserLikeForPost(
-    userId: number,
+    userId: string,
     userStatus: AvailableLikeStatus,
-    postId: number,
+    postId: string,
   ) {
     let userLike = await this.postLikes.findOne({
-      where: { userId: userId },
+      where: { userId: +userId },
     });
 
     if (userLike) {
@@ -50,5 +50,25 @@ export class LikeRepoService {
   }
   public async DeleteAll() {
     return (await this.postLikes.delete({})).affected;
+  }
+
+  public async GetUserStatus(
+    postId: string,
+    userId: string,
+  ): Promise<AvailableLikeStatus> {
+    let like = await this.postLikes.findOne({
+      where: {
+        id: +postId,
+        userId: +userId,
+      },
+    });
+
+    if (like) {
+      //like exist
+      return like.status;
+    }
+
+    let noneStatus: AvailableLikeStatus = 'None';
+    return noneStatus;
   }
 }

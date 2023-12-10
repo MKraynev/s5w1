@@ -1,4 +1,4 @@
-import { PostRepoEntity } from 'src/repo/posts/entity/posts.repo.entity';
+import { PostRepoEntity } from "src/repo/posts/entity/posts.repo.entity";
 import { UserRepoEntity } from 'src/repo/users/entities/users.repo.entity';
 import {
   Column,
@@ -28,7 +28,7 @@ export class CommentRepoEntity {
   @Column({ nullable: false })
   userLogin: string;
 
-  @OneToOne(() => PostRepoEntity, (post) => post.comments)
+  @ManyToOne(() => PostRepoEntity, (post) => post.comments, {nullable: false, onDelete: 'CASCADE'})
   @JoinColumn()
   post: PostRepoEntity;
   @Column()

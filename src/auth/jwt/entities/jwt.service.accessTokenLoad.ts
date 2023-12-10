@@ -1,5 +1,4 @@
 export type JwtServiceUserAccessTokenLoad = {
-    id: number,
-    login: string,
-    
-}
+  id: string;
+  login: string;
+};
