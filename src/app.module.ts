@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 import { UsersModule } from './features/users/users.module';
 import {
   POSTGRES_DATABASE,
@@ -14,6 +14,7 @@ import { SuperAdminModule } from './features/superAdmin/super.admin.module';
 import { DevicesModule } from './features/devices/devices.module';
 import { BlogModule } from './features/blogs/blogs.module';
 import { PostModule } from './features/posts/post.module';
+import { CommentsModule } from './features/comments/comments.module';
 
 export const typeormConfiguration = TypeOrmModule.forRoot({
   type: 'postgres',
@@ -32,6 +33,7 @@ export const typeormConfiguration = TypeOrmModule.forRoot({
     DevicesModule,
     BlogModule,
     PostModule,
+    CommentsModule,
     typeormConfiguration,
     ThrottlerModule.forRoot([{ ttl: 20000, limit: 300 }]),
     SuperAdminModule,

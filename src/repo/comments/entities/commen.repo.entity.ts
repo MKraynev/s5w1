@@ -1,3 +1,4 @@
+import { LikeForCommentRepoEntity } from "src/repo/likes/commentLikes/entity/like.for.comment.repo.entity";
 import { PostRepoEntity } from "src/repo/posts/entity/posts.repo.entity";
 import { UserRepoEntity } from 'src/repo/users/entities/users.repo.entity';
 import {
@@ -6,6 +7,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -33,6 +35,9 @@ export class CommentRepoEntity {
   post: PostRepoEntity;
   @Column()
   postId: number;
+
+  @OneToMany(()=> LikeForCommentRepoEntity, (like)=> like.comment)
+  likes: LikeForCommentRepoEntity[]
 
   @Column({ nullable: false })
   content: string;

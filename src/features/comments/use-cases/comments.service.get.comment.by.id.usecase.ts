@@ -2,42 +2,58 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { CommentInfo } from "src/features/posts/entities/post.controller.get.comment";
 import { CommentsRepoService } from "src/repo/comments/comments.repo.service";
-import { LikeForPostRepoService } from "src/repo/likes/postLikes/likes.for.post.repo.service";
+import { LikeForCommentRepoService } from "src/repo/likes/commentLikes/likes.for.comment.repo.service";
 
 export class CommentsServiceGetCommentByIdCommand {
-	constructor(public commentId: string) {}
+	constructor(public commentId: string, public userId?: string) {}
 }
   
   @CommandHandler(CommentsServiceGetCommentByIdCommand)
   @Injectable()
-  export class PostServiceSavePostCommentUseCase
+  export class CommentsServiceGetCommentByIdUseCase
     implements ICommandHandler<CommentsServiceGetCommentByIdCommand, CommentInfo>
   {
     constructor(
-    //   private userRepo: UsersRepoService,
-    //   private postRepo: PostsRepoService,
       private commentRepo: CommentsRepoService,
-      private likeRepo: LikeForPostRepoService
+      private likeRepo: LikeForCommentRepoService
     ) {}
     async execute(
       command: CommentsServiceGetCommentByIdCommand,
     ): Promise<CommentInfo> {
-    //   let user = await this.userRepo.ReadOneById(command.userId);
-    //   if (!user) throw new NotFoundException();
-  
-    //   let post = (await this.postRepo.ReadById(command.postId)) as PostRepoEntity;
-    //   if (!post) throw new NotFoundException();
 
-
+      try {
+        const [comment, userStatus, statistic] = await Promise.all([
+          this.commentRepo.ReadOneById(command.commentId),
+          this.likeRepo.GetUserStatus(command.commentId, command.userId),
+          this.likeRepo.GetStatistic(command.commentId),
+        ]);
   
-      let comment = await this.commentRepo.ReadOneById(command.commentId);
-      if(!comment)
-      throw new NotFoundException();
+        if (!comment) {
+          throw new NotFoundException(`Comment with ID ${command.commentId} not found`);
+        }
   
-    //TODO добавить поиск лайков для комментов
-    //добавить установку значений в сущность
+        return new CommentInfo(
+          comment,
+          comment.user.id.toString(),
+          comment.user.login,
+          userStatus,
+          statistic.like,
+          statistic.dislike
+        );
+      } catch (error) {
+        // Handle errors more explicitly, log them, or rethrow with additional information if needed
+        console.error('Error in CommentsServiceGetCommentByIdUseCase:', error);
+        throw error;
+      }
+      
+    //   let comment = await this.commentRepo.ReadOneById(command.commentId);
+    //   if(!comment)
+    //   throw new NotFoundException(`Comment with ID ${command.commentId} not found`);
+  
+    //   let userStatus = await this.likeRepo.GetUserStatus(command.commentId, command.userId);
+    //   let statistic  = await this.likeRepo.GetStatistic(command.commentId);
 
-      return new CommentInfo(comment, comment.user.id.toString(), comment.user.login);
+    //   return new CommentInfo(comment, comment.user.id.toString(), comment.user.login, userStatus, statistic.like, statistic.dislike);
     }
   }
   
