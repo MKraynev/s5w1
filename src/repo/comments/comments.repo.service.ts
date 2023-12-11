@@ -30,9 +30,34 @@ export class CommentsRepoService {
     return await this.commentRepo.save(comment);
   }
 
+
+
+  // public async UpdateById(
+  //   commentId: string,
+  //   commentData: CommentSetEntity,
+  // ) {
+  //   let comment = await this.commentRepo.findOneBy({ id: +commentId });
+
+  //   if (!comment) return null;
+
+  //   comment.name = blogData.name;
+  //   comment.description = blogData.description;
+  //   comment.websiteUrl = blogData.websiteUrl;
+
+  //   let savedBlog = await this.blogsRepo.save(comment);
+
+  //   if (format) return new BlogGetResultEntity(savedBlog);
+
+  //   return savedBlog;
+  // }
+
+  public Update = async (comment: CommentRepoEntity) => await this.commentRepo.save(comment);
+
   public ReadOneById = async (id:string) => await this.commentRepo.findOne({where: {id: +id}, relations: {user: true}})
 
   public ReadAll = async () => await this.commentRepo.find({});
 
   public DeleteAll = async () => (await this.commentRepo.delete({})).affected;
+
+  public DeleteById = async (id: string) => (await this.commentRepo.delete({id: +id})).affected;
 }
