@@ -1,16 +1,16 @@
 import {
-  BadRequestException,
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  NotFoundException,
-  Post,
-  Res,
-  UnauthorizedException,
-  UseGuards,
-} from '@nestjs/common';
+	BadRequestException,
+	Body,
+	Controller,
+	Get,
+	HttpCode,
+	HttpStatus,
+	NotFoundException,
+	Post,
+	Res,
+	UnauthorizedException,
+	UseGuards,
+} from "@nestjs/common";
 import { Throttle } from '@nestjs/throttler';
 import { UserControllerRegistrationEntity } from './entities/users.controller.registration.entity';
 import { CommandBus } from '@nestjs/cqrs';
@@ -132,6 +132,9 @@ export class UsersAuthController {
     @Res({ passthrough: true }) response: Response,
     @ReadRequestDevice() device: RequestDeviceEntity,
   ) {
+
+    await new Promise((f) => setTimeout(f, 1500));
+    
     let login = await this.commandBus.execute<
       UsersServiceLoginCommand,
       UserLoginDto

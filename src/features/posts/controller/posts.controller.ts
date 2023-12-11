@@ -30,6 +30,7 @@ import { LikeSetEntity } from '../entities/post.controller.set.like.status';
 import { CommandBus } from '@nestjs/cqrs';
 import { PostServiceSavePostCommentCommand } from '../use-cases/post.service.save.post.comment.usecase';
 import { CommentInfo } from '../entities/post.controller.get.comment';
+import { CommentRepoEntity } from "src/repo/comments/entities/commen.repo.entity";
 
 @Controller('posts')
 export class PostsController {
@@ -88,12 +89,19 @@ export class PostsController {
     >(new PostServiceSavePostCommentCommand(tokenLoad.id, id, commentData));
 
     return comment;
-    // let savedComment = await this.commentRepo.Create(
-    //   commentData,
-    //   tokenLoad.id.toString(),
-    //   id,
-    // );
   }
+
+  @Get(":id/comments")
+    async GetPostComments(
+        @Query('searchNameTerm') nameTerm: string | undefined,
+        @Query('sortBy') sortBy: keyof (CommentRepoEntity) = "createdAt",
+        @Query('sortDirection') sortDirecrion: "desc" | "asc" = "desc",
+        @QueryPaginator() paginator: InputPaginator,
+        @Param('id') id: string,
+        @ReadAccessToken(TokenExpectation.Possibly) tokenLoad: JwtServiceUserAccessTokenLoad | undefined
+    ) {
+        
+    }
 
   ///hometask_19/api/posts/{postId}/like-status
   @Put(':id/like-status')
@@ -112,4 +120,6 @@ export class PostsController {
 
     return;
   }
+
+  
 }
