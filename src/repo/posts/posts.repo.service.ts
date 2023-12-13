@@ -1,4 +1,4 @@
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository } from "@nestjs/typeorm";
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { PostRepoEntity } from './entity/posts.repo.entity';
 import {
@@ -9,12 +9,13 @@ import { PostGetResultEntity } from 'src/features/posts/entities/posts.controlle
 import { NotFoundException } from '@nestjs/common';
 import { BlogsRepoService } from '../blogs/blogs.repo.service';
 import { BlogRepoEntity } from '../blogs/entity/blogs.repo.entity';
+import { LikeForPostRepoService } from '../likes/postLikes/likes.for.post.repo.service';
 
 export class PostsRepoService {
   constructor(
     @InjectRepository(PostRepoEntity)
     private postsRepo: Repository<PostRepoEntity>,
-    private blogRepo: BlogsRepoService,
+    private blogRepo: BlogsRepoService
   ) {}
 
   public async ReadMany(
@@ -36,11 +37,13 @@ export class PostsRepoService {
       relations: { blog: true },
     });
     if (format) {
-      let formatedPosts = posts.map((post) => {
+      let formatedPosts = await Promise.all(posts.map( async (post) => {
         let fpost = new PostGetResultEntity(post);
+        let userstatus;
+        //TODO доделать обсчет лайков
         fpost.InitLikes();
         return fpost;
-      });
+      }));
 
       return { count, posts: formatedPosts };
     }

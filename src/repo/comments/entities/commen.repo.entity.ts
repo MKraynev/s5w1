@@ -37,6 +37,7 @@ export class CommentRepoEntity {
   postId: number;
 
   @OneToMany(()=> LikeForCommentRepoEntity, (like)=> like.comment)
+  @JoinColumn()
   likes: LikeForCommentRepoEntity[]
 
   @Column({ nullable: false })

@@ -6,34 +6,35 @@ import { LikeForCommentRepoEntity } from "./entity/like.for.comment.repo.entity"
 import { AvailableLikeStatus } from "../postLikes/entity/like.for.posts.repo.entity";
 import { CommentsRepoService } from "src/repo/comments/comments.repo.service";
 import { CommentRepoEntity } from "src/repo/comments/entities/commen.repo.entity";
+import { UserRepoEntity } from "src/repo/users/entities/users.repo.entity";
 
 @Injectable()
 export class LikeForCommentRepoService {
   constructor(
     @InjectRepository(LikeForCommentRepoEntity)
     private commentLikes: Repository<LikeForCommentRepoEntity>,
-    private userRepo: UsersRepoService,
-    private commentRepo: CommentsRepoService,
   ) {}
 
   public async SetUserLikeForComment(
-    userId: string,
+    // userId: string,
+    user: UserRepoEntity,
     userStatus: AvailableLikeStatus,
-    commentId: string,
+    // commentId: string,
+    comment: CommentRepoEntity
   ) {
     let userLike = await this.commentLikes.findOne({
-      where: { userId: +userId },
+      where: { userId: user.id },
     });
 
     if (userLike) {
       //like exist
       userLike.status = userStatus;
     } else {
-      let user = await this.userRepo.ReadOneById(userId.toString());
-      if (!user) throw new NotFoundException();
+      // let user = await this.userRepo.ReadOneById(user.toString());
+      // if (!user) throw new NotFoundException();
 
-      let comment = (await this.commentRepo.ReadOneById(commentId)) as CommentRepoEntity;
-      if (!comment) throw new NotFoundException();
+      // let comment = (await this.commentRepo.ReadOneById(commentId)) as CommentRepoEntity;
+      // if (!comment) throw new NotFoundException();
 
       userLike = LikeForCommentRepoEntity.Init(userStatus, comment, user);
     }

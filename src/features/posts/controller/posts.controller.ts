@@ -31,6 +31,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { PostServiceSavePostCommentCommand } from '../use-cases/post.service.save.post.comment.usecase';
 import { CommentInfo } from '../entities/post.controller.get.comment';
 import { CommentRepoEntity } from "src/repo/comments/entities/commen.repo.entity";
+import { PostServiceGetPostCommentsCommand } from "../use-cases/post.service.get.post.comments.usecase";
 
 @Controller('posts')
 export class PostsController {
@@ -100,7 +101,13 @@ export class PostsController {
         @Param('id') id: string,
         @ReadAccessToken(TokenExpectation.Possibly) tokenLoad: JwtServiceUserAccessTokenLoad | undefined
     ) {
-        
+        let {count, comments} = await this.commandBus.execute<PostServiceGetPostCommentsCommand, {count: number, comments: CommentInfo[]}>(
+          new PostServiceGetPostCommentsCommand(id, sortBy, sortDirecrion, tokenLoad?.id, paginator.skipElements, paginator.pageSize)
+        )
+
+        let result = new OutputPaginator(count, comments, paginator);
+
+        return result;
     }
 
   ///hometask_19/api/posts/{postId}/like-status

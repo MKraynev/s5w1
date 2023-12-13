@@ -77,9 +77,9 @@ describe('CommentsRepo test', () => {
       
     );
 
-    let readAllComments = await commentRepo.ReadAll();
+    let readAllComments = await commentRepo.ReadAndCountManyForCertainPost(createPost.id.toString());
 
-    expect(readAllComments.length).toEqual(1);
+    expect(readAllComments.comments.length).toEqual(1);
     expect(savedComment).toMatchObject(readAllComments[0]);
 
     // let savedLike = await likeRepo.SetUserLikeForPost(

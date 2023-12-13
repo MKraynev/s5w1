@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostRepoEntity } from './entity/posts.repo.entity';
 import { PostsRepoService } from './posts.repo.service';
