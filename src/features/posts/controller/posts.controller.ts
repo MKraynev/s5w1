@@ -70,7 +70,7 @@ export class PostsController {
     tokenLoad: JwtServiceUserAccessTokenLoad | undefined,
   ) {
     
-
+    await new Promise((f) => setTimeout(f, 1500));
     let post = await this.commandBus.execute<PostServiceGetPostByIdCommand, PostInfo>(new PostServiceGetPostByIdCommand(id, tokenLoad?.id))
 
     return post;
@@ -125,12 +125,15 @@ export class PostsController {
     @Param('id') id: string,
     @ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad,
   ) {
+    // console.log('like: id, token, status', id, tokenLoad, likeData)
     let savedLikestatus = await this.likeRepo.SetUserLikeForPost(
       tokenLoad.id,
       likeData.likeStatus,
       id,
     );
 
+    await new Promise((f) => setTimeout(f, 1500));
+    // console.log('saved like for', id, tokenLoad.id, savedLikestatus)
     return;
   }
 

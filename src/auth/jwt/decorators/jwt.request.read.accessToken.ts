@@ -22,16 +22,16 @@ export const ReadAccessToken = createParamDecorator(
 
             case TokenExpectation.Possibly:
                 let headerAuthString = req.header('authorization');
-console.log(headerAuthString);
+
                 if (!headerAuthString || !headerAuthString.toLowerCase().startsWith("bearer "))
                     return undefined;
 
                 let tokenValue = headerAuthString.split(" ")[1];
-                console.log('token value', tokenValue);
+
                 if (tokenValue) {
                     try {
                         tokenLoad = await (new JwtService({ secret: JWT_SECRET })).verifyAsync(tokenValue) as JwtServiceUserAccessTokenLoad;
-                        console.log(tokenLoad)
+
                     }
                     catch (e) {
                     }

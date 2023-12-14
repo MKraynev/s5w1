@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   AvailableLikeStatus,
@@ -26,8 +26,14 @@ export class LikeForPostRepoService {
     userStatus: AvailableLikeStatus,
     postId: string,
   ) {
+    let postId_num = +postId;
+    let userId_num = +userId;
+
+    if(Number.isNaN(postId_num) || Number.isNaN(userId_num))
+      throw new ForbiddenException()
+
     let userLike = await this.postLikes.findOne({
-      where: { userId: +userId },
+      where: { userId: userId_num, postId: postId_num },
     });
 
     if (userLike) {
