@@ -69,9 +69,6 @@ describe('Blogs test', () => {
 
     let readAllLikes = await likeRepo.ReadAll();
 
-    console.log('saved like', savedLike);
-    console.log('read all like', readAllLikes);
-
     expect(readAllLikes.length).toEqual(1);
     expect(savedLike).toMatchObject(readAllLikes[0]);
   });

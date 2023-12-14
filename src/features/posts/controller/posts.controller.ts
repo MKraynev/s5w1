@@ -32,6 +32,7 @@ import { PostServiceSavePostCommentCommand } from '../use-cases/post.service.sav
 import { CommentInfo } from '../entities/post.controller.get.comment';
 import { CommentRepoEntity } from "src/repo/comments/entities/commen.repo.entity";
 import { PostServiceGetPostCommentsCommand } from "../use-cases/post.service.get.post.comments.usecase";
+import { PostInfo, PostServiceGetPostByIdCommand } from "../use-cases/post.service.get.post.by.id.usecase";
 
 @Controller('posts')
 export class PostsController {
@@ -68,11 +69,16 @@ export class PostsController {
     @ReadAccessToken(TokenExpectation.Possibly)
     tokenLoad: JwtServiceUserAccessTokenLoad | undefined,
   ) {
-    let post = await this.postRepo.ReadById(id, true);
+    
 
-    if (post) return post;
+    let post = await this.commandBus.execute<PostServiceGetPostByIdCommand, PostInfo>(new PostServiceGetPostByIdCommand(id, tokenLoad?.id))
 
-    throw new NotFoundException();
+    return post;
+    // let post = await this.postRepo.ReadById(id, true);
+
+    // if (post) return post;
+
+    // throw new NotFoundException();
   }
 
   @UseGuards(JwtAuthGuard)
@@ -104,7 +110,7 @@ export class PostsController {
         let {count, comments} = await this.commandBus.execute<PostServiceGetPostCommentsCommand, {count: number, comments: CommentInfo[]}>(
           new PostServiceGetPostCommentsCommand(id, sortBy, sortDirecrion, tokenLoad?.id, paginator.skipElements, paginator.pageSize)
         )
-
+        
         let result = new OutputPaginator(count, comments, paginator);
 
         return result;

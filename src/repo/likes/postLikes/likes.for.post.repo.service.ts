@@ -4,7 +4,7 @@ import {
   AvailableLikeStatus,
   LikeForPostRepoEntity,
 } from './entity/like.for.posts.repo.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsOrder, Repository } from 'typeorm';
 import { UsersRepoService } from '../../users/users.repo.service';
 import { PostsRepoService } from '../../posts/posts.repo.service';
 import { UserRepoEntity } from '../../users/entities/users.repo.entity';
@@ -56,19 +56,72 @@ export class LikeForPostRepoService {
     postId: string,
     userId: string,
   ): Promise<AvailableLikeStatus> {
+    let result: AvailableLikeStatus = 'None';
+
+    let postId_num = +postId;
+    let userId_num = +userId;
+
+    if(Number.isNaN(userId_num) || Number.isNaN(postId_num))
+      return result;
+
     let like = await this.postLikes.findOne({
       where: {
-        id: +postId,
-        userId: +userId,
+        postId: postId_num,
+        userId: userId_num,
       },
     });
 
-    if (like) {
-      //like exist
+    if (like)
       return like.status;
+    
+
+    return result;
+  }
+
+  // public async GetUserLike(postId: string,
+  //   userId: string,){
+  //     let likeNum = +userId;
+  //     if(!likeNum)
+  //       return null;
+
+  //   let like = await this.postLikes.findOne({
+  //     where: {
+  //       id: +postId,
+  //       userId: +userId,
+  //     },
+  //   });
+
+  //   return like;
+  // }
+
+  public async ReadMany(
+    postId: string, 
+    sortBy: keyof LikeForPostRepoEntity = 'createdAt',
+    sortDirection: 'asc' | 'desc' = 'desc',
+    skip: number = 0,
+    limit: number = 10,){
+      
+      let orderObj: FindOptionsOrder<LikeForPostRepoEntity> = {};
+    orderObj[sortBy] = sortDirection;
+
+    
+    let likes = await this.postLikes.find({
+      where: {postId: +postId},
+      order: orderObj,
+      skip: skip,
+      take: limit,
+      relations: {user: true
+      }
+    });
+
+    return likes;
     }
 
-    let noneStatus: AvailableLikeStatus = 'None';
-    return noneStatus;
-  }
+    public async Count(postId: string){
+      
+      let likes =  await this.postLikes.count({where: {postId: +postId, status: 'Like'}})
+      let dislikes = await this.postLikes.count({where: {postId: +postId, status: "Dislike"}})
+
+      return {likes, dislikes};
+    }
 }
