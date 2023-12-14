@@ -69,7 +69,7 @@ export class PostServiceGetPostByIdUseCase implements ICommandHandler<PostServic
             this.postRepo.ReadById(command.postId),
             this.likeRepo.GetUserStatus(command.postId, command.userId),
             this.likeRepo.Count(command.postId),
-            this.likeRepo.ReadMany(command.postId, 'createdAt', 'desc', 0, 3),
+            this.likeRepo.ReadManyLikes(command.postId, 'createdAt', 'desc', 0, 3),
           ]);
 
           if(!post)

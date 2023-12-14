@@ -100,7 +100,7 @@ export class LikeForPostRepoService {
   //   return like;
   // }
 
-  public async ReadMany(
+  public async ReadManyLikes(
     postId: string, 
     sortBy: keyof LikeForPostRepoEntity = 'createdAt',
     sortDirection: 'asc' | 'desc' = 'desc',
@@ -112,7 +112,7 @@ export class LikeForPostRepoService {
 
     
     let likes = await this.postLikes.find({
-      where: {postId: +postId},
+      where: {postId: +postId, status: 'Like'},
       order: orderObj,
       skip: skip,
       take: limit,
