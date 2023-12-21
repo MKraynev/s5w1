@@ -1,4 +1,4 @@
-import { UserDevice } from 'src/features/devices/use-cases/devices.service.get.users.devices.usecase';
+import { UserDevice } from "src/features/devices/use-cases/devices.service.get.users.devices.usecase";
 import { PostRepoEntity } from 'src/repo/posts/entity/posts.repo.entity';
 import { UserRepoEntity } from 'src/repo/users/entities/users.repo.entity';
 import {
@@ -68,3 +68,4 @@ export class LikeForPostRepoEntity {
     return like;
   }
 }
+

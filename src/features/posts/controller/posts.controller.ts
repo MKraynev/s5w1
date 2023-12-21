@@ -33,6 +33,7 @@ import { CommentInfo } from '../entities/post.controller.get.comment';
 import { CommentRepoEntity } from "src/repo/comments/entities/commen.repo.entity";
 import { PostServiceGetPostCommentsCommand } from "../use-cases/post.service.get.post.comments.usecase";
 import { PostInfo, PostServiceGetPostByIdCommand } from "../use-cases/post.service.get.post.by.id.usecase";
+import { PostServiceGetManyCommand } from "../use-cases/post.service.get.posts.many.usecase";
 
 @Controller('posts')
 export class PostsController {
@@ -51,15 +52,18 @@ export class PostsController {
     @ReadAccessToken(TokenExpectation.Possibly)
     tokenLoad: JwtServiceUserAccessTokenLoad | undefined,
   ) {
-    let { count, posts } = await this.postRepo.ReadMany(
-      sortBy,
-      sortDirecrion,
-      paginator.skipElements,
-      paginator.pageSize,
-      true,
-    );
+    // let { count, posts } = await this.postRepo.ReadMany(
+    //   sortBy,
+    //   sortDirecrion,
+    //   paginator.skipElements,
+    //   paginator.pageSize,
+    //   true,
+    // );
 
-    let pagedPosts = new OutputPaginator(count, posts, paginator);
+    await new Promise((f) => setTimeout(f, 1500));
+    
+    let {count, postInfos} = await this.commandBus.execute<PostServiceGetManyCommand, {count: number, postInfos: PostInfo[]}>(new PostServiceGetManyCommand(tokenLoad?.id, sortBy, sortDirecrion, paginator.skipElements, paginator.pageSize))
+    let pagedPosts = new OutputPaginator(count, postInfos, paginator);
     return pagedPosts;
   }
 

@@ -9,8 +9,9 @@ import { UsersRepoModule } from 'src/repo/users/users.repo.module';
 import { CqrsModule } from "@nestjs/cqrs";
 import { PostServiceGetPostCommentsUseCase } from "./use-cases/post.service.get.post.comments.usecase";
 import { PostServiceGetPostByIdUseCase } from "./use-cases/post.service.get.post.by.id.usecase";
+import { PostServiceGetManyUseCase } from "./use-cases/post.service.get.posts.many.usecase";
 
-const PostUseCases = [PostServiceSavePostCommentUseCase, PostServiceGetPostCommentsUseCase, PostServiceGetPostByIdUseCase];
+const PostUseCases = [PostServiceSavePostCommentUseCase, PostServiceGetPostCommentsUseCase, PostServiceGetPostByIdUseCase, PostServiceGetManyUseCase];
 
 @Module({
   imports: [CqrsModule, PostsRepoModule, CommentRepoModule, LikesForPostRepoModule, UsersRepoModule],
