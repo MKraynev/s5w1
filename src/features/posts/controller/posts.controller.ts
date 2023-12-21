@@ -62,7 +62,7 @@ export class PostsController {
 
     await new Promise((f) => setTimeout(f, 1500));
     
-    let {count, postInfos} = await this.commandBus.execute<PostServiceGetManyCommand, {count: number, postInfos: PostInfo[]}>(new PostServiceGetManyCommand(tokenLoad?.id, sortBy, sortDirecrion, paginator.skipElements, paginator.pageSize))
+    let {count, postInfos} = await this.commandBus.execute<PostServiceGetManyCommand, {count: number, postInfos: PostInfo[]}>(new PostServiceGetManyCommand(undefined, tokenLoad?.id, sortBy, sortDirecrion, paginator.skipElements, paginator.pageSize))
     let pagedPosts = new OutputPaginator(count, postInfos, paginator);
     return pagedPosts;
   }
@@ -129,7 +129,7 @@ export class PostsController {
     @Param('id') id: string,
     @ReadAccessToken() tokenLoad: JwtServiceUserAccessTokenLoad,
   ) {
-    // console.log('like: id, token, status', id, tokenLoad, likeData)
+    
     let savedLikestatus = await this.likeRepo.SetUserLikeForPost(
       tokenLoad.id,
       likeData.likeStatus,
@@ -137,7 +137,7 @@ export class PostsController {
     );
 
     await new Promise((f) => setTimeout(f, 1500));
-    // console.log('saved like for', id, tokenLoad.id, savedLikestatus)
+    
     return;
   }
 

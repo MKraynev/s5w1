@@ -32,6 +32,7 @@ import { LikeForPostRepoService } from "src/repo/likes/postLikes/likes.for.post.
 
 export class PostServiceGetManyCommand{
     constructor(
+        public blogId?: string,
     public userId?: string,
     public sortBy: keyof PostRepoEntity = 'createdAt',
     public sortDirection: 'asc' | 'desc' = 'desc',
@@ -49,12 +50,32 @@ export class PostServiceGetManyUseCase implements ICommandHandler<PostServiceGet
     constructor(private postRepo: PostsRepoService, private likeRepo: LikeForPostRepoService ) {}
 
     async execute(command: PostServiceGetManyCommand): Promise<{count: number, postInfos: PostInfo[]}> {
-        let {count, posts} = await this.postRepo.ReadMany(command.sortBy, command.sortDirection, command.skip, command.limit);
+        let foundCount: number;
+        let foundPosts: PostRepoEntity[];
 
-        let postInfos = await Promise.all(posts.map(async (post) => {
+        if(command.blogId){
+            let {count, posts} = await this.postRepo.ReadManyByBlogId(+command.blogId, command.sortBy, command.sortDirection, command.skip, command.limit) as {
+                count: number;
+                posts: PostRepoEntity[];
+            };
+
+            foundCount = count;
+            foundPosts = posts;
+        }
+        else{
+            let {count, posts} = await this.postRepo.ReadMany(command.sortBy, command.sortDirection, command.skip, command.limit) as {
+                count: number;
+                posts: PostRepoEntity[];
+            };
+
+            foundCount = count;
+            foundPosts = posts;
+        }
+        
+        //let (count, posts) = await this.postRepo.ReadMany(command.sortBy, command.sortDirection, command.skip, command.limit);
+
+        let postInfos = await Promise.all(foundPosts.map(async (post) => {
             
-            console.log('post info:', post);
-
             const [userlike, statistic, lastLikes] = await Promise.all([
                 this.likeRepo.GetUserStatus(post.id.toString(), command.userId),
                 this.likeRepo.Count(post.id.toString()),
@@ -65,7 +86,7 @@ export class PostServiceGetManyUseCase implements ICommandHandler<PostServiceGet
             return result;
         }))
 
-        return {count: count, postInfos: postInfos};
+        return {count: foundCount, postInfos: postInfos};
     }
     
 }

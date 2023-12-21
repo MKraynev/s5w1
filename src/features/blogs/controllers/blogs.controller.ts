@@ -63,7 +63,7 @@ export class BlogsController {
     tokenLoad: JwtServiceUserAccessTokenLoad | undefined,
   ) {
 
-    let {count, postInfos} = await this.comandBus.execute<PostServiceGetManyCommand, {count: number, postInfos: PostInfo[]}>(new PostServiceGetManyCommand(tokenLoad?.id, sortBy, sortDirecrion, paginator.skipElements, paginator.pageSize))
+    let {count, postInfos} = await this.comandBus.execute<PostServiceGetManyCommand, {count: number, postInfos: PostInfo[]}>(new PostServiceGetManyCommand(id, tokenLoad?.id, sortBy, sortDirecrion, paginator.skipElements, paginator.pageSize))
     // let { count, posts } = await this.postRepo.ReadManyByBlogId(
     //   +id,
     //   sortBy,
