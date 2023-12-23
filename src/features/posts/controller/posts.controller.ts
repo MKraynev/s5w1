@@ -22,9 +22,7 @@ import { OutputPaginator } from 'src/common/paginator/entities/query.paginator.o
 import { QueryPaginator } from 'src/common/paginator/query.paginator.decorator';
 import { ValidateParameters } from 'src/common/pipes/validation.pipe';
 import { PostRepoEntity } from 'src/repo/posts/entity/posts.repo.entity';
-import { PostsRepoService } from 'src/repo/posts/posts.repo.service';
 import { CommentSetEntity } from '../entities/post.controller.set.comment';
-import { CommentsRepoService } from 'src/repo/comments/comments.repo.service';
 import { LikeForPostRepoService } from 'src/repo/likes/postLikes/likes.for.post.repo.service';
 import { LikeSetEntity } from '../entities/post.controller.set.like.status';
 import { CommandBus } from '@nestjs/cqrs';
@@ -38,8 +36,6 @@ import { PostServiceGetManyCommand } from "../use-cases/post.service.get.posts.m
 @Controller('posts')
 export class PostsController {
   constructor(
-    private postRepo: PostsRepoService,
-    private commentRepo: CommentsRepoService,
     private likeRepo: LikeForPostRepoService,
     private commandBus: CommandBus,
   ) {}
@@ -52,13 +48,6 @@ export class PostsController {
     @ReadAccessToken(TokenExpectation.Possibly)
     tokenLoad: JwtServiceUserAccessTokenLoad | undefined,
   ) {
-    // let { count, posts } = await this.postRepo.ReadMany(
-    //   sortBy,
-    //   sortDirecrion,
-    //   paginator.skipElements,
-    //   paginator.pageSize,
-    //   true,
-    // );
 
     await new Promise((f) => setTimeout(f, 1500));
     
@@ -78,11 +67,6 @@ export class PostsController {
     let post = await this.commandBus.execute<PostServiceGetPostByIdCommand, PostInfo>(new PostServiceGetPostByIdCommand(id, tokenLoad?.id))
 
     return post;
-    // let post = await this.postRepo.ReadById(id, true);
-
-    // if (post) return post;
-
-    // throw new NotFoundException();
   }
 
   @UseGuards(JwtAuthGuard)
@@ -98,7 +82,7 @@ export class PostsController {
       PostServiceSavePostCommentCommand,
       CommentInfo
     >(new PostServiceSavePostCommentCommand(tokenLoad.id, id, commentData));
-
+    await new Promise((f) => setTimeout(f, 500));
     return comment;
   }
 
@@ -114,7 +98,7 @@ export class PostsController {
         let {count, comments} = await this.commandBus.execute<PostServiceGetPostCommentsCommand, {count: number, comments: CommentInfo[]}>(
           new PostServiceGetPostCommentsCommand(id, sortBy, sortDirecrion, tokenLoad?.id, paginator.skipElements, paginator.pageSize)
         )
-        
+        await new Promise((f) => setTimeout(f, 500));
         let result = new OutputPaginator(count, comments, paginator);
 
         return result;

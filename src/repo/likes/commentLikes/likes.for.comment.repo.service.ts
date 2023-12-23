@@ -16,10 +16,8 @@ export class LikeForCommentRepoService {
   ) {}
 
   public async SetUserLikeForComment(
-    // userId: string,
     user: UserRepoEntity,
     userStatus: AvailableLikeStatus,
-    // commentId: string,
     comment: CommentRepoEntity
   ) {
     let userLike = await this.commentLikes.findOne({
@@ -30,12 +28,6 @@ export class LikeForCommentRepoService {
       //like exist
       userLike.status = userStatus;
     } else {
-      // let user = await this.userRepo.ReadOneById(user.toString());
-      // if (!user) throw new NotFoundException();
-
-      // let comment = (await this.commentRepo.ReadOneById(commentId)) as CommentRepoEntity;
-      // if (!comment) throw new NotFoundException();
-
       userLike = LikeForCommentRepoEntity.Init(userStatus, comment, user);
     }
     return await this.commentLikes.save(userLike);

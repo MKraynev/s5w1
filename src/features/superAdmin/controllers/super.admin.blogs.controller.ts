@@ -1,18 +1,18 @@
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  NotFoundException,
-  Param,
-  Post,
-  Put,
-  Query,
-  UseFilters,
-  UseGuards,
-} from '@nestjs/common';
+	Body,
+	Controller,
+	Delete,
+	Get,
+	HttpCode,
+	HttpStatus,
+	NotFoundException,
+	Param,
+	Post,
+	Put,
+	Query,
+	UseFilters,
+	UseGuards,
+} from "@nestjs/common";
 import { SuperAdminGuard } from 'src/auth/guards/admin/guard.admin';
 import { ValidateParameters } from 'src/common/pipes/validation.pipe';
 import { BlogCreateEntity } from './entities/super.admin.create.blog.entity';
@@ -57,6 +57,7 @@ export class SuperAdminBlogController {
     );
 
     let pagedBlogs = new OutputPaginator(count, blogs, paginator);
+    await new Promise((f) => setTimeout(f, 500));
     return pagedBlogs;
   }
 
@@ -77,6 +78,8 @@ export class SuperAdminBlogController {
   ) {
     let updatedBlog = await this.blogRepo.UpdateById(+id, blogData, true);
 
+    await new Promise((f) => setTimeout(f, 500));
+
     if (updatedBlog) {
       return updatedBlog;
     }
@@ -89,6 +92,8 @@ export class SuperAdminBlogController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async DeleteBlog(@Param('id') id: string) {
     let count = await this.blogRepo.DeleteOne(+id);
+
+    await new Promise((f) => setTimeout(f, 500));
 
     if (count > 0) return;
 
@@ -111,6 +116,7 @@ export class SuperAdminBlogController {
     )) as PostGetResultEntity;
 
     createdPost.InitLikes();
+await new Promise((f) => setTimeout(f, 500));
 
     return createdPost;
   }
@@ -132,7 +138,7 @@ export class SuperAdminBlogController {
       true,
     );
     let pagedPosts = new OutputPaginator(count, posts, paginator);
-
+    await new Promise((f) => setTimeout(f, 500));
     return pagedPosts;
   }
 
@@ -147,7 +153,7 @@ export class SuperAdminBlogController {
     postData: PostCreateEntity,
   ) {
     let updatePost = await this.postRepo.UpdateOne(+postId, +blogId, postData);
-
+    await new Promise((f) => setTimeout(f, 500));
     if (updatePost) return;
 
     throw new NotFoundException();
@@ -162,7 +168,7 @@ export class SuperAdminBlogController {
     @Param('postId') postId: string,
   ) {
     let updatePost = await this.postRepo.DeleteOne(+postId, +blogId);
-
+    await new Promise((f) => setTimeout(f, 500));
     if (updatePost > 0) return;
 
     throw new NotFoundException();

@@ -1,13 +1,13 @@
 import {
-  Controller,
-  Delete,
-  ForbiddenException,
-  Get,
-  HttpCode,
-  HttpStatus,
-  NotFoundException,
-  Param,
-} from '@nestjs/common';
+	Controller,
+	Delete,
+	ForbiddenException,
+	Get,
+	HttpCode,
+	HttpStatus,
+	NotFoundException,
+	Param,
+} from "@nestjs/common";
 import { CommandBus } from '@nestjs/cqrs';
 import { ReadRefreshToken } from 'src/auth/jwt/decorators/jwt.request.read.refreshToken';
 import { JwtServiceUserRefreshTokenLoad } from 'src/auth/jwt/entities/jwt.service.refreshTokenLoad';
@@ -48,6 +48,8 @@ export class DeviceController {
       DeleteUserDevicesStatus
     >(new DeviceSerivceDeleteRestDevicesCommand(refreshToken));
 
+    await new Promise((f) => setTimeout(f, 500));
+    
     return;
   }
 
@@ -62,6 +64,8 @@ export class DeviceController {
       DeleteCertainUserDeviceStatus
     >(new DeviceSerivceDeleteCertainDeviceCommand(refreshToken, id));
 
+    await new Promise((f) => setTimeout(f, 500));
+    
     switch (deleteStatus) {
       case DeleteCertainUserDeviceStatus.Success:
         return;

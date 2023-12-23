@@ -17,7 +17,6 @@ import { PostsRepoService } from 'src/repo/posts/posts.repo.service';
 export class BlogsController {
   constructor(
     private blogRepo: BlogsRepoService,
-    private postRepo: PostsRepoService,
     private comandBus: CommandBus
   ) {}
 
@@ -64,14 +63,7 @@ export class BlogsController {
   ) {
 
     let {count, postInfos} = await this.comandBus.execute<PostServiceGetManyCommand, {count: number, postInfos: PostInfo[]}>(new PostServiceGetManyCommand(id, tokenLoad?.id, sortBy, sortDirecrion, paginator.skipElements, paginator.pageSize))
-    // let { count, posts } = await this.postRepo.ReadManyByBlogId(
-    //   +id,
-    //   sortBy,
-    //   sortDirecrion,
-    //   paginator.skipElements,
-    //   paginator.pageSize,
-    //   true,
-    // );
+
     let pagedPosts = new OutputPaginator(count, postInfos, paginator);
 
     return pagedPosts;
