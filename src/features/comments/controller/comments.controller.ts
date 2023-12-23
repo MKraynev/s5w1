@@ -26,6 +26,7 @@ import {
   CommentServicePutLikeStatusCommand,
   CommentServiceSetLikeStatus,
 } from '../use-cases/comments.service.put.like.status.usecase';
+import { _WAIT_ } from 'src/settings';
 
 @Controller('comments')
 export class CommentsController {
@@ -37,12 +38,10 @@ export class CommentsController {
     @ReadAccessToken(TokenExpectation.Possibly)
     tokenLoad: JwtServiceUserAccessTokenLoad
   ) {
-    console.log('get comment by id, userInfo:', tokenLoad);
-
     let comment = await this.commandBus.execute<CommentsServiceGetCommentByIdCommand, CommentInfo>(
       new CommentsServiceGetCommentByIdCommand(id, tokenLoad?.id)
     );
-    await new Promise((f) => setTimeout(f, 500));
+    await _WAIT_();
     return comment;
   }
 
@@ -73,7 +72,7 @@ export class CommentsController {
     let commentUpdated = await this.commandBus.execute<CommentServiceUpdateByIdCommand, boolean>(
       new CommentServiceUpdateByIdCommand(id, tokenLoad.id, commentData)
     );
-    await new Promise((f) => setTimeout(f, 500));
+    await _WAIT_();
     return;
   }
 

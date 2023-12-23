@@ -1,18 +1,18 @@
 import {
-	Body,
-	Controller,
-	Delete,
-	Get,
-	HttpCode,
-	HttpStatus,
-	NotFoundException,
-	Param,
-	Post,
-	Put,
-	Query,
-	UseFilters,
-	UseGuards,
-} from "@nestjs/common";
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
 import { SuperAdminGuard } from 'src/auth/guards/admin/guard.admin';
 import { ValidateParameters } from 'src/common/pipes/validation.pipe';
 import { BlogCreateEntity } from './entities/super.admin.create.blog.entity';
@@ -21,22 +21,20 @@ import { BlogRepoEntity } from 'src/repo/blogs/entity/blogs.repo.entity';
 import { QueryPaginator } from 'src/common/paginator/query.paginator.decorator';
 import { InputPaginator } from 'src/common/paginator/entities/query.paginator.input.entity';
 import { OutputPaginator } from 'src/common/paginator/entities/query.paginator.output.entity';
-import {
-  PostCreateEntity,
-  PostWithExpectedBlogIdCreateEntity,
-} from './entities/super.admin.create.post.entity';
+import { PostCreateEntity, PostWithExpectedBlogIdCreateEntity } from './entities/super.admin.create.post.entity';
 import { PostsRepoService } from 'src/repo/posts/posts.repo.service';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 import { DataBaseException } from './exceptions/super.admin.controller.exception.filter';
 import { PostRepoEntity } from 'src/repo/posts/entity/posts.repo.entity';
 import { PostGetResultEntity } from 'src/features/posts/entities/posts.controller.get.result.entity';
+import { _WAIT_ } from 'src/settings';
 
 @Controller('sa/blogs')
 @UseGuards(SuperAdminGuard)
 export class SuperAdminBlogController {
   constructor(
     private blogRepo: BlogsRepoService,
-    private postRepo: PostsRepoService,
+    private postRepo: PostsRepoService
   ) {}
 
   //get -> hometask_13/api/blogs
@@ -45,7 +43,7 @@ export class SuperAdminBlogController {
     @Query('searchNameTerm') nameTerm: string | undefined,
     @Query('sortBy') sortBy: keyof BlogRepoEntity = 'createdAt',
     @Query('sortDirection') sortDirecrion: 'desc' | 'asc' = 'desc',
-    @QueryPaginator() paginator: InputPaginator,
+    @QueryPaginator() paginator: InputPaginator
   ) {
     let { count, blogs } = await this.blogRepo.CountAndReadManyByName(
       nameTerm,
@@ -53,11 +51,11 @@ export class SuperAdminBlogController {
       sortDirecrion,
       paginator.skipElements,
       paginator.pageSize,
-      true,
+      true
     );
 
     let pagedBlogs = new OutputPaginator(count, blogs, paginator);
-    await new Promise((f) => setTimeout(f, 500));
+    await _WAIT_();
     return pagedBlogs;
   }
 
@@ -72,13 +70,10 @@ export class SuperAdminBlogController {
 
   @Put(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async UpdateBlog(
-    @Param('id') id: string,
-    @Body(new ValidateParameters()) blogData: BlogCreateEntity,
-  ) {
+  async UpdateBlog(@Param('id') id: string, @Body(new ValidateParameters()) blogData: BlogCreateEntity) {
     let updatedBlog = await this.blogRepo.UpdateById(+id, blogData, true);
 
-    await new Promise((f) => setTimeout(f, 500));
+    await _WAIT_();
 
     if (updatedBlog) {
       return updatedBlog;
@@ -93,7 +88,7 @@ export class SuperAdminBlogController {
   async DeleteBlog(@Param('id') id: string) {
     let count = await this.blogRepo.DeleteOne(+id);
 
-    await new Promise((f) => setTimeout(f, 500));
+    await _WAIT_();
 
     if (count > 0) return;
 
@@ -107,16 +102,12 @@ export class SuperAdminBlogController {
   async SaveBlogsPosts(
     @Param('id') id: string,
     @Body(new ValidateParameters())
-    postData: PostCreateEntity,
+    postData: PostCreateEntity
   ) {
-    let createdPost = (await this.postRepo.Create(
-      postData,
-      id,
-      true,
-    )) as PostGetResultEntity;
+    let createdPost = (await this.postRepo.Create(postData, id, true)) as PostGetResultEntity;
 
     createdPost.InitLikes();
-await new Promise((f) => setTimeout(f, 500));
+    await _WAIT_();
 
     return createdPost;
   }
@@ -127,7 +118,7 @@ await new Promise((f) => setTimeout(f, 500));
     @Param('id') id: string,
     @Query('sortBy') sortBy: keyof PostRepoEntity = 'createdAt',
     @Query('sortDirection') sortDirecrion: 'desc' | 'asc' = 'desc',
-    @QueryPaginator() paginator: InputPaginator,
+    @QueryPaginator() paginator: InputPaginator
   ) {
     let { count, posts } = await this.postRepo.ReadManyByBlogId(
       +id,
@@ -135,10 +126,10 @@ await new Promise((f) => setTimeout(f, 500));
       sortDirecrion,
       paginator.skipElements,
       paginator.pageSize,
-      true,
+      true
     );
     let pagedPosts = new OutputPaginator(count, posts, paginator);
-    await new Promise((f) => setTimeout(f, 500));
+    await _WAIT_();
     return pagedPosts;
   }
 
@@ -150,10 +141,10 @@ await new Promise((f) => setTimeout(f, 500));
     @Param('blogId') blogId: string,
     @Param('postId') postId: string,
     @Body(new ValidateParameters())
-    postData: PostCreateEntity,
+    postData: PostCreateEntity
   ) {
     let updatePost = await this.postRepo.UpdateOne(+postId, +blogId, postData);
-    await new Promise((f) => setTimeout(f, 500));
+    await _WAIT_();
     if (updatePost) return;
 
     throw new NotFoundException();
@@ -163,12 +154,9 @@ await new Promise((f) => setTimeout(f, 500));
   @Delete(':blogId/posts/:postId')
   @UseGuards(SuperAdminGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  async DeletePost(
-    @Param('blogId') blogId: string,
-    @Param('postId') postId: string,
-  ) {
+  async DeletePost(@Param('blogId') blogId: string, @Param('postId') postId: string) {
     let updatePost = await this.postRepo.DeleteOne(+postId, +blogId);
-    await new Promise((f) => setTimeout(f, 500));
+    await _WAIT_();
     if (updatePost > 0) return;
 
     throw new NotFoundException();

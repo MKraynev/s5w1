@@ -1,13 +1,14 @@
-import { InjectRepository } from "@nestjs/typeorm";
+import { InjectRepository } from '@nestjs/typeorm';
 import { BlogRepoEntity } from './entity/blogs.repo.entity';
 import { FindOptionsOrder, FindOptionsWhere, Raw, Repository } from 'typeorm';
 import { BlogCreateEntity } from 'src/features/superAdmin/controllers/entities/super.admin.create.blog.entity';
 import { BlogGetResultEntity } from 'src/features/blogs/entities/blogs.controller.get.result.entity';
+import { _WAIT_ } from 'src/settings';
 
 export class BlogsRepoService {
   constructor(
     @InjectRepository(BlogRepoEntity)
-    private blogsRepo: Repository<BlogRepoEntity>,
+    private blogsRepo: Repository<BlogRepoEntity>
   ) {}
 
   public async CountAndReadManyByName(
@@ -16,21 +17,17 @@ export class BlogsRepoService {
     sortDirection: 'asc' | 'desc' = 'desc',
     skip: number = 0,
     limit: number = 10,
-    format: boolean = false,
+    format: boolean = false
   ): Promise<{
     count: number;
     blogs: BlogRepoEntity[] | BlogGetResultEntity[];
   }> {
-    await new Promise((f) => setTimeout(f, 1500));
     let nameSearchPatten: FindOptionsWhere<BlogRepoEntity> = {};
 
     let caseInsensitiveSearchPattern = (column: string, inputValue: string) =>
       `LOWER(${column}) Like '%${inputValue.toLowerCase()}%'`;
 
-    if (namePattern)
-      nameSearchPatten['name'] = Raw((alias) =>
-        caseInsensitiveSearchPattern(alias, namePattern),
-      );
+    if (namePattern) nameSearchPatten['name'] = Raw((alias) => caseInsensitiveSearchPattern(alias, namePattern));
 
     let orderObj: FindOptionsOrder<BlogRepoEntity> = {};
     orderObj[sortBy] = sortDirection;
@@ -49,16 +46,12 @@ export class BlogsRepoService {
         // let sortedList = blogs.sort((blog_1, blog_2) =>
         //   blog_1.name.localeCompare(blog_2.name),
         // );
-        let sortedList = blogs.sort((blog_1, blog_2) =>
-          blog_1.name > blog_2.name ? 1 : -1,
-        );
+        let sortedList = blogs.sort((blog_1, blog_2) => (blog_1.name > blog_2.name ? 1 : -1));
         blogs = sortedList;
       }
     }
     if (format) {
-      let formatedBlogs = blogs.map(
-        (blogDb) => new BlogGetResultEntity(blogDb),
-      );
+      let formatedBlogs = blogs.map((blogDb) => new BlogGetResultEntity(blogDb));
 
       return { count, blogs: formatedBlogs };
     }
@@ -66,10 +59,7 @@ export class BlogsRepoService {
     return { count, blogs };
   }
 
-  public async ReadById(
-    id: number,
-    format: boolean = false,
-  ): Promise<BlogRepoEntity | BlogGetResultEntity> {
+  public async ReadById(id: number, format: boolean = false): Promise<BlogRepoEntity | BlogGetResultEntity> {
     let blog = await this.blogsRepo.findOneBy({ id: id });
 
     if (blog && format) return new BlogGetResultEntity(blog);
@@ -79,9 +69,8 @@ export class BlogsRepoService {
 
   public async Create(
     blogData: BlogCreateEntity,
-    format: boolean = false,
+    format: boolean = false
   ): Promise<BlogRepoEntity | BlogGetResultEntity> {
-    await new Promise((f) => setTimeout(f, 1500));
     let blog = BlogRepoEntity.Init(blogData);
 
     let savedBlog = await this.blogsRepo.save(blog);
@@ -91,21 +80,14 @@ export class BlogsRepoService {
     return savedBlog;
   }
 
-  public async Update(
-    blog: BlogRepoEntity,
-    format: boolean = false,
-  ): Promise<BlogRepoEntity | BlogGetResultEntity> {
+  public async Update(blog: BlogRepoEntity, format: boolean = false): Promise<BlogRepoEntity | BlogGetResultEntity> {
     let updatedBlog = await this.blogsRepo.save(blog);
     if (format) return new BlogGetResultEntity(updatedBlog);
 
     return updatedBlog;
   }
 
-  public async UpdateById(
-    blogId: number,
-    blogData: BlogCreateEntity,
-    format: boolean = false,
-  ) {
+  public async UpdateById(blogId: number, blogData: BlogCreateEntity, format: boolean = false) {
     let blog = await this.blogsRepo.findOneBy({ id: blogId });
 
     if (!blog) return null;

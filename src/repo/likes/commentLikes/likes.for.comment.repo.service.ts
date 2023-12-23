@@ -41,8 +41,6 @@ export class LikeForCommentRepoService {
   }
 
   public async GetUserStatus(commentId: string, userId?: string): Promise<AvailableLikeStatus> {
-    console.log('get user comment status:', commentId, userId);
-
     let result: AvailableLikeStatus = 'None';
 
     let commentId_num = +commentId;
@@ -56,8 +54,6 @@ export class LikeForCommentRepoService {
         userId: userId_num,
       },
     });
-
-    console.log('found like:', like);
 
     if (like) return like.status;
 

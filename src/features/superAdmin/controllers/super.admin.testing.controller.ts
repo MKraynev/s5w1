@@ -1,6 +1,7 @@
-import { Controller, Delete, HttpCode, HttpStatus, UseGuards } from "@nestjs/common";
+import { Controller, Delete, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
 import { SuperAdminGuard } from 'src/auth/guards/admin/guard.admin';
 import { BlogsRepoService } from 'src/repo/blogs/blogs.repo.service';
+import { CommentsRepoService } from 'src/repo/comments/comments.repo.service';
 import { DeviceRepoService } from 'src/repo/devices/devices.repo.service';
 import { LikeForCommentRepoService } from 'src/repo/likes/commentLikes/likes.for.comment.repo.service';
 import { LikeForPostRepoService } from 'src/repo/likes/postLikes/likes.for.post.repo.service';
@@ -15,6 +16,7 @@ export class AdminTestingController {
     private deviceRepo: DeviceRepoService,
     private blogRepo: BlogsRepoService,
     private postRepo: PostsRepoService,
+    private commentRepo: CommentsRepoService,
     private likeForPost: LikeForPostRepoService,
     private likeForComments: LikeForCommentRepoService
   ) {}
@@ -22,12 +24,13 @@ export class AdminTestingController {
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
   async DeleteAll() {
-    await Promise.all([this.blogRepo.DeleteAll(),
-    this.userRepo.DeleteAll(),
-    this.postRepo.DeleteAll(),
-    this.likeForPost.DeleteAll(),
-    this.likeForComments.DeleteAll(),
-    this.deviceRepo.DeleteAll()])
+    await this.blogRepo.DeleteAll();
+    await this.userRepo.DeleteAll();
+    await this.postRepo.DeleteAll();
+    await this.commentRepo.DeleteAll();
+    await this.likeForPost.DeleteAll();
+    await this.likeForComments.DeleteAll();
+    await this.deviceRepo.DeleteAll();
 
     return;
   }

@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module } from '@nestjs/common';
 import { UsersRepoModule } from 'src/repo/users/users.repo.module';
 import { AdminTestingController } from './controllers/super.admin.testing.controller';
 import { DeviceRepoModule } from 'src/repo/devices/devices.repo.module';
@@ -7,6 +7,7 @@ import { BlogsRepoModule } from 'src/repo/blogs/blogs.repo.module';
 import { PostsRepoModule } from 'src/repo/posts/posts.repo.module';
 import { LikesForPostRepoModule } from 'src/repo/likes/postLikes/likes.for.post.repo.module';
 import { LikesForCommentRepoModule } from 'src/repo/likes/commentLikes/likes.for.comment.repo.module';
+import { CommentRepoModule } from 'src/repo/comments/comments.repo.module';
 
 const adaminControllers = [AdminTestingController, SuperAdminBlogController];
 const adminImports = [
@@ -14,8 +15,9 @@ const adminImports = [
   DeviceRepoModule,
   BlogsRepoModule,
   PostsRepoModule,
+  CommentRepoModule,
   LikesForPostRepoModule,
-  LikesForCommentRepoModule
+  LikesForCommentRepoModule,
 ];
 @Module({
   imports: [...adminImports],
