@@ -1,9 +1,6 @@
-import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  AvailableLikeStatus,
-  LikeForPostRepoEntity,
-} from './entity/like.for.posts.repo.entity';
+import { AvailableLikeStatus, LikeForPostRepoEntity } from './entity/like.for.posts.repo.entity';
 import { FindOptionsOrder, Repository } from 'typeorm';
 import { UsersRepoService } from '../../users/users.repo.service';
 import { PostsRepoService } from '../../posts/posts.repo.service';
@@ -18,19 +15,14 @@ export class LikeForPostRepoService {
     @InjectRepository(LikeForPostRepoEntity)
     private postLikes: Repository<LikeForPostRepoEntity>,
     private userRepo: UsersRepoService,
-    private postRepo: PostsRepoService,
+    private postRepo: PostsRepoService
   ) {}
 
-  public async SetUserLikeForPost(
-    userId: string,
-    userStatus: AvailableLikeStatus,
-    postId: string,
-  ) {
+  public async SetUserLikeForPost(userId: string, userStatus: AvailableLikeStatus, postId: string) {
     let postId_num = +postId;
     let userId_num = +userId;
 
-    if(Number.isNaN(postId_num) || Number.isNaN(userId_num))
-      throw new ForbiddenException()
+    if (Number.isNaN(postId_num) || Number.isNaN(userId_num)) throw new ForbiddenException();
 
     let userLike = await this.postLikes.findOne({
       where: { userId: userId_num, postId: postId_num },
@@ -58,17 +50,13 @@ export class LikeForPostRepoService {
     return (await this.postLikes.delete({})).affected;
   }
 
-  public async GetUserStatus(
-    postId: string,
-    userId: string,
-  ): Promise<AvailableLikeStatus> {
+  public async GetUserStatus(postId: string, userId: string): Promise<AvailableLikeStatus> {
     let result: AvailableLikeStatus = 'None';
 
     let postId_num = +postId;
     let userId_num = +userId;
 
-    if(Number.isNaN(userId_num) || Number.isNaN(postId_num))
-      return result;
+    if (Number.isNaN(userId_num) || Number.isNaN(postId_num)) return result;
 
     let like = await this.postLikes.findOne({
       where: {
@@ -77,61 +65,39 @@ export class LikeForPostRepoService {
       },
     });
 
-    if (like)
-      return like.status;
-    
+    if (like) return like.status;
 
     return result;
   }
 
-  // public async GetUserLike(postId: string,
-  //   userId: string,){
-  //     let likeNum = +userId;
-  //     if(!likeNum)
-  //       return null;
-
-  //   let like = await this.postLikes.findOne({
-  //     where: {
-  //       id: +postId,
-  //       userId: +userId,
-  //     },
-  //   });
-
-  //   return like;
-  // }
-
   public async ReadManyLikes(
-    postId: string, 
+    postId: string,
     sortBy: keyof LikeForPostRepoEntity = 'createdAt',
     sortDirection: 'asc' | 'desc' = 'desc',
     skip: number = 0,
-    limit: number = 10,){
-      
-      let orderObj: FindOptionsOrder<LikeForPostRepoEntity> = {};
+    limit: number = 10
+  ) {
+    let orderObj: FindOptionsOrder<LikeForPostRepoEntity> = {};
     orderObj[sortBy] = sortDirection;
 
-    
     let likes = await this.postLikes.find({
-      where: {postId: +postId, status: 'Like'},
+      where: { postId: +postId, status: 'Like' },
       order: orderObj,
       skip: skip,
       take: limit,
-      relations: {user: true
-      }
+      relations: { user: true },
     });
 
     return likes;
-    }
+  }
 
-    public async Count(postId: string){
-      
-      let likes =  await this.postLikes.count({where: {postId: +postId, status: 'Like'}})
-      let dislikes = await this.postLikes.count({where: {postId: +postId, status: "Dislike"}})
+  public async Count(postId: string) {
+    let likes = await this.postLikes.count({ where: { postId: +postId, status: 'Like' } });
+    let dislikes = await this.postLikes.count({ where: { postId: +postId, status: 'Dislike' } });
 
-      return {likes, dislikes};
-    }
+    return { likes, dislikes };
+  }
 }
-
 
 // Expected: {"pagesCount":1,"page":1,"pageSize":10,"totalCount":6,"items":[{"id":"286","title":"post title","shortDescription":"description","content":"new post content","blogId":"273","blogName":"new blog","createdAt":"2023-12-14T18:57:01.085Z","extendedLikesInfo":{"dislikesCount":1,"likesCount":1,"myStatus":"Like","newestLikes":[{"addedAt":Any<String>,"userId":"214","login":"8173lg"}]}},{"id":"285","title":"post title","shortDescription":"description","content":"new post content","blogId":"273","blogName":"new blog","createdAt":"2023-12-14T18:57:01.032Z","extendedLikesInfo":{"dislikesCount":1,"likesCount":1,"myStatus":"None","newestLikes":[{"addedAt":Any<String>,"userId":"215","login":"8174lg"}]}},{"id":"284","title":"post title","shortDescription":"description","content":"new post content","blogId":"273","blogName":"new blog","createdAt":"2023-12-14T18:57:00.978Z","extendedLikesInfo":{"dislikesCount":0,"likesCount":4,"myStatus":"Like","newestLikes":[{"addedAt":Any<String>,"userId":"216","login":"8175lg"},{"addedAt":Any<String>,"userId":"215","login":"8174lg"},{"addedAt":Any<String>,"userId":"217","login":"8176lg"}]}},{"id":"283","title":"post title","shortDescription":"description","content":"new post content","blogId":"273","blogName":"new blog","createdAt":"2023-12-14T18:57:00.921Z","extendedLikesInfo":{"dislikesCount":1,"likesCount":0,"myStatus":"Dislike","newestLikes":[]}},{"id":"282","title":"post title","shortDescription":"description","content":"new post content","blogId":"273","blogName":"new blog","createdAt":"2023-12-14T18:57:00.861Z","extendedLikesInfo":{"dislikesCount":0,"likesCount":2,"myStatus":"None","newestLikes":[{"addedAt":Any<String>,"userId":"216","login":"8175lg"},{"addedAt":Any<String>,"userId":"215","login":"8174lg"}]}},{"id":"281","title":"post title","shortDescription":"description","content":"new post content","blogId":"273","blogName":"new blog","createdAt":"2023-12-14T18:57:00.803Z","extendedLikesInfo":{"dislikesCount":0,"likesCount":2,"myStatus":"Like","newestLikes":[{"addedAt":Any<String>,"userId":"215","login":"8174lg"},{"addedAt":Any<String>,"userId":"214","login":"8173lg"}]}}]}
 
