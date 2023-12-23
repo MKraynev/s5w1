@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsOrder, Repository } from 'typeorm';
 import { UsersRepoService } from '../../users/users.repo.service';
 import { LikeForCommentRepoEntity } from './entity/like.for.comment.repo.entity';
 import { AvailableLikeStatus } from '../postLikes/entity/like.for.posts.repo.entity';
@@ -21,7 +21,7 @@ export class LikeForCommentRepoService {
     comment: CommentRepoEntity
   ) {
     let userLike = await this.commentLikes.findOne({
-      where: { userId: user.id },
+      where: { userId: user.id, commentId: comment.id },
     });
 
     if (userLike) {
@@ -80,5 +80,26 @@ export class LikeForCommentRepoService {
     });
 
     return { like: likeCount, dislike: dislikeCount };
+  }
+
+  public async ReadManyLikes(
+    commentId: string,
+    sortBy: keyof LikeForCommentRepoEntity = 'createdAt',
+    sortDirection: 'asc' | 'desc' = 'desc',
+    skip: number = 0,
+    limit: number = 10
+  ) {
+    let orderObj: FindOptionsOrder<LikeForCommentRepoEntity> = {};
+    orderObj[sortBy] = sortDirection;
+
+    let likes = await this.commentLikes.find({
+      where: { commentId: +commentId, status: 'Like' },
+      order: orderObj,
+      skip: skip,
+      take: limit,
+      relations: { user: true },
+    });
+
+    return likes;
   }
 }
