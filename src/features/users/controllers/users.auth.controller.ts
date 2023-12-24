@@ -59,7 +59,7 @@ import {
 import { LogoutStatus, UsersServiceLogoutCommand } from '../use-cases/users.service.logout.usecase';
 import { _WAIT_ } from 'src/settings';
 
-@Throttle({ default: { limit: 6, ttl: 10000 } })
+@Throttle({ default: { limit: 5, ttl: 10000 } })
 @Controller('auth')
 export class UsersAuthController {
   constructor(private commandBus: CommandBus) {}
@@ -169,6 +169,7 @@ export class UsersAuthController {
   }
 
   //post -> /hometask_14/api/auth/registration-confirmation
+  @Throttle({ default: { limit: 5, ttl: 10000 } })
   @Post('registration-confirmation')
   @HttpCode(HttpStatus.NO_CONTENT)
   async ConfrimEmail(
@@ -200,6 +201,7 @@ export class UsersAuthController {
   @Post('registration')
   @HttpCode(HttpStatus.NO_CONTENT)
   async Registration(@Body(new ValidateParameters()) user: UserControllerRegistrationEntity) {
+    console.log('reg data:', user);
     let saveUserStatus = await this.commandBus.execute<UsersServiceRegistrationCommand, RegistrationUserStatus>(
       new UsersServiceRegistrationCommand(user)
     );

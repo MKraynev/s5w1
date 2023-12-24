@@ -45,13 +45,13 @@ export class UsersServiceRegistrationUseCase
     let savedUser = await this.usersRepo.Create(userInputData);
 
     let registrationCode = await this.jwtHandler.GenerateUserRegistrationCode({ id: savedUser.id.toString() });
-    console.log('send email:', Date.now());
+
     await this.emailService.SendRegistrationMail(
       userInputData.email,
       registrationCode,
       '/auth/registration-confirmation'
     );
-    console.log('send email done:', Date.now());
+
     return RegistrationUserStatus.Success;
   }
 }
