@@ -63,6 +63,7 @@ export class SuperAdminBlogController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async saveBlog(@Body(new ValidateParameters()) blog: BlogCreateEntity) {
+    await _WAIT_();
     let savedBlog = await this.blogRepo.Create(blog, true);
 
     return savedBlog;

@@ -23,4 +23,4 @@ export const POSTGRES_USERNAME = process.env.POSTGRES_USER || 'user';
 export const POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD || 'qwerty';
 export const POSTGRES_DATABASE = process.env.POSTGRES_DATABASE || 'TestDataBase';
 
-export const _WAIT_ = async () => await new Promise((f) => setTimeout(f, 1));
+export const _WAIT_ = async () => await new Promise((f) => setTimeout(f, 800));
