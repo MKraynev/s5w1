@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { QuizQuestionEntity } from './entity/questions.repo.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsOrder, FindOptionsWhere, Raw, Repository } from 'typeorm';
 import { QuizQuestionPostEntity } from 'src/features/questions/controller/entities/questions.controller.post.entity';
 import { Injectable } from '@nestjs/common';
 
@@ -28,5 +28,37 @@ export class QuizQuestionRepoService {
     let delRes = await this.repo.delete({ id: id_num });
 
     return delRes.affected;
+  }
+
+  public async CountAndReadManyByName(
+    bodyPattern: string,
+    sortBy: 'createdAt' = 'createdAt',
+    sortDirection: 'asc' | 'desc' = 'desc',
+    skip: number = 0,
+    limit: number = 10,
+    format: boolean = false
+  ): Promise<{
+    count: number;
+    questions: QuizQuestionEntity[];
+  }> {
+    let BodySearchPattern: FindOptionsWhere<QuizQuestionEntity> = {};
+
+    let caseInsensitiveSearchPattern = (column: string, inputValue: string) =>
+      `LOWER(${column}) Like '%${inputValue.toLowerCase()}%'`;
+
+    if (bodyPattern) BodySearchPattern['body'] = Raw((alias) => caseInsensitiveSearchPattern(alias, bodyPattern));
+
+    let orderObj: FindOptionsOrder<QuizQuestionEntity> = {};
+    orderObj[sortBy] = sortDirection;
+
+    let count = await this.repo.count({ where: BodySearchPattern });
+    let questions = await this.repo.find({
+      where: BodySearchPattern,
+      order: orderObj,
+      skip: skip,
+      take: limit,
+    });
+
+    return { count, questions: questions };
   }
 }

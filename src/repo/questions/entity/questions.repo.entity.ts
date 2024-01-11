@@ -29,4 +29,8 @@ export class QuizQuestionEntity {
 
     return res;
   }
+
+  public GetWithStringId() {
+    return Object.assign({}, this, { id: this.id.toString() });
+  }
 }
