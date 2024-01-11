@@ -41,7 +41,7 @@ export class QuizQuestionsController {
   ) {
     let { count, questions } = await this.quizRepo.CountAndReadManyByName(
       bodySearchTerm,
-      'createdAt',
+      sortBy,
       sortDirecrion,
       paginator.skipElements,
       paginator.pageSize,
@@ -86,7 +86,7 @@ export class QuizQuestionsController {
     throw new NotFoundException();
   }
 
-  @Put('questions/:id/publish')
+  @Put('questions/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async UpdateOne(@Param('id') id: string, @Body(new ValidateParameters()) questionData: QuizQuestionPostEntity) {
     let updatedCount = await this.quizRepo.UpdateOne(id, questionData);

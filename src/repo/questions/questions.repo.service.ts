@@ -64,7 +64,7 @@ export class QuizQuestionRepoService {
 
   public async CountAndReadManyByName(
     bodyPattern: string,
-    sortBy: 'createdAt' = 'createdAt',
+    sortBy: keyof QuizQuestionEntity = 'createdAt',
     sortDirection: 'asc' | 'desc' = 'desc',
     skip: number = 0,
     limit: number = 10,
@@ -80,7 +80,7 @@ export class QuizQuestionRepoService {
 
     if (bodyPattern) BodySearchPattern['body'] = Raw((alias) => caseInsensitiveSearchPattern(alias, bodyPattern));
 
-    let orderObj: FindOptionsOrder<QuizQuestionEntity> = {};
+    let orderObj: any = {};
     orderObj[sortBy] = sortDirection;
 
     let count = await this.repo.count({ where: BodySearchPattern });

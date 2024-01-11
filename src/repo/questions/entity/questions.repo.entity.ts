@@ -31,6 +31,11 @@ export class QuizQuestionEntity {
   }
 
   public GetWithStringId() {
-    return Object.assign({}, this, { id: this.id.toString() });
+    let updateVal = this.updatedAt.toISOString() === this.createdAt.toISOString() ? null : this.updatedAt.toISOString();
+
+    return Object.assign({}, this, {
+      id: this.id.toString(),
+      updatedAt: updateVal,
+    });
   }
 }
