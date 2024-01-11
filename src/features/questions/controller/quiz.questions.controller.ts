@@ -85,4 +85,14 @@ export class QuizQuestionsController {
 
     throw new NotFoundException();
   }
+
+  @Put('questions/:id/publish')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async UpdateOne(@Param('id') id: string, @Body(new ValidateParameters()) questionData: QuizQuestionPostEntity) {
+    let updatedCount = await this.quizRepo.UpdateOne(id, questionData);
+
+    if (updatedCount === 1) return;
+
+    throw new NotFoundException();
+  }
 }
