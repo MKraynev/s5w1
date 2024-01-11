@@ -19,4 +19,14 @@ export class QuizQuestionRepoService {
   public async DeleteAll() {
     await this.repo.delete({});
   }
+
+  public async DeleteById(id: string) {
+    let id_num = +id;
+
+    if (Number.isNaN(id_num)) return 0;
+
+    let delRes = await this.repo.delete({ id: id_num });
+
+    return delRes.affected;
+  }
 }
