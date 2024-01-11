@@ -8,6 +8,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -21,6 +22,7 @@ import { QuizQuestionRepoService } from 'src/repo/questions/questions.repo.servi
 import { QueryPaginator } from 'src/common/paginator/query.paginator.decorator';
 import { InputPaginator } from 'src/common/paginator/entities/query.paginator.input.entity';
 import { OutputPaginator } from 'src/common/paginator/entities/query.paginator.output.entity';
+import { QuizQuestionUpdatePublishStatusEntity } from './entities/questions.controller.update.publish.status.entity';
 
 @Controller('sa/quiz')
 @UseGuards(SuperAdminGuard)
@@ -67,6 +69,19 @@ export class QuizQuestionsController {
     let delCount = await this.quizRepo.DeleteById(id);
 
     if (delCount === 1) return;
+
+    throw new NotFoundException();
+  }
+
+  @Put('questions/:id/publish')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async SetPublishStatus(
+    @Param('id') id: string,
+    @Body(new ValidateParameters()) updateData: QuizQuestionUpdatePublishStatusEntity
+  ) {
+    let savedCount = await this.quizRepo.UpdatePublishStatus(id, updateData.published);
+
+    if (savedCount === 1) return;
 
     throw new NotFoundException();
   }

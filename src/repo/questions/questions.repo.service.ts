@@ -16,6 +16,22 @@ export class QuizQuestionRepoService {
     return saveRes;
   }
 
+  public async UpdatePublishStatus(id: string, status: boolean) {
+    let id_num = +id;
+
+    if (Number.isNaN(id_num)) return 0;
+
+    let question = await this.repo.findOneBy({ id: id_num });
+
+    if (!question) return 0;
+
+    question.published = status;
+
+    await this.repo.save(question);
+
+    return 1;
+  }
+
   public async DeleteAll() {
     await this.repo.delete({});
   }
