@@ -6,6 +6,7 @@ import { DeviceRepoService } from 'src/repo/devices/devices.repo.service';
 import { LikeForCommentRepoService } from 'src/repo/likes/commentLikes/likes.for.comment.repo.service';
 import { LikeForPostRepoService } from 'src/repo/likes/postLikes/likes.for.post.repo.service';
 import { PostsRepoService } from 'src/repo/posts/posts.repo.service';
+import { QuizQuestionRepoService } from 'src/repo/questions/questions.repo.service';
 import { UsersRepoService } from 'src/repo/users/users.repo.service';
 
 // @UseGuards(AdminGuard)
@@ -18,7 +19,8 @@ export class AdminTestingController {
     private postRepo: PostsRepoService,
     private commentRepo: CommentsRepoService,
     private likeForPost: LikeForPostRepoService,
-    private likeForComments: LikeForCommentRepoService
+    private likeForComments: LikeForCommentRepoService,
+    private quizQuestionsRepo: QuizQuestionRepoService
   ) {}
 
   @Delete()
@@ -31,6 +33,7 @@ export class AdminTestingController {
     await this.likeForPost.DeleteAll();
     await this.likeForComments.DeleteAll();
     await this.deviceRepo.DeleteAll();
+    await this.quizQuestionsRepo.DeleteAll();
 
     return;
   }

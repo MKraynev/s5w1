@@ -15,4 +15,8 @@ export class QuizQuestionRepoService {
 
     return saveRes;
   }
+
+  public async DeleteAll() {
+    await this.repo.delete({});
+  }
 }
