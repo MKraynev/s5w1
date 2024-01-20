@@ -1,4 +1,4 @@
-import { TestingModule } from "@nestjs/testing";
+import { TestingModule } from '@nestjs/testing';
 import { BlogCreateEntity } from 'src/features/superAdmin/controllers/entities/super.admin.create.blog.entity';
 import { BlogsRepoService } from 'src/repo/blogs/blogs.repo.service';
 import { TestBlogsRepoTestingModule } from 'src/repo/blogs/tests/settings/blogs.repo.testingModule';
@@ -10,7 +10,7 @@ import { TestCommentsRepoTestingModule } from './settings/comments.repo.testingM
 import { CommentsRepoService } from '../comments.repo.service';
 import { UserControllerRegistrationEntity } from 'src/features/users/controllers/entities/users.controller.registration.entity';
 import { CommentSetEntity } from 'src/features/posts/entities/post.controller.set.comment';
-import { PostRepoEntity } from "src/repo/posts/entity/posts.repo.entity";
+import { PostRepoEntity } from 'src/repo/posts/entity/posts.repo.entity';
 
 describe('CommentsRepo test', () => {
   let module: TestingModule;
@@ -44,38 +44,21 @@ describe('CommentsRepo test', () => {
     await likeRepo.DeleteAll();
     await commentRepo.DeleteAll();
 
-    let blog = new BlogCreateEntity(
-      'some blog',
-      'some desc',
-      'www.someurl.com',
-    );
+    let blog = new BlogCreateEntity('some blog', 'some desc', 'www.someurl.com');
 
     let createdBlog = await blogRepo.Create(blog);
     expect(createdBlog).toMatchObject(blog);
 
-    let post = new PostCreateEntity(
-      'some title',
-      'some short',
-      'some content lorem lorem lorem lorem lorem lorem',
-    );
-    let createPost = await postRepo.Create(post, createdBlog.id.toString()) as PostRepoEntity;
+    let post = new PostCreateEntity('some title', 'some short', 'some content lorem lorem lorem lorem lorem lorem');
+    let createPost = (await postRepo.Create(post, createdBlog.id.toString())) as PostRepoEntity;
 
-    let userCreateData = new UserControllerRegistrationEntity(
-      'somelogin',
-      'someemail@mail.com',
-      'somepass',
-    );
+    let userCreateData = new UserControllerRegistrationEntity('somelogin', 'someemail@mail.com', 'somepass');
     let user = await userRepo.Create(userCreateData, true);
 
     let comment = new CommentSetEntity();
     comment.content = 'some content for comment';
 
-    let savedComment = await commentRepo.Create(
-      user,
-      createPost,
-      comment,
-      
-    );
+    let savedComment = await commentRepo.Create(user, createPost, comment);
 
     let readAllComments = await commentRepo.ReadAndCountManyForCertainPost(createPost.id.toString());
 
