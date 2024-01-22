@@ -15,12 +15,15 @@ import {
 export type AnswerStatus = 'correct' | 'incorrect';
 
 @Entity('Answers')
-export class AnswerRepoEntity {
+export class QuizGameAnswerRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   status: AnswerStatus;
+
+  @Column({ nullable: false, length: 50 })
+  answer: string;
 
   @ManyToOne(() => UserRepoEntity, {
     nullable: false,
@@ -34,9 +37,10 @@ export class AnswerRepoEntity {
   @ManyToOne(() => QuizQuestionEntity)
   @JoinColumn()
   question: QuizQuestionEntity;
+  @Column()
+  questionId: number;
 
-  @OneToOne(() => GamesRepoEntity)
-  @JoinColumn()
+  @ManyToOne(() => GamesRepoEntity, { nullable: false, onDelete: 'CASCADE' })
   game: GamesRepoEntity;
   @Column()
   gameId: number;

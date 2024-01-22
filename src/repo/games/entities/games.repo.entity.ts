@@ -1,4 +1,4 @@
-import { AnswerRepoEntity } from 'src/repo/answers/entity/answer.repo.entity';
+import { QuizGameAnswerRepoEntity } from 'src/repo/games/entities/games.answer.repo.entity';
 import { QuizQuestionEntity } from 'src/repo/questions/entity/questions.repo.entity';
 import { UserRepoEntity } from 'src/repo/users/entities/users.repo.entity';
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -10,30 +10,24 @@ export class GamesRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => UserRepoEntity, {
-    nullable: false,
-    onDelete: 'CASCADE',
-  })
-  player_1_id: UserRepoEntity;
+  @ManyToOne(() => UserRepoEntity, { nullable: false })
+  player_1: UserRepoEntity;
 
-  @OneToMany(() => AnswerRepoEntity, (answer) => answer.game)
-  player_1_answers: AnswerRepoEntity[];
+  @ManyToOne(() => UserRepoEntity)
+  player_2: UserRepoEntity;
 
-  @ManyToOne(() => UserRepoEntity, {
-    nullable: false,
-    onDelete: 'CASCADE',
-  })
-  player_2_id: UserRepoEntity;
+  @OneToMany(() => QuizGameAnswerRepoEntity, (answer) => answer.game)
+  answers_p1: QuizGameAnswerRepoEntity[];
 
-  @OneToMany(() => AnswerRepoEntity, (answer) => answer.game)
-  player_2_answers: AnswerRepoEntity[];
-
-  @ManyToMany(() => QuizQuestionEntity, {
-    nullable: false,
-  })
-  @JoinColumn()
-  questions: QuizQuestionEntity[];
+  @OneToMany(() => QuizGameAnswerRepoEntity, (answer) => answer.game)
+  answers_p2: QuizGameAnswerRepoEntity[];
 
   @Column()
+  player_1_score: number;
+
+  @Column()
+  player_2_score: number;
+
+  @Column({ nullable: false })
   status: AvailableGameStatus;
 }

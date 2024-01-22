@@ -11,6 +11,7 @@ import { PostModule } from './features/posts/post.module';
 import { CommentsModule } from './features/comments/comments.module';
 import { QuizQuestRepoModule } from './repo/questions/questions.repo.module';
 import { QuizQuestionsModule } from './features/questions/quiz.questions.module';
+import { GamesModule } from './features/games/games.module';
 
 export const typeormConfiguration = TypeOrmModule.forRoot({
   type: 'postgres',
@@ -31,6 +32,7 @@ export const typeormConfiguration = TypeOrmModule.forRoot({
     PostModule,
     CommentsModule,
     QuizQuestionsModule,
+    GamesModule,
     typeormConfiguration,
     ThrottlerModule.forRoot([{ ttl: 20000, limit: 300 }]),
     SuperAdminModule,
