@@ -10,5 +10,6 @@ export const QuizGameUseCases = [GamesGetCurrentUserGameUseCase];
   imports: [QuizGameRepoModule, CqrsModule],
   controllers: [GamesPairGameQuizController],
   providers: [...QuizGameUseCases],
+  exports: [...QuizGameUseCases],
 })
 export class GamesModule {}
