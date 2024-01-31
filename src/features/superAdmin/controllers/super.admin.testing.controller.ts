@@ -3,6 +3,7 @@ import { SuperAdminGuard } from 'src/auth/guards/admin/guard.admin';
 import { BlogsRepoService } from 'src/repo/blogs/blogs.repo.service';
 import { CommentsRepoService } from 'src/repo/comments/comments.repo.service';
 import { DeviceRepoService } from 'src/repo/devices/devices.repo.service';
+import { GamesRepoService } from 'src/repo/games/games.repo.service';
 import { LikeForCommentRepoService } from 'src/repo/likes/commentLikes/likes.for.comment.repo.service';
 import { LikeForPostRepoService } from 'src/repo/likes/postLikes/likes.for.post.repo.service';
 import { PostsRepoService } from 'src/repo/posts/posts.repo.service';
@@ -20,7 +21,8 @@ export class AdminTestingController {
     private commentRepo: CommentsRepoService,
     private likeForPost: LikeForPostRepoService,
     private likeForComments: LikeForCommentRepoService,
-    private quizQuestionsRepo: QuizQuestionRepoService
+    private quizQuestionsRepo: QuizQuestionRepoService,
+    private quizGameRepo: GamesRepoService
   ) {}
 
   @Delete()
@@ -34,7 +36,7 @@ export class AdminTestingController {
     await this.likeForComments.DeleteAll();
     await this.deviceRepo.DeleteAll();
     await this.quizQuestionsRepo.DeleteAll();
-
+    await this.quizGameRepo.DeleteAll();
     return;
   }
 }

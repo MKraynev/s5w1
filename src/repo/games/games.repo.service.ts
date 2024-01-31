@@ -26,4 +26,8 @@ export class GamesRepoService {
 
     return game;
   }
+
+  public async DeleteAll() {
+    await this.repo.delete({});
+  }
 }

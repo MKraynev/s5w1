@@ -10,9 +10,9 @@ export class GamesRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => UserRepoEntity, { nullable: false })
+  @ManyToOne(() => UserRepoEntity, { nullable: true })
   player_1: UserRepoEntity;
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   player_1_id: number;
 
   @ManyToOne(() => UserRepoEntity, { nullable: true })

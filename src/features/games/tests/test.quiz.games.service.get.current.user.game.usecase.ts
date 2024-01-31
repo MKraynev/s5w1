@@ -37,7 +37,7 @@ describe(`${GamesGetCurrentUserGameUseCase.name} tests`, () => {
 
     expect(game).toEqual({
       id: expect.any(Number),
-      player_1_id: expect.any(Number),
+      player_1_id: user.id,
       player_2_id: null,
       player_1_score: null,
       player_2_score: null,
