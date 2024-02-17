@@ -10,14 +10,16 @@ export class GamesRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => UserRepoEntity, { nullable: true })
+  @ManyToOne(() => UserRepoEntity, { nullable: false })
+  @JoinColumn({ name: 'player_1_id' })
   player_1: UserRepoEntity;
-  @Column({ nullable: true })
+  @Column()
   player_1_id: number;
 
   @ManyToOne(() => UserRepoEntity, { nullable: true })
+  @JoinColumn({ name: 'player_2_id' })
   player_2: UserRepoEntity;
-  @Column({ nullable: true })
+  @Column()
   player_2_id: number;
 
   @OneToMany(() => QuizGameAnswerRepoEntity, (answer) => answer.game)

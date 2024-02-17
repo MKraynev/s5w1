@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { QuizGameRepoModule } from 'src/repo/games/games.repo.module';
 import { GamesPairGameQuizController } from './controllers/games.pair.game.quiz.controller';
-import { GamesGetCurrentUserGameUseCase } from './use-cases/games.get.current.user.game.usecase';
+import { QuizGameMyCurrentUseCase } from './use-cases/quiz.game.my.current.usecase';
 import { CqrsModule } from '@nestjs/cqrs';
 
-export const QuizGameUseCases = [GamesGetCurrentUserGameUseCase];
+export const QuizGameUseCases = [QuizGameMyCurrentUseCase];
 
 @Module({
   imports: [QuizGameRepoModule, CqrsModule],

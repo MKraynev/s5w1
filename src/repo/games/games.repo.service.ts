@@ -1,12 +1,13 @@
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { GamesRepoEntity } from './entities/games.repo.entity';
 import { UserRepoEntity } from '../users/entities/users.repo.entity';
 
 export class GamesRepoService {
   constructor(
     @InjectRepository(GamesRepoEntity)
-    private repo: Repository<GamesRepoEntity>
+    private repo: Repository<GamesRepoEntity>,
+    @InjectDataSource() public dataSource: DataSource
   ) {}
 
   public async CreateGame(hostPlayer: UserRepoEntity) {
@@ -21,7 +22,7 @@ export class GamesRepoService {
     let game = await this.repo
       .createQueryBuilder('game')
       .where('game.player_1_id = :id OR game.player_2_id = :id', { id: userId_num })
-      .andWhere('game.status = :status', { status: 'Active' })
+      .andWhere('game.status = Active OR game.status = PendingSecondPlayer')
       .getOneOrFail();
 
     return game;

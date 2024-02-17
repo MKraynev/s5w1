@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { InjectDataSource, TypeOrmModule } from '@nestjs/typeorm';
 import { QuizQuestionEntity } from './entity/questions.repo.entity';
 import { QuizQuestionRepoService } from './questions.repo.service';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [TypeOrmModule.forFeature([QuizQuestionEntity])],
