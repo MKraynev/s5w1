@@ -8,13 +8,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 export class UsersRepoService {
   constructor(
     @InjectRepository(UserRepoEntity)
-    private userRepo: Repository<UserRepoEntity>,
+    private userRepo: Repository<UserRepoEntity>
   ) {}
 
-  public async Create(
-    userData: UserControllerRegistrationEntity,
-    confirmed: boolean = false,
-  ) {
+  public async Create(userData: UserControllerRegistrationEntity, confirmed: boolean = false) {
     let userDto = await UserRepoEntity.Init(userData, confirmed);
     let savedUser = await this.userRepo.save(userDto);
 
@@ -27,10 +24,9 @@ export class UsersRepoService {
     sortBy: keyof UserRepoEntity = 'createdAt',
     sortDirection: 'asc' | 'desc' = 'desc',
     skip: number = 0,
-    limit: number = 10,
+    limit: number = 10
   ) {
-    if (login === undefined && email === undefined)
-      return { countAll: 0, foundusers: [] };
+    if (login === undefined && email === undefined) return { countAll: 0, foundusers: [] };
 
     let caseInsensitiveSearchPattern = (column: string, inputValue: string) =>
       `LOWER(${column}) Like '%${inputValue.toLowerCase()}%'`;
@@ -40,17 +36,13 @@ export class UsersRepoService {
     let whereStatement: FindOptionsWhere<UserRepoEntity>[] = [];
 
     if (login) {
-      loginSearchPatten['login'] = Raw((alias) =>
-        caseInsensitiveSearchPattern(alias, login),
-      );
+      loginSearchPatten['login'] = Raw((alias) => caseInsensitiveSearchPattern(alias, login));
 
       whereStatement.push(loginSearchPatten);
     }
 
     if (email) {
-      emailSearchPatten['email'] = Raw((alias) =>
-        caseInsensitiveSearchPattern(alias, email),
-      );
+      emailSearchPatten['email'] = Raw((alias) => caseInsensitiveSearchPattern(alias, email));
       whereStatement.push(emailSearchPatten);
     }
 
@@ -95,10 +87,7 @@ export class UsersRepoService {
     });
   }
 
-  public async ReadOneByPropertyValue(
-    propertyName: keyof UserRepoEntity,
-    propertyValue: any,
-  ) {
+  public async ReadOneByPropertyValue(propertyName: keyof UserRepoEntity, propertyValue: any) {
     let findObj: any = {};
     findObj[propertyName] = propertyValue;
 
@@ -110,6 +99,15 @@ export class UsersRepoService {
     let updatedUser = await this.userRepo.save(user);
 
     return updatedUser;
+  }
+  public async GetIdLogin(user_1_id: string | number, user_2_id: string | number) {
+    let usersInfo = (await this.userRepo
+      .createQueryBuilder()
+      .select('id, login')
+      .where('id = :id1 OR id = :id2', { id1: user_1_id, id2: user_2_id })
+      .execute()) as { id: number; login: string }[];
+
+    return usersInfo;
   }
 
   public async DeleteOne(id: number) {

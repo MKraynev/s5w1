@@ -17,24 +17,16 @@ export class GamesRepoService {
     let savedGame = await this.repo.save(game);
     return savedGame;
   }
-  public async GetUserCurrentGame(userId: string): Promise<QuizGameGetMyCurrentEntity> {
-    let userId_num = +userId;
+  public async GetUserCurrentGame(userId: string): Promise<GamesRepoEntity> {
     let result: QuizGameGetMyCurrentEntity;
 
     let gameInfo = await this.repo
       .createQueryBuilder('game')
-      .where('game.player_1_id = :id OR game.player_2_id = :id', { id: userId_num })
-      .andWhere('game.status = Active OR game.status = PendingSecondPlayer')
+      .where('game.player_1_id = :id OR game.player_2_id = :id', { id: userId })
+      .andWhere('game.status = :active OR game.status = :pending', { active: 'Active', pending: 'PendingSecondPlayer' })
       .getOneOrFail();
 
-    let playersInfo = await this.dataSource.query(`
-    SELECT id, login
-    FROM public."Users"
-    WHERE id = ${gameInfo.player_1_id} OR id= ${gameInfo.player_2_id}`);
-    return result;
-
-    let questionsInfo = await this.dataSource.query(`
-    SELECT `);
+    return gameInfo;
   }
 
   public async DeleteAll() {

@@ -19,9 +19,6 @@ export class QuizGameAnswerRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  status: AnswerStatus;
-
   @Column({ nullable: false, length: 50 })
   answer: string;
 

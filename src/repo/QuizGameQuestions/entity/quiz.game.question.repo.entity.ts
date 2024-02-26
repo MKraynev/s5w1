@@ -1,22 +1,26 @@
 import { GamesRepoEntity } from 'src/repo/games/entities/games.repo.entity';
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { QuizQuestionEntity } from 'src/repo/questions/entity/questions.repo.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('QuizGameQuestion')
 export class QuizGameQuestionRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => GamesRepoEntity)
+  @ManyToOne(() => GamesRepoEntity)
   @JoinColumn({ name: 'gameId' })
   game: GamesRepoEntity;
 
   @Column()
   gameId: number;
 
-  @OneToOne(() => QuizGameQuestionRepoEntity)
+  @ManyToOne(() => QuizQuestionEntity)
   @JoinColumn({ name: 'questionId' })
-  question: QuizGameQuestionRepoEntity;
+  question: QuizQuestionEntity;
 
   @Column({ nullable: false })
   questionId: number;
+
+  @Column()
+  orderNum: number;
 }

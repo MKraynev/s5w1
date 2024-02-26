@@ -11,6 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { LikeForCommentRepoEntity } from 'src/repo/likes/commentLikes/entity/like.for.comment.repo.entity';
 import { CommentRepoModule } from 'src/repo/comments/comments.repo.module';
 import { QuizQuestRepoModule } from 'src/repo/questions/questions.repo.module';
+import { QuizGameQuestionsModule } from 'src/repo/QuizGameQuestions/quiz.game.questions.repo.module';
 
 export const TestQuizGamesTestingModule = Test.createTestingModule({
   imports: [
@@ -22,6 +23,7 @@ export const TestQuizGamesTestingModule = Test.createTestingModule({
     LikesForCommentRepoModule,
     CommentRepoModule,
     QuizQuestRepoModule,
+    QuizGameQuestionsModule,
     TypeOrmModule.forFeature([LikeForCommentRepoEntity]),
   ],
   providers: [...QuizGameUseCases],

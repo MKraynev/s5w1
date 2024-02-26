@@ -1,4 +1,6 @@
 export class QuizGamePlayerInfoEntity {
-  public id: string;
-  public login: string;
+  constructor(
+    public id: string,
+    public login: string
+  ) {}
 }

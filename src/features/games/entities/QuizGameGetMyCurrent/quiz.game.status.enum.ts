@@ -1,5 +1,1 @@
-export enum QuizGameStatus {
-  'PendingSecondPlayer',
-  'Active',
-  'Finished',
-}
+export type QuizGameStatus = 'PendingSecondPlayer' | 'Active' | 'Finished';

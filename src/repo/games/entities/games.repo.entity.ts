@@ -1,9 +1,18 @@
+import { QuizGameStatus } from 'src/features/games/entities/QuizGameGetMyCurrent/quiz.game.status.enum';
 import { QuizGameAnswerRepoEntity } from 'src/repo/games/entities/games.answer.repo.entity';
 import { QuizQuestionEntity } from 'src/repo/questions/entity/questions.repo.entity';
 import { UserRepoEntity } from 'src/repo/users/entities/users.repo.entity';
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-
-export type AvailableGameStatus = 'PendingSecondPlayer' | 'Active' | 'Finished';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('Games')
 export class GamesRepoEntity {
@@ -35,9 +44,21 @@ export class GamesRepoEntity {
   player_2_score: number;
 
   @Column({ nullable: false })
-  status: AvailableGameStatus;
+  status: QuizGameStatus;
 
-  public static Init(hostPlayer: UserRepoEntity, status: AvailableGameStatus = 'PendingSecondPlayer') {
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt: Date;
+
+  @Column({ nullable: true })
+  startedAt: Date;
+
+  @Column({ nullable: true })
+  endedAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updatedAt: Date;
+
+  public static Init(hostPlayer: UserRepoEntity, status: QuizGameStatus = 'PendingSecondPlayer') {
     let game = new GamesRepoEntity();
     game.player_1 = hostPlayer;
     game.player_1_id = hostPlayer.id;
@@ -45,4 +66,5 @@ export class GamesRepoEntity {
 
     return game;
   }
+  public static AnswerScore: number = 1;
 }
