@@ -7,6 +7,8 @@ import { GamesRepoService } from 'src/repo/games/games.repo.service';
 import { UserControllerRegistrationEntity } from 'src/features/users/controllers/entities/users.controller.registration.entity';
 import { GamesRepoEntity } from 'src/repo/games/entities/games.repo.entity';
 import { QuizGameAnswerRepoEntity } from 'src/repo/games/entities/games.answer.repo.entity';
+import { QuizGameConnectToGameCommand } from '../use-cases/quiz.game.connect.to.game.usecase';
+import { QuizGameInfo } from '../entities/QuizGameGetMyCurrent/_quiz.game.get.my.current.usecase.entity';
 
 describe(`${QuizGameMyCurrentUseCase.name} tests`, () => {
   let module: TestingModule;
@@ -25,40 +27,13 @@ describe(`${QuizGameMyCurrentUseCase.name} tests`, () => {
   });
 
   it('Return created game by user.id', async () => {
-    // await quizGameRepo.DeleteAll();
-    // let user = await userRepo.Create(new UserControllerRegistrationEntity('user', 'email@mail.com', '12345'), true);
-    // let savedGames = await quizGameRepo.CreateGame(user);
-    let game = await commandBus.execute<QuizGameMyCurrentCommand, GamesRepoEntity>(new QuizGameMyCurrentCommand('31'));
+    await quizGameRepo.DeleteAll();
+    let user = await userRepo.Create(new UserControllerRegistrationEntity('user', 'email@mail.com', '12345'), true);
 
-    console.log(game);
-    expect(1).toEqual(1);
-    // console.log('repo res:', game);
-    // expect(game).toEqual({
-    //   id: expect.any(Number),
-    //   player_1_id: user.id,
-    //   player_2_id: null,
-    //   player_1_score: null,
-    //   player_2_score: null,
-    //   status: 'PendingSecondPlayer',
-    // });
-    // let rawGame = await quizGameRepo.dataSource.query(`
-    // SELECT m."questionId", q."body" question, q."correctAnswers" answer, m."orderNum", m."p1_answer", m."p1_answer_time", m."p2_answer", m."p2_answer_time"
-    // FROM public."QuizQuestions" q
-    // RIGHT JOIN (
-    //   SELECT m1.*, a2."answer" p2_answer, a2."createdAt" p2_answer_time
-    //   FROM public."Answers" a2
-    //   RIGHT JOIN (
-    //     SELECT qq."gameId", qq."questionId", qq."orderNum", a1."answer" p1_answer, a1."createdAt" p1_answer_time
-    //     FROM public."QuizGameQuestion" qq
-    //     LEFT JOIN public."Answers" a1
-    //     ON qq."questionId" = a1."questionId" AND qq."gameId" = 5 AND a1."userId" = 31
-    //   ) as m1
-    //   ON a2."questionId" = m1."questionId" AND a2."userId" = 32
-    // ) m
-    // ON m."questionId" = q."id"
-    // ORDER BY m."orderNum" ASC;
-    // `);
-    // console.log('raw res:', rawGame);
-    // expect(1).toEqual(1);
+    let game = await commandBus.execute<QuizGameConnectToGameCommand, QuizGameInfo>(
+      new QuizGameConnectToGameCommand(user.id.toString(), user.login)
+    );
+
+    expect(game).toEqual({});
   });
 });

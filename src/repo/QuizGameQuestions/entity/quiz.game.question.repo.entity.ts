@@ -7,7 +7,7 @@ export class QuizGameQuestionRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => GamesRepoEntity)
+  @ManyToOne(() => GamesRepoEntity, { nullable: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'gameId' })
   game: GamesRepoEntity;
 

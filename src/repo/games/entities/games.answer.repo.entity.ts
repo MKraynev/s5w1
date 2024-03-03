@@ -19,11 +19,11 @@ export class QuizGameAnswerRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false, length: 50 })
+  @Column({ nullable: true, length: 50 })
   answer: string;
 
   @ManyToOne(() => UserRepoEntity, {
-    nullable: false,
+    nullable: true,
     onDelete: 'CASCADE',
   })
   @JoinColumn()
@@ -37,9 +37,9 @@ export class QuizGameAnswerRepoEntity {
   @Column()
   questionId: number;
 
-  @ManyToOne(() => GamesRepoEntity, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => GamesRepoEntity, { nullable: true, onDelete: 'CASCADE' })
   game: GamesRepoEntity;
-  @Column()
+  @Column({ nullable: true })
   gameId: number;
 
   @CreateDateColumn({ type: 'timestamptz' })

@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { GamesRepoEntity } from 'src/repo/games/entities/games.repo.entity';
 import { GamesRepoService } from 'src/repo/games/games.repo.service';
-import { QuizGameGetMyCurrentEntity } from '../entities/QuizGameGetMyCurrent/_quiz.game.get.my.current.usecase.entity';
+import { QuizGameInfo } from '../entities/QuizGameGetMyCurrent/_quiz.game.get.my.current.usecase.entity';
 import { UsersRepoService } from 'src/repo/users/users.repo.service';
 import { QuizGameToQuestionsRepoService } from 'src/repo/QuizGameQuestions/quiz.game.questions.repo.service';
 import { QuizGamePlayerProgressEntity } from '../entities/QuizGameGetMyCurrent/quiz.game.player.progress.entity';
@@ -16,7 +16,7 @@ export class QuizGameMyCurrentCommand {
 
 @CommandHandler(QuizGameMyCurrentCommand)
 @Injectable()
-export class QuizGameMyCurrentUseCase implements ICommandHandler<QuizGameMyCurrentCommand, QuizGameGetMyCurrentEntity> {
+export class QuizGameMyCurrentUseCase implements ICommandHandler<QuizGameMyCurrentCommand, QuizGameInfo> {
   private gameInfo: GamesRepoEntity | null = null;
   constructor(
     private quizGameRepo: GamesRepoService,
@@ -24,7 +24,7 @@ export class QuizGameMyCurrentUseCase implements ICommandHandler<QuizGameMyCurre
     private userRepo: UsersRepoService
   ) {}
 
-  async execute(command: QuizGameMyCurrentCommand): Promise<QuizGameGetMyCurrentEntity> {
+  async execute(command: QuizGameMyCurrentCommand): Promise<QuizGameInfo> {
     this.gameInfo = await this.quizGameRepo.GetUserCurrentGame(command.userId);
 
     if (!this.gameInfo) throw new NotFoundException();
@@ -41,7 +41,7 @@ export class QuizGameMyCurrentUseCase implements ICommandHandler<QuizGameMyCurre
 
     let answers = QuizGameQuestionsExtendedInfoEntity.GetPlayersInfo(answersInfo);
 
-    let currentGame: QuizGameGetMyCurrentEntity = new QuizGameGetMyCurrentEntity(
+    let currentGame: QuizGameInfo = new QuizGameInfo(
       this.gameInfo.id.toString(),
       new QuizGamePlayerProgressEntity(
         answers.firstPlayerResult,
@@ -81,12 +81,12 @@ export class QuizGameMyCurrentUseCase implements ICommandHandler<QuizGameMyCurre
     // ORDER BY m."orderNum" ASC;
   }
 
-  private async PendingSecondPlayerScenario(): Promise<QuizGameGetMyCurrentEntity> {
-    let result: QuizGameGetMyCurrentEntity;
+  private async PendingSecondPlayerScenario(): Promise<QuizGameInfo> {
+    let result: QuizGameInfo;
 
     let userInfo = await this.userRepo.ReadOneById(this.gameInfo.player_1_id.toString());
 
-    return QuizGameGetMyCurrentEntity.GetPendingForm(
+    return QuizGameInfo.GetPendingForm(
       this.gameInfo.id.toString(),
       this.gameInfo.player_1_id.toString(),
       userInfo.login,

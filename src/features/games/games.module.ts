@@ -5,8 +5,9 @@ import { QuizGameMyCurrentUseCase } from './use-cases/quiz.game.my.current.useca
 import { CqrsModule } from '@nestjs/cqrs';
 import { UsersRepoModule } from 'src/repo/users/users.repo.module';
 import { QuizGameQuestionsModule } from 'src/repo/QuizGameQuestions/quiz.game.questions.repo.module';
+import { QuizGameConnectToGameUseCase } from './use-cases/quiz.game.connect.to.game.usecase';
 
-export const QuizGameUseCases = [QuizGameMyCurrentUseCase];
+export const QuizGameUseCases = [QuizGameMyCurrentUseCase, QuizGameConnectToGameUseCase];
 
 @Module({
   imports: [QuizGameRepoModule, UsersRepoModule, QuizGameQuestionsModule, CqrsModule],

@@ -3,7 +3,7 @@ import { QuizGamePlayerProgressEntity } from './quiz.game.player.progress.entity
 import { QuizGameQuestionInfoEntity } from './quiz.game.question.info.entity';
 import { QuizGameStatus } from './quiz.game.status.enum';
 
-export class QuizGameGetMyCurrentEntity {
+export class QuizGameInfo {
   constructor(
     public id: string,
     public firstPlayerProgress: QuizGamePlayerProgressEntity,
@@ -16,7 +16,7 @@ export class QuizGameGetMyCurrentEntity {
   ) {}
 
   public static GetPendingForm(gameId: string, userId: string, userLogin: string, gameCreatedAt: Date) {
-    let res = new QuizGameGetMyCurrentEntity(
+    let res = new QuizGameInfo(
       gameId,
       new QuizGamePlayerProgressEntity([], new QuizGamePlayerInfoEntity(userId, userLogin), 0),
       null,

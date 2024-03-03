@@ -2,7 +2,7 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { GamesRepoEntity } from './entities/games.repo.entity';
 import { UserRepoEntity } from '../users/entities/users.repo.entity';
-import { QuizGameGetMyCurrentEntity } from 'src/features/games/entities/QuizGameGetMyCurrent/_quiz.game.get.my.current.usecase.entity';
+import { QuizGameInfo } from 'src/features/games/entities/QuizGameGetMyCurrent/_quiz.game.get.my.current.usecase.entity';
 
 export class GamesRepoService {
   constructor(
@@ -11,14 +11,14 @@ export class GamesRepoService {
     @InjectDataSource() public dataSource: DataSource
   ) {}
 
-  public async CreateGame(hostPlayer: UserRepoEntity) {
+  public async CreateGame(userId: number) {
     //TODO сделать создание игры
-    let game = GamesRepoEntity.Init(hostPlayer);
+    let game = GamesRepoEntity.Init(userId);
     let savedGame = await this.repo.save(game);
     return savedGame;
   }
   public async GetUserCurrentGame(userId: string): Promise<GamesRepoEntity> {
-    let result: QuizGameGetMyCurrentEntity;
+    let result: QuizGameInfo;
 
     let gameInfo = await this.repo
       .createQueryBuilder('game')
@@ -27,6 +27,14 @@ export class GamesRepoService {
       .getOneOrFail();
 
     return gameInfo;
+  }
+
+  public async GetSearchingGame(): Promise<GamesRepoEntity | null> {
+    let game = await this.repo.findOne({
+      where: { status: 'PendingSecondPlayer' },
+    });
+
+    return game;
   }
 
   public async DeleteAll() {

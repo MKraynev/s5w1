@@ -19,16 +19,16 @@ export class GamesRepoEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => UserRepoEntity, { nullable: false })
+  @ManyToOne(() => UserRepoEntity, { nullable: true })
   @JoinColumn({ name: 'player_1_id' })
   player_1: UserRepoEntity;
-  @Column()
+  @Column({ nullable: true })
   player_1_id: number;
 
   @ManyToOne(() => UserRepoEntity, { nullable: true })
   @JoinColumn({ name: 'player_2_id' })
   player_2: UserRepoEntity;
-  @Column()
+  @Column({ nullable: true })
   player_2_id: number;
 
   @OneToMany(() => QuizGameAnswerRepoEntity, (answer) => answer.game)
@@ -58,13 +58,14 @@ export class GamesRepoEntity {
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 
-  public static Init(hostPlayer: UserRepoEntity, status: QuizGameStatus = 'PendingSecondPlayer') {
+  public static Init(hostPlayerId: number, status: QuizGameStatus = 'PendingSecondPlayer') {
     let game = new GamesRepoEntity();
-    game.player_1 = hostPlayer;
-    game.player_1_id = hostPlayer.id;
+
+    game.player_1_id = hostPlayerId;
     game.status = status;
 
     return game;
   }
+
   public static AnswerScore: number = 1;
 }

@@ -28,6 +28,7 @@ export class AdminTestingController {
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
   async DeleteAll() {
+    await this.quizGameRepo.DeleteAll();
     await this.blogRepo.DeleteAll();
     await this.userRepo.DeleteAll();
     await this.postRepo.DeleteAll();
@@ -36,7 +37,7 @@ export class AdminTestingController {
     await this.likeForComments.DeleteAll();
     await this.deviceRepo.DeleteAll();
     await this.quizQuestionsRepo.DeleteAll();
-    await this.quizGameRepo.DeleteAll();
+
     return;
   }
 }

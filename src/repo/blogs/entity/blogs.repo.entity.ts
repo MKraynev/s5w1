@@ -1,13 +1,6 @@
 import { BlogCreateEntity } from 'src/features/superAdmin/controllers/entities/super.admin.create.blog.entity';
 import { PostRepoEntity } from 'src/repo/posts/entity/posts.repo.entity';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('Blogs')
 export class BlogRepoEntity {
@@ -35,10 +28,7 @@ export class BlogRepoEntity {
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 
-  public static Init(
-    blogData: BlogCreateEntity,
-    isMembership: boolean = false,
-  ): BlogRepoEntity {
+  public static Init(blogData: BlogCreateEntity, isMembership: boolean = false): BlogRepoEntity {
     let blog = new BlogRepoEntity();
     blog.name = blogData.name;
     blog.description = blogData.description;
